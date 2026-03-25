@@ -1,0 +1,31 @@
+# Streamlit Configuration
+
+[theme]
+primaryColor = "#FF6B6B"
+backgroundColor = "#F7F7F7"
+secondaryBackgroundColor = "#E8E8E8"
+textColor = "#262730"
+font = "sans serif"
+
+[client]
+showErrorDetails = true
+toolbarMode = "viewer"
+
+[logger]
+level = "info"
+
+[client.toolbarMode]
+# Possible values: "viewer", "minimal", "developer"
+showRunButton = true
+
+[server]
+headless = true
+port = 8501
+baseURLPath = ""
+enableXsrfProtection = true
+
+[browser]
+gatherUsageStats = false
+
+[deprecation]
+showPyplotGlobalUse = false
