@@ -26,7 +26,6 @@ This project implements and compares various deep learning models:
 
 ### Prerequisites
 - Python 3.12+
-- PyTorch 2.0+
 - Virtual environment (conda/venv)
 
 ### Installation
@@ -44,16 +43,17 @@ This project implements and compares various deep learning models:
    source venv/bin/activate  # On Windows: venv\Scripts\activate
    ```
 
-3. **Install Dependencies**
+3. **Install Assignment Dependencies**
    ```bash
-   pip install -r requirements.txt
+   pip install -r assignments/assignment1/requirements.txt
    ```
 
-4. **Install Module-Specific Dependencies (Optional)**
+4. **Optional: Create Module-Specific Requirement Files**
    ```bash
-   pip install -r docs/code/assignment1/image_classification/requirements.txt
-   pip install -r docs/code/assignment1/text_classification/requirements.txt
-   pip install -r docs/code/assignment1/multimodal_classification/requirements.txt
+   # If you add module-level requirements in the future:
+   # assignments/assignment1/image/requirements.txt
+   # assignments/assignment1/text/requirements.txt
+   # assignments/assignment1/multimodal/requirements.txt
    ```
 
 ## Project Structure
@@ -62,35 +62,41 @@ This project implements and compares various deep learning models:
 .
 ├── README.md                              # Project overview
 ├── LICENSE                                # License file
-├── docs/                                  # GitHub Pages deployment folder
+├── .gitignore                             # Git ignore file
+├── docs/                                  # GitHub Pages deployment assets
 │   ├── index.html                         # Homepage
 │   ├── assignment-1.html                  # Assignment 1 page
 │   ├── assignment-2.html                  # Assignment 2 page
 │   ├── assignment-3.html                  # Assignment 3 page
-│   ├── styles.css                         # Styling
-│   └── code/                              # Source code
-│   │   ├── assignment1/
-│   │   │   ├── image_classification/
-│   │   │   │   ├── requirements.txt
-│   │   │   ├── text_classification/
-│   │   │   │   ├── requirements.txt
-│   │   │   └── multimodal_classification/
-│   │   │       ├── requirements.txt
-│   │   ├── assignment2/
-│   │   └── assignment3/
-├── pages/                                 # Markdown documentation
-│   ├── index.md                           # Landing page
-│   ├── assignment-1.md                    # Assignment 1 documentation
-│   ├── assignment-2.md                    # Assignment 2 documentation
-│   ├── assignment-3.md                    # Assignment 3 documentation
-│   └── code/                              # Assignment code directory
-├── requirements.txt                       # Root dependencies
-└── .gitignore                             # Git ignore file
+│   └── styles.css                         # Shared styles
+├── assignments/                           # Assignment source workspace
+│   ├── .streamlit/
+│   │   └── config.toml                    # Streamlit configuration
+│   ├── assignment1/
+│   │   ├── requirements.txt               # Assignment 1 dependencies
+│   │   ├── image/
+│   │   │   ├── notebooks/
+│   │   │   ├── reports/
+│   │   │   ├── models/
+│   │   │   └── artifacts/
+│   │   ├── text/
+│   │   │   ├── notebooks/
+│   │   │   ├── reports/
+│   │   │   ├── models/
+│   │   │   └── artifacts/
+│   │   └── multimodal/
+│   │       ├── notebooks/
+│   │       ├── reports/
+│   │       ├── models/
+│   │       └── artifacts/
+│   ├── assignment2/                       # Currently empty
+│   └── assignment3/                       # Currently empty
+└── venv/                                  # Local virtual environment (optional)
 ```
 
 ### Streamlit Configuration
 
-Settings are in `github-pages/.streamlit/config.toml`:
+Settings are in `assignments/.streamlit/config.toml`:
 - Theme colors
 - Display settings
 - Performance options
