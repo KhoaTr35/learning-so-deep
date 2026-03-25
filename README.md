@@ -4,7 +4,7 @@ A comprehensive Python project covering **Image Classification**, **Text Classif
 
 ## Project Homepage
 
-Visit the project homepage: [https://KhoaTr35.github.io/learning-so-deep/](Home Page)
+Visit the project homepage: [https://KhoaTr35.github.io/learning-so-deep/index.html](Home Page)
 
 ## Project Overview
 
