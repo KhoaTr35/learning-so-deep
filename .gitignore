@@ -134,7 +134,8 @@ dmypy.json
 # checkpoints/
 # runs/
 # *.mp4
-
+output/
+artifacts/
 # data/
 # datasets/
 # *.csv
