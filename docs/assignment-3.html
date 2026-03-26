@@ -4,38 +4,50 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Assignment 3 | Learning So Deep</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Newsreader:opsz,wght@6..72,500;6..72,700&display=swap"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="./styles.css" />
   </head>
-  <body>
+  <body class="assignment-page assignment-3-page">
     <div class="shell nav">
       <div class="nav-inner">
         <a class="brand" href="./index.html">Learning So Deep</a>
         <div class="nav-links">
-          <a href="./assignment-1.html">Assignment 1</a>
-          <a href="./assignment-2.html">Assignment 2</a>
-          <a href="./assignment-3.html">Assignment 3</a>
+          <a class="nav-link" href="./assignment-1.html">Assignment 1</a>
+          <a class="nav-link" href="./assignment-2.html">Assignment 2</a>
+          <a class="nav-link" href="./assignment-3.html" aria-current="page">Assignment 3</a>
         </div>
       </div>
     </div>
 
-    <main class="shell">
-      <header class="hero">
-        <p class="eyebrow">Assignment 3</p>
+    <main class="shell assignment-layout">
+      <header class="hero assignment-hero">
+        <p class="eyebrow">Assignment 3 Report Design</p>
         <h1>Deployment and Model Optimization</h1>
         <p class="lead">
           Optimize models for practical serving: latency, throughput, memory, and
           quality retention.
         </p>
+        <div class="hero-notes">
+          <p><span>Primary goal</span>Improve efficiency without violating quality floor.</p>
+          <p><span>Decision metric</span>P95 latency with minimum quality threshold.</p>
+          <p><span>Deliverable</span>Deployment recommendation with rollback strategy.</p>
+        </div>
       </header>
 
-      <section class="section">
-        <h2>Scope</h2>
+      <section class="section scope-panel">
+        <h2>Scope and Targets</h2>
         <table>
           <thead>
             <tr>
               <th>Area</th>
               <th>Baseline</th>
               <th>Advanced</th>
+              <th>Success Condition</th>
             </tr>
           </thead>
           <tbody>
@@ -43,55 +55,116 @@
               <td>Export</td>
               <td>Native Checkpoint</td>
               <td>ONNX / TorchScript</td>
+              <td>Portable runtime with no measurable accuracy drift.</td>
             </tr>
             <tr>
               <td>Optimization</td>
               <td>FP32 Inference</td>
               <td>Quantization + Pruning</td>
+              <td>At least 30% latency drop within quality floor.</td>
             </tr>
             <tr>
               <td>Serving</td>
               <td>Single Requests</td>
               <td>Batched and Profiled Pipeline</td>
+              <td>Higher throughput and stable P95/P99 latency.</td>
             </tr>
           </tbody>
         </table>
       </section>
 
-      <section class="section">
-        <h2>Advanced Experiment Template</h2>
-        <div class="template">
-          <div class="block">
-            <h3>1. Deployment Target</h3>
-            <p>Platform, SLOs, quality floor, and resource constraints.</p>
+      <section class="section kpi-strip">
+        <article class="kpi-card">
+          <p class="kpi-label">Latency</p>
+          <h3>P50 / P95 / P99</h3>
+          <p>Track tail latency explicitly to reflect production user experience.</p>
+        </article>
+        <article class="kpi-card">
+          <p class="kpi-label">Throughput</p>
+          <h3>Requests Per Second</h3>
+          <p>Measure with realistic concurrency and batching settings.</p>
+        </article>
+        <article class="kpi-card">
+          <p class="kpi-label">Efficiency</p>
+          <h3>Memory + Cost per 1K</h3>
+          <p>Include memory peak and estimated serving cost at target traffic.</p>
+        </article>
+      </section>
+
+      <section class="section report-grid">
+        <article class="report-card">
+          <h3>1. Deployment Target</h3>
+          <ul>
+            <li>Platform, traffic profile, and SLO boundaries.</li>
+            <li>Quality floor and acceptable regression limits.</li>
+            <li>Operational constraints and compliance notes.</li>
+          </ul>
+        </article>
+        <article class="report-card">
+          <h3>2. System Profile</h3>
+          <ul>
+            <li>Runtime stack, hardware, and serving framework.</li>
+            <li>Batch policy, queueing, and autoscaling assumptions.</li>
+            <li>Profiling setup and benchmark reproducibility details.</li>
+          </ul>
+        </article>
+        <article class="report-card">
+          <h3>3. Hypothesis Matrix</h3>
+          <ul>
+            <li>H1: quantization gives largest latency gain.</li>
+            <li>H2: pruning gives better memory-per-quality ratio.</li>
+            <li>H3: batching shifts bottleneck to preprocessing stage.</li>
+          </ul>
+        </article>
+        <article class="report-card">
+          <h3>4. Optimization Registry</h3>
+          <ul>
+            <li>Technique, config, target model, and version tag.</li>
+            <li>Expected benefit, regression risk, and fallback path.</li>
+            <li>Benchmark command, seed, and artifact links.</li>
+          </ul>
+        </article>
+        <article class="report-card">
+          <h3>5. Benchmark Dashboard</h3>
+          <ul>
+            <li>Latency distribution and throughput under load tiers.</li>
+            <li>Model size, memory peak, and utilization curves.</li>
+            <li>Quality-retention table against baseline.</li>
+          </ul>
+        </article>
+        <article class="report-card">
+          <h3>6. Production Risk Review</h3>
+          <ul>
+            <li>Numerical stability and precision-sensitive cases.</li>
+            <li>Rollback trigger thresholds and alert signals.</li>
+            <li>Final recommendation ranked by business impact.</li>
+          </ul>
+        </article>
+      </section>
+
+      <section class="section executive">
+        <h2>Executive Summary Template</h2>
+        <div class="summary-grid">
+          <div class="summary-block">
+            <h4>What improved?</h4>
+            <p>
+              Candidate <strong>__</strong> reduced P95 latency by
+              <strong>__%</strong> and memory by <strong>__%</strong>.
+            </p>
           </div>
-          <div class="block">
-            <h3>2. System Profile</h3>
-            <p>Runtime, hardware, serving framework, and batch policy.</p>
+          <div class="summary-block">
+            <h4>What trade-off appeared?</h4>
+            <p>
+              Quality changed by <strong>__</strong> on sensitive class/group:
+              <strong>__</strong>.
+            </p>
           </div>
-          <div class="block">
-            <h3>3. Hypotheses</h3>
-            <p>Expected gains and risks for each optimization method.</p>
-          </div>
-          <div class="block">
-            <h3>4. Optimization Matrix</h3>
-            <p>Technique, target model, expected gain, and regression risk.</p>
-          </div>
-          <div class="block">
-            <h3>5. Benchmark Dashboard</h3>
-            <p>P50/P95 latency, throughput, model size, and quality metric.</p>
-          </div>
-          <div class="block">
-            <h3>6. Cost and Efficiency</h3>
-            <p>CPU/GPU utilization, memory peak, and estimated serving cost.</p>
-          </div>
-          <div class="block">
-            <h3>7. Risk Review</h3>
-            <p>Numerical stability, edge cases, and fallback strategy.</p>
-          </div>
-          <div class="block">
-            <h3>8. Conclusion</h3>
-            <p>Best deployment candidate and final recommendation.</p>
+          <div class="summary-block">
+            <h4>What is next?</h4>
+            <p>
+              Deploy candidate <strong>__</strong> with monitored rollback threshold:
+              <strong>__</strong>.
+            </p>
           </div>
         </div>
       </section>
