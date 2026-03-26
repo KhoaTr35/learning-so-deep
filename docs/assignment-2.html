@@ -4,38 +4,50 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Assignment 2 | Learning So Deep</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Newsreader:opsz,wght@6..72,500;6..72,700&display=swap"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="./styles.css" />
   </head>
-  <body>
+  <body class="assignment-page assignment-2-page">
     <div class="shell nav">
       <div class="nav-inner">
         <a class="brand" href="./index.html">Learning So Deep</a>
         <div class="nav-links">
-          <a href="./assignment-1.html">Assignment 1</a>
-          <a href="./assignment-2.html">Assignment 2</a>
-          <a href="./assignment-3.html">Assignment 3</a>
+          <a class="nav-link" href="./assignment-1.html">Assignment 1</a>
+          <a class="nav-link" href="./assignment-2.html" aria-current="page">Assignment 2</a>
+          <a class="nav-link" href="./assignment-3.html">Assignment 3</a>
         </div>
       </div>
     </div>
 
-    <main class="shell">
-      <header class="hero">
-        <p class="eyebrow">Assignment 2</p>
+    <main class="shell assignment-layout">
+      <header class="hero assignment-hero">
+        <p class="eyebrow">Assignment 2 Report Design</p>
         <h1>Robustness and Generalization Study</h1>
         <p class="lead">
           Evaluate how models behave under realistic distribution shifts and
           non-ideal data settings.
         </p>
+        <div class="hero-notes">
+          <p><span>Primary goal</span>Minimize robustness gap between IID and OOD settings.</p>
+          <p><span>Decision metric</span>OOD weighted F1 with ECE as a guardrail.</p>
+          <p><span>Deliverable</span>Robustness profile with actionable mitigation steps.</p>
+        </div>
       </header>
 
-      <section class="section">
-        <h2>Scope</h2>
+      <section class="section scope-panel">
+        <h2>Scope and Targets</h2>
         <table>
           <thead>
             <tr>
               <th>Area</th>
               <th>Baseline</th>
               <th>Advanced</th>
+              <th>Success Condition</th>
             </tr>
           </thead>
           <tbody>
@@ -43,55 +55,116 @@
               <td>Shift Testing</td>
               <td>IID Validation</td>
               <td>OOD Robustness Suite</td>
+              <td>Robustness gap reduced by at least 20%.</td>
             </tr>
             <tr>
               <td>Data Strategy</td>
               <td>Standard Split</td>
               <td>Stress and Stratified Splits</td>
+              <td>Stable performance across shift buckets.</td>
             </tr>
             <tr>
               <td>Model Strategy</td>
               <td>Single Model</td>
               <td>Regularization / Ensemble</td>
+              <td>Lower variance across seeds and perturbations.</td>
             </tr>
           </tbody>
         </table>
       </section>
 
-      <section class="section">
-        <h2>Advanced Experiment Template</h2>
-        <div class="template">
-          <div class="block">
-            <h3>1. Robustness Question</h3>
-            <p>Target shifts, deployment assumptions, and robustness metric.</p>
+      <section class="section kpi-strip">
+        <article class="kpi-card">
+          <p class="kpi-label">Shift Quality</p>
+          <h3>IID vs OOD F1</h3>
+          <p>Report both absolute scores and relative degradation percentages.</p>
+        </article>
+        <article class="kpi-card">
+          <p class="kpi-label">Calibration</p>
+          <h3>ECE + Confidence Drift</h3>
+          <p>Identify overconfident predictions under synthetic and real shifts.</p>
+        </article>
+        <article class="kpi-card">
+          <p class="kpi-label">Stability</p>
+          <h3>Seed and Scenario Variance</h3>
+          <p>Track variance to avoid one-off improvements with weak reliability.</p>
+        </article>
+      </section>
+
+      <section class="section report-grid">
+        <article class="report-card">
+          <h3>1. Robustness Question</h3>
+          <ul>
+            <li>Define deployment assumptions and likely shift categories.</li>
+            <li>Set primary robustness metric and failure tolerance.</li>
+            <li>Declare risk-critical classes and use-cases.</li>
+          </ul>
+        </article>
+        <article class="report-card">
+          <h3>2. Shift Profile</h3>
+          <ul>
+            <li>Noise, blur, style/domain, and class-prior shift settings.</li>
+            <li>Severity levels with reproducible generation configs.</li>
+            <li>Expected real-world analog for each synthetic shift.</li>
+          </ul>
+        </article>
+        <article class="report-card">
+          <h3>3. Hypothesis Matrix</h3>
+          <ul>
+            <li>H1: regularization reduces overconfidence.</li>
+            <li>H2: data stress splits improve generalization gap.</li>
+            <li>H3: ensemble reduces worst-case shift failure.</li>
+          </ul>
+        </article>
+        <article class="report-card">
+          <h3>4. Experiment Registry</h3>
+          <ul>
+            <li>Scenario ID, model, defense, seed, and config hash.</li>
+            <li>Runtime, compute cost, and artifact references.</li>
+            <li>Reason for each run and expected signal.</li>
+          </ul>
+        </article>
+        <article class="report-card">
+          <h3>5. Results Dashboard</h3>
+          <ul>
+            <li>IID/OOD score table with per-scenario breakdown.</li>
+            <li>Robustness gap chart and calibration comparison.</li>
+            <li>Top resilient classes and most fragile classes.</li>
+          </ul>
+        </article>
+        <article class="report-card">
+          <h3>6. Risk Review</h3>
+          <ul>
+            <li>Spurious feature reliance and shortcut behavior.</li>
+            <li>False-positive/false-negative risk severity.</li>
+            <li>Mitigations prioritized by impact and cost.</li>
+          </ul>
+        </article>
+      </section>
+
+      <section class="section executive">
+        <h2>Executive Summary Template</h2>
+        <div class="summary-grid">
+          <div class="summary-block">
+            <h4>What improved?</h4>
+            <p>
+              Robust method reduced OOD degradation by <strong>__%</strong> versus
+              baseline while preserving IID quality.
+            </p>
           </div>
-          <div class="block">
-            <h3>2. Shift Profile</h3>
-            <p>Noise, style/domain, class prior, and label sparsity setup.</p>
+          <div class="summary-block">
+            <h4>What remains risky?</h4>
+            <p>
+              Most fragile scenario remains <strong>__</strong>, with failure mode:
+              <strong>__</strong>.
+            </p>
           </div>
-          <div class="block">
-            <h3>3. Hypotheses</h3>
-            <p>Pre-registered expectations for each defense strategy.</p>
-          </div>
-          <div class="block">
-            <h3>4. Experiment Matrix</h3>
-            <p>Scenario, model, defense method, metric, and notes per run.</p>
-          </div>
-          <div class="block">
-            <h3>5. Results Dashboard</h3>
-            <p>IID score, OOD score, robustness gap, and calibration error.</p>
-          </div>
-          <div class="block">
-            <h3>6. Sensitivity Analysis</h3>
-            <p>Learning rate, regularization, and augmentation sensitivity.</p>
-          </div>
-          <div class="block">
-            <h3>7. Risk and Error Analysis</h3>
-            <p>Spurious correlations, overconfidence, and failure examples.</p>
-          </div>
-          <div class="block">
-            <h3>8. Conclusion</h3>
-            <p>Most robust setup, tradeoffs, and next iteration.</p>
+          <div class="summary-block">
+            <h4>What is next?</h4>
+            <p>
+              Prioritize calibration tuning and targeted augmentation for shift:
+              <strong>__</strong>.
+            </p>
           </div>
         </div>
       </section>

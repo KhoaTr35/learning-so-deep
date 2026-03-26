@@ -4,38 +4,49 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Assignment 1 | Learning So Deep</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Newsreader:opsz,wght@6..72,500;6..72,700&display=swap"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="./styles.css" />
   </head>
-  <body>
+  <body class="assignment-page">
     <div class="shell nav">
       <div class="nav-inner">
         <a class="brand" href="./index.html">Learning So Deep</a>
         <div class="nav-links">
-          <a href="./assignment-1.html">Assignment 1</a>
-          <a href="./assignment-2.html">Assignment 2</a>
-          <a href="./assignment-3.html">Assignment 3</a>
+          <a class="nav-link" href="./assignment-1.html" aria-current="page">Assignment 1</a>
+          <a class="nav-link" href="./assignment-2.html">Assignment 2</a>
+          <a class="nav-link" href="./assignment-3.html">Assignment 3</a>
         </div>
       </div>
     </div>
 
-    <main class="shell">
-      <header class="hero">
+    <main class="shell assignment-layout">
+      <header class="hero assignment-hero">
         <p class="eyebrow">Assignment 1</p>
-        <h1>Deep Learning Models Comparison</h1>
+        <h1>Classification</h1>
         <p class="lead">
-          Compare baseline and advanced models for image, text, and multimodal
-          classification.
+          Report basic classification results between baseline and advanced methods across three tracks: image, text, and multimodal. Deep dive into error analysis and suggest next steps for improvement.
         </p>
+        <div class="hero-notes">
+          <p><span>Text Classification</span>RNN vs Transformer</p>
+          <p><span>Image Classification</span>CNN vs Vision Transformer</p>
+          <p><span>Multimodal Classification</span>Zero-shot vs Few-shot</p>
+        </div>
       </header>
 
-      <section class="section">
-        <h2>Scope</h2>
+      <section class="section scope-panel">
+        <h2>Scope and Targets</h2>
         <table>
           <thead>
             <tr>
               <th>Track</th>
               <th>Baseline</th>
               <th>Advanced</th>
+              <th>Success Condition</th>
             </tr>
           </thead>
           <tbody>
@@ -43,61 +54,116 @@
               <td>Image</td>
               <td>CNN</td>
               <td>Vision Transformer</td>
+              <td>+2% weighted F1 with stable confusion matrix.</td>
             </tr>
             <tr>
               <td>Text</td>
               <td>LSTM</td>
               <td>Transformer Encoder</td>
+              <td>Higher recall on minority classes at same latency budget.</td>
             </tr>
             <tr>
               <td>Multimodal</td>
               <td>Late Fusion</td>
               <td>Zero-shot / Few-shot</td>
+              <td>Best top-1 while keeping inference cost explainable.</td>
             </tr>
           </tbody>
         </table>
       </section>
 
-      <section class="section">
-        <h2>Advanced Experiment Template</h2>
-        <div class="template">
-          <div class="block">
-            <h3>1. Problem Statement</h3>
+      <section class="section kpi-strip">
+        <article class="kpi-card">
+          <p class="kpi-label">Core Metrics</p>
+          <h3>Accuracy, Precision, Recall, F1</h3>
+          <p>Report macro and weighted variants to avoid class-imbalance blind spots.</p>
+        </article>
+        <article class="kpi-card">
+          <p class="kpi-label">Efficiency</p>
+          <h3>Latency + Model Size</h3>
+          <p>Add milliseconds/sample and parameter counts for deployment realism.</p>
+        </article>
+        <article class="kpi-card">
+          <p class="kpi-label">Reliability</p>
+          <h3>Error Pattern Stability</h3>
+          <p>Track per-class drift and confidence calibration under each setting.</p>
+        </article>
+      </section>
+
+      <section class="section report-grid">
+        <article class="report-card">
+          <h3>1. Problem Statement</h3>
+          <ul>
+            <li>Define objective, target users, and failure cost.</li>
+            <li>Set one primary metric and two guardrail metrics.</li>
+            <li>Declare compute and data constraints before training.</li>
+          </ul>
+        </article>
+        <article class="report-card">
+          <h3>2. Dataset Card</h3>
+          <ul>
+            <li>Source, licenses, split ratios, and label distribution snapshot.</li>
+            <li>Known bias and domain shift risk notes.</li>
+            <li>Preprocessing pipeline and augmentation policy.</li>
+          </ul>
+        </article>
+        <article class="report-card">
+          <h3>3. Hypothesis Matrix</h3>
+          <ul>
+            <li>H1: architecture effect</li>
+            <li>H2: optimization/setup effect</li>
+            <li>H3: data regime effect (zero/few/full shot)</li>
+          </ul>
+        </article>
+        <article class="report-card">
+          <h3>4. Experiment Registry</h3>
+          <ul>
+            <li>Run ID, model variant, seed, and hyperparameters.</li>
+            <li>Training time, checkpoint path, and commit hash.</li>
+            <li>Reason for each change against previous run.</li>
+          </ul>
+        </article>
+        <article class="report-card">
+          <h3>5. Results Dashboard</h3>
+          <ul>
+            <li>Metric table + confidence intervals where available.</li>
+            <li>Confusion matrix comparison across key settings.</li>
+            <li>Top wins, top regressions, and practical impact.</li>
+          </ul>
+        </article>
+        <article class="report-card">
+          <h3>6. Error Analysis</h3>
+          <ul>
+            <li>Hard examples grouped by failure type.</li>
+            <li>False positive vs. false negative impact analysis.</li>
+            <li>Prompt/model sensitivity with brief ablations.</li>
+          </ul>
+        </article>
+      </section>
+
+      <section class="section executive">
+        <h2>Executive Summary Template</h2>
+        <div class="summary-grid">
+          <div class="summary-block">
+            <h4>What changed?</h4>
             <p>
-              Task objective, primary metric, success threshold, and compute/data
-              constraints.
+              Advanced model improved weighted F1 by <strong>__%</strong> over baseline,
+              primarily on classes: <strong>__</strong>.
             </p>
           </div>
-          <div class="block">
-            <h3>2. Dataset Card</h3>
-            <p>Dataset source, split, class count, known bias, and license.</p>
-          </div>
-          <div class="block">
-            <h3>3. Hypotheses</h3>
-            <p>Define H1 to H3 before running experiments.</p>
-          </div>
-          <div class="block">
-            <h3>4. Experiment Matrix</h3>
-            <p>Track model variants, hyperparameters, and rationale per run.</p>
-          </div>
-          <div class="block">
-            <h3>5. Results Dashboard</h3>
+          <div class="summary-block">
+            <h4>Why it changed?</h4>
             <p>
-              Report accuracy, precision, recall, F1, inference latency, and model
-              size.
+              Improvement is most associated with <strong>architecture / prompt /
+              optimization</strong>, while main residual error is <strong>__</strong>.
             </p>
           </div>
-          <div class="block">
-            <h3>6. Error Analysis and Ablation</h3>
-            <p>Document confusion patterns, hard samples, and component impact.</p>
-          </div>
-          <div class="block">
-            <h3>7. Reproducibility Checklist</h3>
-            <p>Seed, environment versions, commands, artifacts, and checkpoints.</p>
-          </div>
-          <div class="block">
-            <h3>8. Conclusion</h3>
-            <p>Best model, failure modes, and next iteration plan.</p>
+          <div class="summary-block">
+            <h4>What is next?</h4>
+            <p>
+              Prioritize calibration, hard-sample mining, and one focused ablation:
+              <strong>__</strong>.
+            </p>
           </div>
         </div>
       </section>

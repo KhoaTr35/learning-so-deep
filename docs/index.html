@@ -4,31 +4,100 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Learning So Deep</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="./styles.css" />
   </head>
-  <body>
+  <body class="home-page">
     <div class="shell nav">
       <div class="nav-inner">
         <a class="brand" href="./index.html">Learning So Deep</a>
         <div class="nav-links">
-          <a href="./assignment-1.html">Assignment 1</a>
-          <a href="./assignment-2.html">Assignment 2</a>
-          <a href="./assignment-3.html">Assignment 3</a>
+          <a class="nav-link" href="./assignment-1.html">Assignment 1</a>
+          <a class="nav-link" href="./assignment-2.html">Assignment 2</a>
+          <a class="nav-link" href="./assignment-3.html">Assignment 3</a>
         </div>
       </div>
     </div>
 
-    <main class="shell">
-      <header class="hero">
-        <p class="eyebrow">Deep Learning</p>
-        <h1>GROUP: STL</h1>
+    <main class="shell home-layout">
+      <header class="hero home-hero">
+        <p class="eyebrow">Deep Learning Project Hub</p>
+        <h1>STL's</h1> 
+        <h1>Workspace</h1>
         <p class="lead">
-          A minimal project hub for assignments, experiments, and results.
+          Been learning so deep.
         </p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="./assignment-1.html">Open Assignment 1</a>
+          <a class="btn btn-secondary" href="#roadmap">View Roadmap</a>
+        </div>
       </header>
 
-      <section class="grid two">
-        <article class="card">
+      <section class="home-stats">
+        <article class="stat-card">
+          <p class="stat-label">Total Assignments</p>
+          <p class="stat-value">3</p>
+        </article>
+        <article class="stat-card">
+          <p class="stat-label">Team Members</p>
+          <p class="stat-value">3</p>
+        </article>
+        <article class="stat-card">
+          <p class="stat-label">Focus Tracks</p>
+          <p class="stat-value">Image · Text · Multimodal</p>
+        </article>
+      </section>
+
+      <section class="home-panel" id="roadmap">
+        <div class="panel-head">
+          <h2>Assignment Roadmap</h2>
+          <p>Structured by objective, method, and evaluation focus.</p>
+        </div>
+        <div class="assignment-grid">
+          <article class="assignment-card">
+            <p class="chip">Assignment 1</p>
+            <h3>Classification Comparison</h3>
+            <p>
+              Baseline vs. advanced architectures for image, text, and multimodal
+              tasks.
+            </p>
+            <div class="meta-row">
+              <span>Priority: High</span>
+              <a href="./assignment-1.html">details</a>
+            </div>
+          </article>
+          <article class="assignment-card">
+            <p class="chip">Assignment 2</p>
+            <h3>Robustness Study</h3>
+            <p>
+              Measure behavior under noise, imbalance, and domain-shift conditions.
+            </p>
+            <div class="meta-row">
+              <span>Priority: Medium</span>
+              <a href="./assignment-2.html">details</a>
+            </div>
+          </article>
+          <article class="assignment-card">
+            <p class="chip">Assignment 3</p>
+            <h3>Deployment Optimization</h3>
+            <p>
+              Benchmark quality-performance trade-offs for practical inference setups.
+            </p>
+            <div class="meta-row">
+              <span>Priority: Medium</span>
+              <a href="./assignment-3.html">details</a>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="grid two home-info">
+        <article class="card home-card">
           <span class="tag">Group</span>
           <h2>Members</h2>
           <table>
@@ -59,7 +128,7 @@
           </table>
         </article>
 
-        <article class="card">
+        <article class="card home-card">
           <span class="tag">Course</span>
           <h2>Instructors</h2>
           <table>
@@ -79,36 +148,7 @@
         </article>
       </section>
 
-      <section class="grid three">
-        <article class="card">
-          <span class="tag">Assignment 1</span>
-          <h3>Classification</h3>
-          <p>
-            Image, text, and multimodal classification with baseline and advanced
-            architectures.
-          </p>
-          <p><a href="./assignment-1.html">Open page</a></p>
-        </article>
-        <article class="card">
-          <span class="tag">Assignment 2</span>
-          <h3>Robustness Study</h3>
-          <p>
-            Evaluate model behavior under noise, class imbalance, and domain shift.
-          </p>
-          <p><a href="./assignment-2.html">Open page</a></p>
-        </article>
-        <article class="card">
-          <span class="tag">Assignment 3</span>
-          <h3>Deployment Optimization</h3>
-          <p>
-            Benchmark latency, memory, throughput, and quality for production-ready
-            inference.
-          </p>
-          <p><a href="./assignment-3.html">Open page</a></p>
-        </article>
-      </section>
-
-      <p class="footer">Last updated: March 25, 2026</p>
+      <p class="footer">Last updated: March 26, 2026</p>
     </main>
   </body>
 </html>
