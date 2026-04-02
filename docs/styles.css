@@ -402,11 +402,106 @@ body.assignment-page.assignment-3-page {
   font-weight: 700;
 }
 
+.inner-hero {
+  padding-bottom: 4px;
+}
+
+.crumbs {
+  margin: 10px 0 0;
+  color: rgba(31, 32, 34, 0.62);
+  font-size: 0.9rem;
+}
+
+.crumbs a {
+  color: var(--a1-accent);
+  font-weight: 700;
+}
+
 .assignment-page .section h2 {
   font-family: "Newsreader", Georgia, serif;
   letter-spacing: -0.015em;
   font-size: clamp(1.5rem, 3.2vw, 2rem);
   margin-bottom: 14px;
+}
+
+.track-router,
+.stage-router {
+  margin-top: 26px;
+  border: 1px solid var(--a1-line);
+  border-radius: 20px;
+  padding: 22px;
+  background: linear-gradient(145deg, rgba(252, 251, 248, 0.96), rgba(245, 243, 238, 0.96));
+  box-shadow: var(--a1-shadow);
+}
+
+.track-router-head p {
+  margin: -4px 0 0;
+  color: var(--a1-muted);
+}
+
+.track-grid,
+.stage-grid {
+  margin-top: 12px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.stage-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.track-card,
+.stage-card {
+  border: 1px solid var(--a1-line);
+  border-radius: 16px;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.66);
+  box-shadow: var(--a1-shadow);
+}
+
+.track-card h3,
+.stage-card h3 {
+  margin: 0 0 8px;
+  font-size: 1.08rem;
+}
+
+.track-card p,
+.stage-card p {
+  margin: 0;
+  color: var(--a1-muted);
+}
+
+.track-chip {
+  display: inline-block;
+  margin: 0 0 8px;
+  padding: 4px 9px;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  border-radius: 999px;
+  background: rgba(35, 63, 93, 0.1);
+  color: var(--a1-accent);
+  font-weight: 700;
+}
+
+.track-link {
+  display: inline-flex;
+  margin-top: 12px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--a1-line);
+  background: rgba(255, 255, 255, 0.86);
+  color: var(--a1-accent);
+  font-weight: 700;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+.track-link:hover {
+  text-decoration: none;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 18px rgba(35, 63, 93, 0.17);
+  background: #ffffff;
 }
 
 .scope-panel {
@@ -559,6 +654,8 @@ body.assignment-page.assignment-3-page {
 }
 
 @media (max-width: 980px) {
+  .track-grid,
+  .stage-grid,
   .kpi-strip,
   .report-grid,
   .summary-grid {
