@@ -44,14 +44,14 @@
       </header>
 
       <section class="section">
-        <div class="eda-hero-grid">
+        <div class="eda-grid">
           <article class="eda-panel">
             <p class="track-chip">Overview</p>
             <h2>Dataset scope and experiment framing</h2>
             <p>
-              The full Food101 dataset contains 101 classes with 75,750 training images and 25,250 validation
+              The full Food101 dataset contains 101 classes with 75,750 training images and 25,250 test
               images. For this assignment, the multimodal track narrows the problem to 10 food categories and then
-              creates a balanced few-shot train/dev split before evaluating on the full held-out validation subset.
+              creates a balanced few-shot train/dev split before evaluating on the full held-out test subset.
             </p>
             <div class="eda-chip-cloud" aria-label="Selected Food101 classes">
               <span class="eda-chip">Apple Pie</span>
@@ -67,7 +67,9 @@
             </div>
           </article>
 
-          <div class="eda-mini-grid">
+          
+        </div>
+        <div class="eda-hero-grid">
             <article class="eda-metric-card">
               <p class="eda-metric-label">Selected Subset</p>
               <p class="eda-metric-value">10,000</p>
@@ -76,7 +78,7 @@
             <article class="eda-metric-card">
               <p class="eda-metric-label">Active Experiment</p>
               <p class="eda-metric-value">3,980</p>
-              <p class="eda-metric-note">Few-shot train, few-shot dev, and full validation combined.</p>
+              <p class="eda-metric-note">Few-shot train, few-shot dev, and full test split combined.</p>
             </article>
             <article class="eda-metric-card">
               <p class="eda-metric-label">Few-Shot Budget</p>
@@ -89,7 +91,6 @@
               <p class="eda-metric-note">All active splits are perfectly balanced by construction.</p>
             </article>
           </div>
-        </div>
       </section>
 
       <section class="section scope-panel">
@@ -104,7 +105,7 @@
           <tbody>
             <tr>
               <td>Original dataset</td>
-              <td>Food101 with 101 classes, distributed as 75,750 train and 25,250 validation images.</td>
+              <td>Food101 with 101 classes, distributed as 75,750 train and 25,250 test images.</td>
             </tr>
             <tr>
               <td>Selected classes</td>
@@ -123,8 +124,8 @@
               <td>200 images total, sampled as 20 images per class from the same filtered train pool.</td>
             </tr>
             <tr>
-              <td>Validation split</td>
-              <td>2,500 images total, using the full held-out validation subset of the 10 selected classes.</td>
+              <td>Test split</td>
+              <td>2,500 images total, using the full held-out test subset of the 10 selected classes.</td>
             </tr>
           </tbody>
         </table>
@@ -135,7 +136,7 @@
           <h3>Primary findings</h3>
           <ul>
             <li>The selected 10-class problem removes label-frequency bias because every chosen class starts with 1,000 images.</li>
-            <li>The experiment subset is dominated by held-out validation data, which is appropriate because final reporting happens on that split.</li>
+            <li>The experiment subset is dominated by held-out test data, which is appropriate because final reporting happens on that split.</li>
             <li>Image aspect ratios vary from 0.56 to 2.14, so resize-and-center-crop choices materially affect retained visual context.</li>
           </ul>
         </article>
@@ -144,7 +145,7 @@
           <ul>
             <li>Keep class-balanced sampling for all few-shot runs so performance changes reflect representation learning rather than skew.</li>
             <li>Use preprocessing that preserves framing better than a naive square crop, especially for elongated dishes and plated food scenes.</li>
-            <li>Retain the full validation subset because it provides enough examples per class to expose failure patterns in confusion analysis.</li>
+            <li>Retain the full test subset because it provides enough examples per class to expose failure patterns in confusion analysis.</li>
           </ul>
         </article>
       </section>
@@ -154,20 +155,20 @@
           <article class="eda-figure">
             <p class="track-chip">Distribution</p>
             <h2>Class counts across active splits</h2>
-            <p>Each split remains evenly distributed across the 10 classes, with larger absolute support in validation.</p>
-            <img src="./assets/dataset-eda/class_distribution.png" alt="Grouped bar chart of Food101 class counts across few-shot train, few-shot dev, and validation splits." />
+            <p>Each split remains evenly distributed across the 10 classes, with larger absolute support in test.</p>
+            <img src="./assets/dataset-eda/class_distribution.png" alt="Grouped bar chart of Food101 class counts across few-shot train, few-shot dev, and test splits." />
             <p class="eda-caption">
-              Every class contributes 128 training images, 20 dev images, and 250 validation images in the active experiment subset.
+              Every class contributes 128 training images, 20 dev images, and 250 test images in the active experiment subset.
             </p>
           </article>
 
           <article class="eda-figure">
             <p class="track-chip">Composition</p>
             <h2>Split share of the experiment subset</h2>
-            <p>The active subset contains 3,980 images, and almost two thirds belong to the held-out validation split.</p>
+            <p>The active subset contains 3,980 images, and almost two thirds belong to the held-out test split.</p>
             <img src="./assets/dataset-eda/split_composition.png" alt="Pie chart and bar chart summarizing experiment split composition for the selected Food101 subset." />
             <p class="eda-caption">
-              Validation accounts for 62.8% of the active subset, few-shot train for 32.2%, and few-shot dev for 5.0%.
+              Test accounts for 62.8% of the active subset, few-shot train for 32.2%, and few-shot dev for 5.0%.
             </p>
           </article>
         </div>
@@ -194,7 +195,7 @@
                   <th>Class</th>
                   <th>Train</th>
                   <th>Dev</th>
-                  <th>Validation</th>
+                  <th>Test</th>
                   <th>Total</th>
                 </tr>
               </thead>
@@ -244,8 +245,8 @@
           <article class="eda-figure">
             <p class="track-chip">Samples</p>
             <h2>One reference example per class</h2>
-            <p>The validation subset spans plated dishes, close-ups, restaurant shots, and cluttered backgrounds, which explains why prompt wording matters for zero-shot CLIP.</p>
-            <img src="./assets/dataset-eda/sample_grid.png" alt="Grid showing one validation image for each of the selected Food101 classes." />
+            <p>The test subset spans plated dishes, close-ups, restaurant shots, and cluttered backgrounds, which explains why prompt wording matters for zero-shot CLIP.</p>
+            <img src="./assets/dataset-eda/sample_grid.png" alt="Grid showing one test image for each of the selected Food101 classes." />
             <p class="eda-caption">
               Even a single image per class already shows large variation in plating style, crop tightness, and background clutter.
             </p>
@@ -255,7 +256,7 @@
             <p class="track-chip">Samples</p>
             <h2>Class gallery with intra-class variety</h2>
             <p>Three examples per class make the intra-class spread more obvious, especially for food types that appear in different lighting conditions and presentation styles.</p>
-            <img src="./assets/dataset-eda/class_gallery.png" alt="Large gallery showing three validation images for each selected Food101 class." />
+            <img src="./assets/dataset-eda/class_gallery.png" alt="Large gallery showing three test images for each selected Food101 class." />
             <p class="eda-caption">
               This diversity justifies comparing learned few-shot heads against prompt-averaged zero-shot CLIP embeddings.
             </p>
@@ -288,7 +289,7 @@
             <ul class="eda-list">
               <li>The selected subset contains 10,000 images total, with 1,000 images per chosen class.</li>
               <li>The active multimodal experiment uses 3,980 images after constructing the balanced few-shot train and dev subsets.</li>
-              <li>Validation contributes 2,500 images, which is 62.8% of the active experiment subset.</li>
+              <li>Test contributes 2,500 images, which is 62.8% of the active experiment subset.</li>
               <li>Aspect ratio ranges from 0.561 to 2.142, confirming that the dataset is not uniformly square despite many 512-pixel images.</li>
               <li>The mean image area is 233,143 pixels, while the median is 262,144 pixels, indicating many images cluster around 512 × 512.</li>
             </ul>

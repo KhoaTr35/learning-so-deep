@@ -48,15 +48,15 @@
       "Pizza"
     ],
     "full_dataset_train_count": 75750,
-    "full_dataset_validation_count": 25250,
+    "full_dataset_test_count": 25250,
     "selected_subset_total_count": 10000,
     "selected_subset_per_class_count": 1000,
     "active_experiment_total_count": 3980
   },
   "split_summary": [
     {
-      "split": "validation",
-      "split_display": "Validation",
+      "split": "test",
+      "split_display": "Test",
       "count": 2500,
       "percentage": 62.8140703517588
     },
@@ -93,8 +93,8 @@
       "imbalance_ratio": 0.0
     },
     {
-      "split": "validation",
-      "split_display": "Validation",
+      "split": "test",
+      "split_display": "Test",
       "min_count": 250,
       "max_count": 250,
       "mean_count": 250.0,
@@ -170,7 +170,7 @@
   },
   "findings": [
     "All three active splits are perfectly balanced across the 10 selected classes.",
-    "The validation set dominates the active experiment subset, which is appropriate because evaluation uses the full held-out split.",
+    "The test set dominates the active experiment subset, which is appropriate because evaluation uses the full held-out split.",
     "Image geometry is diverse: aspect ratios vary materially, so center-crop-only preprocessing would discard non-trivial content.",
     "Each selected class contributes exactly 1,000 images in the original filtered subset, eliminating label-frequency bias from class choice."
   ]

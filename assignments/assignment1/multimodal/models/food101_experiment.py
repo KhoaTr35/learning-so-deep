@@ -385,7 +385,7 @@ def load_food101_datasets(
     }
 
     filtered_train = filter_dataset_split(dataset["train"], selected_original_ids)
-    filtered_validation = filter_dataset_split(
+    filtered_test = filter_dataset_split(
         dataset["validation"], selected_original_ids
     )
     few_shot_train_indices, few_shot_dev_indices = build_few_shot_indices(
@@ -409,10 +409,10 @@ def load_food101_datasets(
         split_name="few_shot_dev",
     )
     evaluation_dataset = Food101SubsetDataset(
-        dataset_split=filtered_validation,
+        dataset_split=filtered_test,
         original_to_new=original_to_new,
         class_names=selected_class_names,
-        split_name="validation",
+        split_name="test",
     )
 
     dataset_summary = {
@@ -426,17 +426,17 @@ def load_food101_datasets(
         "dev_per_class": config.val_per_class,
         "few_shot_train_size": len(train_dataset),
         "few_shot_dev_size": len(dev_dataset),
-        "held_out_validation_size": len(evaluation_dataset),
+        "held_out_test_size": len(evaluation_dataset),
         "few_shot_train_size_per_class": config.shots_per_class,
         "few_shot_dev_size_per_class": config.val_per_class,
-        "evaluation_split_name": "validation",
+        "evaluation_split_name": "test",
     }
 
     return (
         {
             "few_shot_train": train_dataset,
             "few_shot_dev": dev_dataset,
-            "validation": evaluation_dataset,
+            "test": evaluation_dataset,
         },
         selected_class_names,
         dataset_summary,
@@ -850,11 +850,11 @@ def run_experiment(config: ExperimentConfig) -> Dict[str, Any]:
     )
 
     logit_scale = float(model.logit_scale.exp().detach().cpu().item())
-    zero_shot_logits = logit_scale * (split_features["validation"] @ text_features.T)
+    zero_shot_logits = logit_scale * (split_features["test"] @ text_features.T)
     zero_shot_eval = evaluate_logits(
         logits=zero_shot_logits,
-        labels=split_labels["validation"],
-        indices=split_indices["validation"],
+        labels=split_labels["test"],
+        indices=split_indices["test"],
         class_names=class_names,
         method_name="zero_shot",
     )
@@ -885,14 +885,14 @@ def run_experiment(config: ExperimentConfig) -> Dict[str, Any]:
 
     few_shot_logits = predict_linear_probe_logits(
         classifier=classifier,
-        features=split_features["validation"],
+        features=split_features["test"],
         batch_size=config.batch_size * 8,
         device=device,
     )
     few_shot_eval = evaluate_logits(
         logits=few_shot_logits,
-        labels=split_labels["validation"],
-        indices=split_indices["validation"],
+        labels=split_labels["test"],
+        indices=split_indices["test"],
         class_names=class_names,
         method_name="few_shot_linear_probe",
     )
@@ -925,7 +925,7 @@ def run_experiment(config: ExperimentConfig) -> Dict[str, Any]:
 
     comparison_summary = {
         "class_names": class_names,
-        "evaluation_split_name": "validation",
+        "evaluation_split_name": "test",
         "best_dev_metrics": best_dev_metrics,
         "zero_shot": zero_shot_eval["metrics"],
         "few_shot_linear_probe": few_shot_eval["metrics"],

@@ -322,18 +322,20 @@ def _pick_examples(preds: pd.DataFrame, examples_per_method: int) -> pd.DataFram
     return selected
 
 
-def _extract_validation_dataset(dataset: Any) -> Any:
+def _extract_evaluation_dataset(dataset: Any) -> Any:
     if dataset is None:
         raise ValueError("dataset is required for prediction/saliency visualization.")
     if isinstance(dataset, dict):
+        if "test" in dataset:
+            return dataset["test"]
         if "validation" in dataset:
             return dataset["validation"]
-        raise ValueError("If dataset is dict-like, it must contain a 'validation' key.")
+        raise ValueError("If dataset is dict-like, it must contain a 'test' or 'validation' key.")
     return dataset
 
 
-def _image_from_dataset(validation_dataset: Any, sample_index: int) -> Image.Image:
-    sample = validation_dataset[sample_index]
+def _image_from_dataset(evaluation_dataset: Any, sample_index: int) -> Image.Image:
+    sample = evaluation_dataset[sample_index]
     if isinstance(sample, dict):
         image = sample.get("image")
     else:
@@ -487,7 +489,7 @@ def build_prediction_and_saliency(
     model: Optional[CLIPModel] = None,
     processor: Optional[AutoProcessor] = None,
 ) -> None:
-    validation_dataset = _extract_validation_dataset(dataset)
+    evaluation_dataset = _extract_evaluation_dataset(dataset)
     device = _resolve_device()
     model_cache: Dict[str, Tuple[CLIPModel, AutoProcessor]] = {}
     index_rows: List[Dict[str, Any]] = []
@@ -521,9 +523,9 @@ def build_prediction_and_saliency(
 
             for _, row in examples.iterrows():
                 sample_index = int(row["sample_index"])
-                if sample_index >= len(validation_dataset):
+                if sample_index >= len(evaluation_dataset):
                     continue
-                image = _image_from_dataset(validation_dataset, sample_index)
+                image = _image_from_dataset(evaluation_dataset, sample_index)
                 chosen_prompt, prompts = _choose_prompt(
                     image=image,
                     predicted_label_name=row["predicted_label_name"],

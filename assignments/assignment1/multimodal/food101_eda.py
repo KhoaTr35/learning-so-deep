@@ -164,7 +164,7 @@ def build_few_shot_indices(
 
 def create_experiment_splits(
     train_dataset: Dataset,
-    validation_dataset: Dataset,
+    test_dataset: Dataset,
     selected_original_ids: Sequence[int],
     class_names: Sequence[str],
     shots_per_class: int,
@@ -172,7 +172,7 @@ def create_experiment_splits(
     seed: int,
 ) -> Dict[str, Dataset]:
     filtered_train = filter_by_labels(train_dataset, selected_original_ids)
-    filtered_validation = filter_by_labels(validation_dataset, selected_original_ids)
+    filtered_test = filter_by_labels(test_dataset, selected_original_ids)
     train_indices, dev_indices = build_few_shot_indices(
         labels=filtered_train["label"],
         selected_original_ids=selected_original_ids,
@@ -184,7 +184,7 @@ def create_experiment_splits(
     return {
         "few_shot_train": filtered_train.select(train_indices),
         "few_shot_dev": filtered_train.select(dev_indices),
-        "validation": filtered_validation,
+        "test": filtered_test,
     }
 
 
@@ -258,7 +258,7 @@ def copy_assets(plot_paths: Iterable[Path], docs_output_root: Path) -> None:
 def plot_class_distribution(dist_df: pd.DataFrame, path: Path) -> None:
     pivot = dist_df.pivot(index="class_display", columns="split_display", values="count")
     order = list(pivot.index)
-    split_order = ["Few Shot Train", "Few Shot Dev", "Validation"]
+    split_order = ["Few Shot Train", "Few Shot Dev", "Test"]
     colors = ["#233f5d", "#7d8ea3", "#4f8f74"]
 
     fig, ax = plt.subplots(figsize=(14, 6.5))
@@ -405,13 +405,13 @@ def plot_dimension_scatter(image_df: pd.DataFrame, path: Path) -> None:
 
 
 def plot_single_sample_grid(
-    validation_dataset: Dataset,
+    test_dataset: Dataset,
     class_names: Sequence[str],
     original_to_selected: Dict[int, int],
     path: Path,
 ) -> None:
     selected_examples: Dict[int, Any] = {}
-    for sample in validation_dataset:
+    for sample in test_dataset:
         mapped_label = original_to_selected[int(sample["label"])]
         if mapped_label not in selected_examples:
             selected_examples[mapped_label] = sample["image"]
@@ -424,21 +424,21 @@ def plot_single_sample_grid(
         ax.set_title(humanize(class_names[class_id]).title(), fontsize=11, fontweight="bold")
         ax.axis("off")
 
-    fig.suptitle("One validation sample per selected Food101 class", fontsize=16, fontweight="bold", y=0.98)
+    fig.suptitle("One test sample per selected Food101 class", fontsize=16, fontweight="bold", y=0.98)
     fig.tight_layout()
     fig.savefig(path, dpi=220, bbox_inches="tight")
     plt.close(fig)
 
 
 def plot_multi_sample_grid(
-    validation_dataset: Dataset,
+    test_dataset: Dataset,
     class_names: Sequence[str],
     original_to_selected: Dict[int, int],
     path: Path,
     samples_per_class: int = 3,
 ) -> None:
     class_examples: Dict[int, List[Any]] = {class_id: [] for class_id in range(len(class_names))}
-    for sample in validation_dataset:
+    for sample in test_dataset:
         mapped_label = original_to_selected[int(sample["label"])]
         if len(class_examples[mapped_label]) < samples_per_class:
             class_examples[mapped_label].append(sample["image"])
@@ -454,7 +454,7 @@ def plot_multi_sample_grid(
                 ax.set_ylabel(humanize(class_name).title(), fontsize=10, fontweight="bold", labelpad=14)
             ax.axis("off")
 
-    fig.suptitle("Validation gallery: three examples per class", fontsize=16, fontweight="bold", y=0.995)
+    fig.suptitle("Test gallery: three examples per class", fontsize=16, fontweight="bold", y=0.995)
     fig.tight_layout()
     fig.savefig(path, dpi=220, bbox_inches="tight")
     plt.close(fig)
@@ -469,7 +469,7 @@ def build_summary(
     image_df: pd.DataFrame,
 ) -> Dict[str, Any]:
     balance_rows: List[Dict[str, Any]] = []
-    for split_name in ["few_shot_train", "few_shot_dev", "validation"]:
+    for split_name in ["few_shot_train", "few_shot_dev", "test"]:
         counts = dist_df.loc[dist_df["split"] == split_name, "count"].to_numpy()
         imbalance_ratio = float((counts.max() - counts.min()) / counts.max()) if counts.size else 0.0
         balance_rows.append(
@@ -510,7 +510,7 @@ def build_summary(
 
     findings = [
         "All three active splits are perfectly balanced across the 10 selected classes.",
-        "The validation set dominates the active experiment subset, which is appropriate because evaluation uses the full held-out split.",
+        "The test set dominates the active experiment subset, which is appropriate because evaluation uses the full held-out split.",
         "Image geometry is diverse: aspect ratios vary materially, so center-crop-only preprocessing would discard non-trivial content.",
         "Each selected class contributes exactly 1,000 images in the original filtered subset, eliminating label-frequency bias from class choice.",
     ]
@@ -527,7 +527,7 @@ def build_summary(
             "selected_classes": list(config.class_names),
             "selected_classes_display": [humanize(name).title() for name in config.class_names],
             "full_dataset_train_count": int(dataset_info["splits"]["train"]["num_examples"]),
-            "full_dataset_validation_count": int(dataset_info["splits"]["validation"]["num_examples"]),
+            "full_dataset_test_count": int(dataset_info["splits"]["validation"]["num_examples"]),
             "selected_subset_total_count": total_subset_count,
             "selected_subset_per_class_count": 1000,
             "active_experiment_total_count": int(split_df["count"].sum()),
@@ -546,7 +546,7 @@ def generate_eda(config: EDAConfig) -> Dict[str, Any]:
     plt.rcParams["axes.titleweight"] = "bold"
 
     cache_snapshot = resolve_cache_snapshot(config.cache_root)
-    train_dataset, validation_dataset, dataset_info = load_cached_food101(cache_snapshot)
+    train_dataset, test_dataset, dataset_info = load_cached_food101(cache_snapshot)
 
     all_class_names = dataset_info["features"]["label"]["names"]
     name_to_original_id = {slugify(name): index for index, name in enumerate(all_class_names)}
@@ -560,7 +560,7 @@ def generate_eda(config: EDAConfig) -> Dict[str, Any]:
 
     datasets_by_split = create_experiment_splits(
         train_dataset=train_dataset,
-        validation_dataset=validation_dataset,
+        test_dataset=test_dataset,
         selected_original_ids=selected_original_ids,
         class_names=selected_class_names,
         shots_per_class=config.shots_per_class,
@@ -592,7 +592,7 @@ def generate_eda(config: EDAConfig) -> Dict[str, Any]:
                 "Std": float(values.std()),
                 "Imbalance Ratio": float((values.max() - values.min()) / values.max()) if values.size else 0.0,
             }
-            for split_name in ["few_shot_train", "few_shot_dev", "validation"]
+            for split_name in ["few_shot_train", "few_shot_dev", "test"]
             for values in [dist_df.loc[dist_df["split"] == split_name, "count"].to_numpy()]
         ]
     )
@@ -612,8 +612,8 @@ def generate_eda(config: EDAConfig) -> Dict[str, Any]:
     plot_balance_heatmap(dist_df, balance_df, plot_paths[2])
     plot_image_dimensions(image_df, plot_paths[3])
     plot_dimension_scatter(image_df, plot_paths[4])
-    plot_single_sample_grid(datasets_by_split["validation"], selected_class_names, original_to_selected, plot_paths[5])
-    plot_multi_sample_grid(datasets_by_split["validation"], selected_class_names, original_to_selected, plot_paths[6])
+    plot_single_sample_grid(datasets_by_split["test"], selected_class_names, original_to_selected, plot_paths[5])
+    plot_multi_sample_grid(datasets_by_split["test"], selected_class_names, original_to_selected, plot_paths[6])
 
     save_dataframe(dist_df, config.output_root / "class_distribution.csv")
     save_dataframe(split_df, config.output_root / "split_summary.csv")
