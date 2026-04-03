@@ -1,0 +1,4 @@
+split,split_display,count,percentage
+validation,Validation,2500,62.8140703517588
+few_shot_train,Few Shot Train,1280,32.1608040201005
+few_shot_dev,Few Shot Dev,200,5.025125628140704

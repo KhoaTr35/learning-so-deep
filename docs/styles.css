@@ -642,6 +642,164 @@ body.assignment-page.assignment-3-page {
   margin-top: 28px;
 }
 
+.eda-page .assignment-hero h1 {
+  max-width: 11ch;
+}
+
+.eda-downloads {
+  margin-top: 18px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.eda-downloads .track-link {
+  margin-top: 0;
+}
+
+.eda-hero-grid,
+.eda-figure-grid,
+.eda-detail-grid,
+.eda-mini-grid {
+  display: grid;
+  gap: 12px;
+}
+
+.eda-hero-grid {
+  grid-template-columns: 1.2fr 0.9fr;
+  margin-top: 18px;
+}
+
+.eda-figure-grid,
+.eda-detail-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.eda-mini-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.eda-panel {
+  border: 1px solid var(--a1-line);
+  border-radius: 20px;
+  padding: 20px;
+  background: linear-gradient(145deg, rgba(252, 251, 248, 0.96), rgba(245, 243, 238, 0.96));
+  box-shadow: var(--a1-shadow);
+}
+
+.eda-panel h3,
+.eda-figure h3,
+.eda-metric-card h3 {
+  margin: 0 0 8px;
+  letter-spacing: -0.015em;
+}
+
+.eda-panel p,
+.eda-figure p,
+.eda-metric-card p {
+  margin: 0;
+  color: var(--a1-muted);
+}
+
+.eda-metric-card {
+  border: 1px solid var(--a1-line);
+  border-radius: 18px;
+  padding: 18px;
+  background: rgba(255, 255, 255, 0.78);
+  box-shadow: var(--a1-shadow);
+}
+
+.eda-metric-label {
+  margin: 0 0 8px;
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(31, 32, 34, 0.58);
+}
+
+.eda-metric-value {
+  margin: 0;
+  font-size: 1.7rem;
+  line-height: 1;
+  letter-spacing: -0.04em;
+}
+
+.eda-metric-note {
+  margin-top: 8px;
+  font-size: 0.92rem;
+}
+
+.eda-figure {
+  border: 1px solid var(--a1-line);
+  border-radius: 20px;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.78);
+  box-shadow: var(--a1-shadow);
+}
+
+.eda-figure img {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin-top: 14px;
+  border-radius: 14px;
+  border: 1px solid rgba(24, 31, 38, 0.08);
+  background: #fff;
+}
+
+.eda-caption {
+  margin-top: 12px;
+  font-size: 0.92rem;
+  color: var(--a1-muted);
+}
+
+.eda-chip-cloud {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.eda-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 7px 11px;
+  border-radius: 999px;
+  border: 1px solid rgba(35, 63, 93, 0.12);
+  background: rgba(35, 63, 93, 0.08);
+  color: var(--a1-accent);
+  font-size: 0.88rem;
+  font-weight: 700;
+}
+
+.eda-callout {
+  padding: 14px 16px;
+  border-radius: 16px;
+  border: 1px solid var(--a1-line);
+  background: rgba(255, 255, 255, 0.7);
+}
+
+.eda-callout strong {
+  display: block;
+  margin-bottom: 4px;
+}
+
+.eda-list {
+  margin: 0;
+  padding-left: 18px;
+  display: grid;
+  gap: 8px;
+}
+
+.eda-list li {
+  color: var(--a1-muted);
+}
+
+.eda-data-table td:first-child,
+.eda-data-table th:first-child {
+  width: 34%;
+}
+
 @keyframes settle {
   from {
     opacity: 0;
@@ -658,7 +816,11 @@ body.assignment-page.assignment-3-page {
   .stage-grid,
   .kpi-strip,
   .report-grid,
-  .summary-grid {
+  .summary-grid,
+  .eda-hero-grid,
+  .eda-figure-grid,
+  .eda-detail-grid,
+  .eda-mini-grid {
     grid-template-columns: 1fr;
   }
 
