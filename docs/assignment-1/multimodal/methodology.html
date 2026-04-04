@@ -12,7 +12,7 @@
     />
     <link rel="stylesheet" href="../../styles.css" />
   </head>
-  <body class="assignment-page">
+  <body class="assignment-page mm-page">
     <div class="shell nav">
       <div class="nav-inner">
         <a class="brand" href="../../index.html">Learning So Deep</a>
@@ -27,57 +27,264 @@
     <main class="shell assignment-layout">
       <header class="hero assignment-hero inner-hero">
         <p class="eyebrow">Assignment 1 / Multimodal / Methodology</p>
-        <h1>Methodology</h1>
-        <p class="lead">Define pipeline design, optimization strategy, and reproducibility controls.</p>
+        <h1>Execution Methodology</h1>
+        <p class="lead">
+          This page turns the multimodal experiment into a stage-by-stage operating recipe. The pipeline stays fixed
+          above, while the selected process expands into one full-width inspector below with implementation details,
+          code, and method-specific notes.
+        </p>
         <p class="crumbs"><a href="../../assignment-1/">Assignment 1</a> / <a href="./">Multimodal</a> / Methodology</p>
+        <div class="mm-hero-actions">
+          <a class="mm-action" href="./model-backbone.html">Open Backbone Map</a>
+          <a class="mm-action" href="./evaluation-results.html">Open Results Console</a>
+          <a class="mm-action" href="./dataset-eda.html">Open Dataset EDA</a>
+        </div>
       </header>
 
-      <section class="section scope-panel">
-        <h2>Section Checklist</h2>
-        <table>
-          <thead>
-            <tr>
-              <th>Item</th>
-              <th>Expectation</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Goal</td>
-              <td>Explain what this section proves for the Multimodal track.</td>
-            </tr>
-            <tr>
-              <td>Evidence</td>
-              <td>Provide tables, plots, or concise bullet findings that support claims.</td>
-            </tr>
-            <tr>
-              <td>Decision</td>
-              <td>State what this section implies for the next experiment step.</td>
-            </tr>
-          </tbody>
-        </table>
+      <section class="section mm-three-up">
+        <article class="mm-metric-card">
+          <p class="mm-metric-label">Train Support</p>
+          <p class="mm-metric-value" id="train-size"></p>
+          <p class="mm-metric-caption">Balanced support set used for the few-shot linear probe.</p>
+        </article>
+        <article class="mm-metric-card">
+          <p class="mm-metric-label">Prompt Templates</p>
+          <p class="mm-metric-value" id="prompt-count"></p>
+          <p class="mm-metric-caption">Prompt ensemble averaged per class in the zero-shot branch.</p>
+        </article>
+        <article class="mm-metric-card">
+          <p class="mm-metric-label">Test Protocol</p>
+          <p class="mm-metric-value" id="test-size"></p>
+          <p class="mm-metric-caption">Shared held-out split used for the final comparison.</p>
+        </article>
       </section>
 
-      <section class="section report-grid">
-        <article class="report-card">
-          <h3>Primary Findings</h3>
-          <ul>
-            <li>Top signal to watch for this section.</li>
-            <li>Main comparison point across baseline and advanced setting.</li>
-            <li>Potential risk or blind spot requiring follow-up.</li>
+      <section class="section mm-panel-soft">
+        <div class="mm-tab-row" aria-label="Method switch">
+          <button class="mm-tab is-active" data-method-tab="zero_shot" type="button">Zero-shot route</button>
+          <button class="mm-tab" data-method-tab="few_shot" type="button">Few-shot route</button>
+        </div>
+        <div class="mm-divider"></div>
+        <div class="mm-pipeline-flow" id="pipeline-stage-strip"></div>
+        <article class="mm-stage-inspector" id="pipeline-stage-inspector"></article>
+      </section>
+
+      <section class="section mm-two-up">
+        <article class="mm-chart-card">
+          <p class="mm-kicker">Prompt ensemble</p>
+          <h2>Zero-shot text prototype construction</h2>
+          <p>
+            The zero-shot branch tokenizes multiple prompt templates per class, encodes them with the CLIP text
+            tower, then averages the normalized text features to stabilize the class prototype.
+          </p>
+          <div class="mm-prompt-stack" id="prompt-stack"></div>
+        </article>
+
+        <article class="mm-chart-card">
+          <p class="mm-kicker">Probe optimization</p>
+          <h2>Few-shot training dynamics</h2>
+          <p>The saved 128-shot run reaches its strongest dev result early, then mostly refines loss without large metric jumps.</p>
+          <img src="./assets/report-data/training_curves.png" alt="Few-shot linear probe training curves for the 128-shot Food101 run." />
+          <p class="mm-chart-caption" id="curve-caption"></p>
+        </article>
+      </section>
+
+      <section class="section mm-two-up">
+        <article class="mm-note-card">
+          <p class="mm-kicker">Protocol comparison</p>
+          <h2>Method decision logic</h2>
+          <ul class="mm-note-list">
+            <li>Zero-shot tests whether pretrained vision-language alignment is already sufficient for the chosen 10-class Food101 task.</li>
+            <li>Few-shot tests whether a lightweight supervised head can improve task fit without expensive backbone finetuning.</li>
+            <li>Both branches share the same CLIP image encoder, preprocessing stack, and test split so the comparison isolates head strategy.</li>
+            <li>The saved runs show zero-shot still ahead, which means future work should focus on stronger adaptation than a plain linear probe.</li>
           </ul>
         </article>
-        <article class="report-card">
-          <h3>Actionable Next Step</h3>
-          <ul>
-            <li>One concrete improvement to test next.</li>
-            <li>Expected impact and acceptance threshold.</li>
-            <li>How results will be validated for reproducibility.</li>
-          </ul>
+
+        <article class="mm-code-card">
+          <p class="mm-kicker">CLI snapshot</p>
+          <h2>Experiment configuration</h2>
+          <pre><code>python3 assignments/assignment1/multimodal/models/food101_experiment.py \
+  --model-id openai/clip-vit-base-patch32 \
+  --top-k 10 \
+  --shots-per-class 128 \
+  --val-per-class 20 \
+  --epochs 20 \
+  --learning-rate 1e-3 \
+  --weight-decay 1e-4</code></pre>
         </article>
       </section>
 
       <p class="footer"><a href="./">Back to Multimodal Track</a></p>
     </main>
+
+    <script>
+      const DATA_PATH = "./assets/report-data/multimodal_report_data.json";
+      let activeMethod = "zero_shot";
+      let activeStageIndex = 0;
+      let reportData = null;
+
+      const stageContent = {
+        input: {
+          title: "Input X",
+          summary: "The pipeline starts from one RGB food image, either sampled from the Food101 test split or uploaded manually in the interactive demo.",
+          details: [
+            "The active experiment uses 10 selected Food101 classes.",
+            "The same raw image can be evaluated by both zero-shot CLIP and the few-shot linear probe.",
+            "Ground-truth labels are used only for support supervision and final metric calculation.",
+          ],
+          code: `from PIL import Image\n\nimage = Image.open(image_path).convert("RGB")\ninputs = processor(images=image, return_tensors="pt")\npixel_values = inputs["pixel_values"].to(device)`,
+        },
+        preprocess: {
+          title: "Preprocessing",
+          summary: "A shared CLIP processor handles resize, crop, tensor conversion, normalization, and batch packaging so both branches see exactly the same visual representation format.",
+          details: [
+            "CLIP ViT-B/32 expects 224 x 224 RGB inputs after processor-managed resize and center crop.",
+            "Normalization follows CLIP's pretrained mean/std settings through `AutoProcessor`, not a custom torchvision chain.",
+            "The zero-shot branch also tokenizes prompt templates through the same processor to keep image and text handling aligned.",
+          ],
+          code: `from transformers import AutoProcessor\n\nprocessor = AutoProcessor.from_pretrained("openai/clip-vit-base-patch32")\n\nimage_inputs = processor(\n    images=batch["images"],\n    return_tensors="pt"\n)\npixel_values = image_inputs["pixel_values"].to(device)\n\ntext_inputs = processor(\n    text=prompts,\n    return_tensors="pt",\n    padding=True,\n    truncation=True,\n)`,
+        },
+        backbone: {
+          title: "Backbone",
+          summary: "The shared representation engine is CLIP ViT-B/32, which projects images and text into one aligned embedding space.",
+          details: [
+            "Model: `openai/clip-vit-base-patch32` from Hugging Face Transformers.",
+            "Visual backbone: Vision Transformer Base with 32 x 32 patch size.",
+            "Image input resolution: 224 x 224 RGB.",
+            "Text and image towers both produce normalized embeddings before similarity scoring or probe classification.",
+            "The methodology keeps the backbone frozen so the experiment isolates classifier-head behavior.",
+          ],
+          code: `from transformers import CLIPModel\n\nmodel = CLIPModel.from_pretrained("openai/clip-vit-base-patch32").to(device)\nmodel.eval()\n\nimage_outputs = model.get_image_features(pixel_values=pixel_values)\nimage_features = image_outputs / image_outputs.norm(dim=-1, keepdim=True)`,
+        },
+        head: {
+          title: "Classifier Head",
+          summary: "The experiment branches here: zero-shot uses text-derived class prototypes, while few-shot fits a linear classifier over frozen image embeddings.",
+          details: [
+            "Zero-shot head: prompt-averaged text embeddings compared against image embeddings with CLIP logit scaling.",
+            "Few-shot head: one linear layer trained for 20 epochs with learning rate 1e-3 and weight decay 1e-4.",
+            "Few-shot model selection uses the dev split to choose the best probe state before final test evaluation.",
+          ],
+          code: `# Zero-shot path\ntext_features = build_zero_shot_text_features(\n    model=model,\n    processor=processor,\n    class_names=class_names,\n    prompt_templates=config.prompt_templates,\n    device=device,\n)\nzero_shot_logits = logit_scale * (image_features @ text_features.T)\n\n# Few-shot path\nprobe = nn.Linear(feature_dim, num_classes).to(device)\nlogits = probe(image_features)`,
+        },
+        results: {
+          title: "Classification Results",
+          summary: "Both branches end with probability scores, predicted labels, and exported metrics on the same held-out test split.",
+          details: [
+            "Saved zero-shot test accuracy: 97.96%.",
+            "Saved few-shot linear probe test accuracy: 97.08% at 128 shots per class.",
+            "Metrics, confusion matrices, and prediction CSVs are exported for reproducible reporting.",
+          ],
+          code: `probs = torch.softmax(logits, dim=-1)\nvalues, indices = torch.topk(probs, k=min(top_k, probs.numel()))\nevaluation = evaluate_logits(\n    logits=logits,\n    labels=split_labels["test"],\n    indices=split_indices["test"],\n    class_names=class_names,\n    method_name=method_name,\n)`,
+        },
+      };
+
+      const methodSpecificNotes = {
+        zero_shot: {
+          input: "The image enters a fully frozen CLIP system and never sees supervised head fitting.",
+          preprocess: "Prompt templates and image pixels are both packaged by the same processor before inference.",
+          backbone: "The text tower is active here because class prompts define the classifier prototypes.",
+          head: "Classification happens by embedding similarity, not by a learned task-specific classifier.",
+          results: "This route currently delivers the strongest saved test metrics in the exported runs.",
+        },
+        few_shot: {
+          input: "The raw image path is identical, which keeps comparison fair against the zero-shot route.",
+          preprocess: "Preprocessing stays unchanged so the only new learned component is the probe head.",
+          backbone: "CLIP acts purely as a frozen feature extractor for the downstream classifier.",
+          head: "The linear probe is the only trainable block and is selected by dev performance before final testing.",
+          results: "This route narrows the gap, but still trails the saved zero-shot baseline.",
+        },
+      };
+
+      function renderPipeline(data) {
+        const strip = document.getElementById("pipeline-stage-strip");
+        strip.innerHTML = data.pipeline.map((stage, index) => {
+          const block = `
+            <article class="mm-stage-button ${index === activeStageIndex ? "is-active" : ""}" data-stage-index="${index}" role="button" tabindex="0" aria-expanded="${index === activeStageIndex ? "true" : "false"}">
+              <span class="mm-stage-index">${stage.eyebrow}</span>
+              <span class="mm-stage-title">${stage.title}</span>
+              <span class="mm-stage-summary">${stage.summary}</span>
+            </article>
+          `;
+          return index === data.pipeline.length - 1 ? block : `${block}<div class="mm-pipeline-arrow" aria-hidden="true">→</div>`;
+        }).join("");
+
+        strip.querySelectorAll("[data-stage-index]").forEach((button) => {
+          const activate = () => {
+            activeStageIndex = Number(button.dataset.stageIndex);
+            renderPipeline(data);
+            renderInspector(data);
+          };
+          button.addEventListener("click", activate);
+          button.addEventListener("keydown", (event) => {
+            if (event.key === "Enter" || event.key === " ") {
+              event.preventDefault();
+              activate();
+            }
+          });
+        });
+      }
+
+      function renderInspector(data) {
+        const stage = data.pipeline[activeStageIndex];
+        const content = stageContent[stage.id];
+        const inspector = document.getElementById("pipeline-stage-inspector");
+        const methodTitle = activeMethod === "zero_shot" ? data.methods.zero_shot.title : data.methods.few_shot.title;
+        inspector.innerHTML = `
+          <div class="mm-stage-inspector-head">
+            <div>
+              <p class="mm-kicker">${stage.eyebrow}</p>
+              <h2>${content.title}</h2>
+              <p>${content.summary}</p>
+            </div>
+            <div class="mm-stage-inspector-meta">
+              <span class="mm-stage-pill">${methodTitle}</span>
+              <span class="mm-stage-pill">Methodology focus</span>
+            </div>
+          </div>
+          <div class="mm-stage-inspector-body">
+            <div>
+              <div class="mm-stage-note">
+                <strong>Method-specific interpretation</strong>
+                <span>${methodSpecificNotes[activeMethod][stage.id]}</span>
+              </div>
+              <ul class="mm-stage-inline-list">
+                ${content.details.map((item) => `<li>${item}</li>`).join("")}
+              </ul>
+            </div>
+            <pre><code>${content.code.replaceAll("<", "&lt;").replaceAll(">", "&gt;")}</code></pre>
+          </div>
+        `;
+      }
+
+      fetch(DATA_PATH)
+        .then((response) => response.json())
+        .then((data) => {
+          reportData = data;
+          document.getElementById("train-size").textContent = data.dataset.few_shot_train_size;
+          document.getElementById("prompt-count").textContent = data.meta.prompt_templates.length;
+          document.getElementById("test-size").textContent = data.dataset.test_size;
+          document.getElementById("prompt-stack").innerHTML = data.meta.prompt_templates.map((prompt) => `<div class="mm-prompt">${prompt}</div>`).join("");
+
+          const bestEpoch = [...data.few_shot_curve].sort((a, b) => b.dev_accuracy - a.dev_accuracy)[0];
+          document.getElementById("curve-caption").textContent = `Best saved dev checkpoint reached ${bestEpoch.dev_accuracy.toFixed(2)}% accuracy at epoch ${bestEpoch.epoch}.`;
+
+          renderPipeline(data);
+          renderInspector(data);
+
+          document.querySelectorAll("[data-method-tab]").forEach((button) => {
+            button.addEventListener("click", () => {
+              activeMethod = button.dataset.methodTab;
+              document.querySelectorAll("[data-method-tab]").forEach((tab) => tab.classList.remove("is-active"));
+              button.classList.add("is-active");
+              renderPipeline(reportData);
+              renderInspector(reportData);
+            });
+          });
+        })
+        .catch((error) => {
+          document.getElementById("pipeline-stage-inspector").innerHTML = `<p>Unable to load report data: ${error}</p>`;
+        });
+    </script>
   </body>
 </html>

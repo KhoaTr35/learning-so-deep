@@ -12,7 +12,7 @@
     />
     <link rel="stylesheet" href="../../styles.css" />
   </head>
-  <body class="assignment-page">
+  <body class="assignment-page mm-page">
     <div class="shell nav">
       <div class="nav-inner">
         <a class="brand" href="../../index.html">Learning So Deep</a>
@@ -27,57 +27,230 @@
     <main class="shell assignment-layout">
       <header class="hero assignment-hero inner-hero">
         <p class="eyebrow">Assignment 1 / Multimodal / Evaluation Results</p>
-        <h1>Evaluation Results</h1>
-        <p class="lead">Summarize quantitative outcomes and turn metrics into concrete decisions.</p>
+        <h1>Results Console</h1>
+        <p class="lead">
+          Compare zero-shot and few-shot outcomes on the shared Food101 test split, inspect shot sensitivity, and
+          review the confusion structures that explain where the classifier still fails.
+        </p>
         <p class="crumbs"><a href="../../assignment-1/">Assignment 1</a> / <a href="./">Multimodal</a> / Evaluation Results</p>
+        <div class="mm-hero-actions">
+          <a class="mm-action" href="./model-backbone.html">Back to Backbone</a>
+          <a class="mm-action" href="./methodology.html">Back to Methodology</a>
+        </div>
       </header>
 
-      <section class="section scope-panel">
-        <h2>Section Checklist</h2>
-        <table>
-          <thead>
-            <tr>
-              <th>Item</th>
-              <th>Expectation</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Goal</td>
-              <td>Explain what this section proves for the Multimodal track.</td>
-            </tr>
-            <tr>
-              <td>Evidence</td>
-              <td>Provide tables, plots, or concise bullet findings that support claims.</td>
-            </tr>
-            <tr>
-              <td>Decision</td>
-              <td>State what this section implies for the next experiment step.</td>
-            </tr>
-          </tbody>
-        </table>
+      <section class="section mm-panel-soft">
+        <div class="mm-tab-row">
+          <button class="mm-tab is-active" data-result-method="zero_shot" type="button">Zero-shot summary</button>
+          <button class="mm-tab" data-result-method="few_shot" type="button">Few-shot summary</button>
+        </div>
+        <div class="mm-divider"></div>
+        <div class="mm-metric-grid">
+          <article class="mm-metric-card">
+            <p class="mm-metric-label">Accuracy</p>
+            <p class="mm-metric-value" id="metric-accuracy"></p>
+            <p class="mm-metric-caption" id="metric-accuracy-caption"></p>
+          </article>
+          <article class="mm-metric-card">
+            <p class="mm-metric-label">Balanced Accuracy</p>
+            <p class="mm-metric-value" id="metric-balanced"></p>
+            <p class="mm-metric-caption">Useful here because all 10 classes are balanced in the test split.</p>
+          </article>
+          <article class="mm-metric-card">
+            <p class="mm-metric-label">Macro F1</p>
+            <p class="mm-metric-value" id="metric-f1"></p>
+            <p class="mm-metric-caption" id="metric-f1-caption"></p>
+          </article>
+          <article class="mm-metric-card">
+            <p class="mm-metric-label">Interpretation</p>
+            <p class="mm-metric-value" id="metric-verdict"></p>
+            <p class="mm-metric-caption" id="metric-verdict-caption"></p>
+          </article>
+        </div>
       </section>
 
-      <section class="section report-grid">
-        <article class="report-card">
-          <h3>Primary Findings</h3>
-          <ul>
-            <li>Top signal to watch for this section.</li>
-            <li>Main comparison point across baseline and advanced setting.</li>
-            <li>Potential risk or blind spot requiring follow-up.</li>
-          </ul>
+      <section class="section mm-two-up">
+        <article class="mm-chart-card">
+          <p class="mm-kicker">Aggregate comparison</p>
+          <h2>Accuracy, precision, and F1 by method</h2>
+          <p>The saved benchmark run shows zero-shot slightly ahead of the 128-shot linear probe on the shared test split.</p>
+          <img src="./assets/report-data/comparison_bar.png" alt="Bar chart comparing zero-shot and few-shot metrics for the multimodal Food101 run." />
+          <p class="mm-chart-caption" id="comparison-caption"></p>
         </article>
-        <article class="report-card">
-          <h3>Actionable Next Step</h3>
-          <ul>
-            <li>One concrete improvement to test next.</li>
-            <li>Expected impact and acceptance threshold.</li>
-            <li>How results will be validated for reproducibility.</li>
-          </ul>
+
+        <article class="mm-panel">
+          <p class="mm-kicker">Shot sensitivity</p>
+          <h2>Few-shot scaling curve</h2>
+          <p>Use the shot buttons to inspect how the linear probe improves as more labeled support examples become available.</p>
+          <div class="mm-tab-row" id="shot-selector" style="margin-top: 14px;"></div>
+          <table class="mm-mini-table" style="margin-top: 16px;">
+            <thead>
+              <tr>
+                <th>Method</th>
+                <th>Accuracy</th>
+                <th>Precision</th>
+                <th>Macro F1</th>
+                <th>Balanced Acc.</th>
+              </tr>
+            </thead>
+            <tbody id="shot-table-body"></tbody>
+          </table>
         </article>
+      </section>
+
+      <section class="section mm-two-up">
+        <article class="mm-chart-card">
+          <p class="mm-kicker">Confusion structure</p>
+          <h2 id="confusion-title">Zero-shot confusion matrix</h2>
+          <p id="confusion-body">
+            The confusion map highlights which visually similar food classes remain entangled after zero-shot prompting.
+          </p>
+          <img id="confusion-image" src="./assets/report-data/zero_shot_confusion.png" alt="Confusion matrix for zero-shot CLIP on the Food101 test split." />
+        </article>
+
+        <article class="mm-note-card">
+          <p class="mm-kicker">Decision</p>
+          <h2>What the current results imply</h2>
+          <ul class="mm-note-list" id="decision-list"></ul>
+          <div class="mm-link-row" style="margin-top: 14px;">
+            <a class="mm-action" href="./model-backbone.html">Inspect backbone design</a>
+            <a class="mm-action" href="./methodology.html">Inspect execution steps</a>
+          </div>
+        </article>
+      </section>
+
+      <section class="section mm-panel">
+        <p class="mm-kicker">Full benchmark table</p>
+        <h2>Saved runs across shot budgets</h2>
+        <table class="mm-mini-table">
+          <thead>
+            <tr>
+              <th>Shots / class</th>
+              <th>Method</th>
+              <th>Accuracy</th>
+              <th>Precision</th>
+              <th>Macro F1</th>
+              <th>Balanced Acc.</th>
+            </tr>
+          </thead>
+          <tbody id="benchmark-table-body"></tbody>
+        </table>
       </section>
 
       <p class="footer"><a href="./">Back to Multimodal Track</a></p>
     </main>
+
+    <script>
+      const DATA_PATH = "./assets/report-data/multimodal_report_data.json";
+      let resultData = null;
+      let activeMethod = "zero_shot";
+      let activeShot = 128;
+
+      function pct(value) {
+        return `${Number(value).toFixed(2)}%`;
+      }
+
+      function renderSummary() {
+        const method = activeMethod === "zero_shot" ? resultData.methods.zero_shot : resultData.methods.few_shot;
+        document.getElementById("metric-accuracy").textContent = pct(method.metrics.accuracy);
+        document.getElementById("metric-balanced").textContent = pct(method.metrics.balanced_accuracy);
+        document.getElementById("metric-f1").textContent = pct(method.metrics.macro_f1);
+
+        if (activeMethod === "zero_shot") {
+          document.getElementById("metric-accuracy-caption").textContent = "Best saved overall test accuracy in the exported runs.";
+          document.getElementById("metric-f1-caption").textContent = "Macro F1 stays aligned with accuracy because the test set is balanced.";
+          document.getElementById("metric-verdict").textContent = "Lead";
+          document.getElementById("metric-verdict-caption").textContent = "Zero-shot remains the strongest current baseline despite requiring no head training.";
+          document.getElementById("confusion-title").textContent = "Zero-shot confusion matrix";
+          document.getElementById("confusion-body").textContent = "This view shows how prompt-based class prototypes separate the 10 selected dishes on the test split.";
+          document.getElementById("confusion-image").src = "./assets/report-data/zero_shot_confusion.png";
+          document.getElementById("confusion-image").alt = "Confusion matrix for zero-shot CLIP on the Food101 test split.";
+          document.getElementById("decision-list").innerHTML = `
+            <li>Keep zero-shot CLIP as the baseline to beat because it already reaches ${pct(method.metrics.accuracy)} test accuracy without supervised head fitting.</li>
+            <li>Prompt engineering remains a high-leverage next step because this method depends directly on text prototype quality.</li>
+            <li>Any future finetuning should justify added complexity with a measurable improvement over the current zero-shot margin.</li>
+          `;
+        } else {
+          document.getElementById("metric-accuracy-caption").textContent = "Best saved few-shot result from the 128-shot linear probe run.";
+          document.getElementById("metric-f1-caption").textContent = `Best dev accuracy reached ${pct(method.metrics.best_dev_accuracy)} before final test export.`;
+          document.getElementById("metric-verdict").textContent = "Close";
+          document.getElementById("metric-verdict-caption").textContent = "The probe is competitive, but still trails the saved zero-shot result.";
+          document.getElementById("confusion-title").textContent = "Few-shot confusion matrix";
+          document.getElementById("confusion-body").textContent = "This view shows where the learned linear head helps and where frozen CLIP features still confuse visually similar dishes.";
+          document.getElementById("confusion-image").src = "./assets/report-data/few_shot_confusion.png";
+          document.getElementById("confusion-image").alt = "Confusion matrix for the few-shot linear probe on the Food101 test split.";
+          document.getElementById("decision-list").innerHTML = `
+            <li>The few-shot probe improves strongly with more support examples, which suggests the frozen CLIP embeddings are already highly usable.</li>
+            <li>The final 128-shot model reaches ${pct(method.metrics.accuracy)} test accuracy, so the remaining gap to zero-shot is narrow but real.</li>
+            <li>If pursuing supervised adaptation further, the next experiments should test prompt-tuning or partial backbone finetuning rather than only increasing linear probe epochs.</li>
+          `;
+        }
+      }
+
+      function renderShotSelector() {
+        const shots = [...new Set(resultData.metrics_by_shot.filter((row) => row.method === "few_shot_linear_probe").map((row) => row.shots_per_class))];
+        document.getElementById("shot-selector").innerHTML = shots.map((shot) => `
+          <button class="mm-tab ${shot === activeShot ? "is-active" : ""}" data-shot="${shot}" type="button">${shot} shots</button>
+        `).join("");
+
+        document.querySelectorAll("[data-shot]").forEach((button) => {
+          button.addEventListener("click", () => {
+            activeShot = Number(button.dataset.shot);
+            renderShotSelector();
+            renderShotTable();
+          });
+        });
+      }
+
+      function renderShotTable() {
+        const zero = resultData.metrics_by_shot.find((row) => row.method === "zero_shot" && row.shots_per_class === activeShot)
+          || resultData.metrics_by_shot.find((row) => row.method === "zero_shot");
+        const few = resultData.metrics_by_shot.find((row) => row.method === "few_shot_linear_probe" && row.shots_per_class === activeShot);
+        const rows = [zero, few].filter(Boolean);
+        document.getElementById("shot-table-body").innerHTML = rows.map((row) => `
+          <tr>
+            <td>${row.method === "zero_shot" ? "Zero-shot CLIP" : `Few-shot (${row.shots_per_class})`}</td>
+            <td>${pct(row.accuracy)}</td>
+            <td>${pct(row.precision)}</td>
+            <td>${pct(row.f1_score)}</td>
+            <td>${pct(row.balanced_accuracy)}</td>
+          </tr>
+        `).join("");
+      }
+
+      function renderBenchmarkTable() {
+        document.getElementById("benchmark-table-body").innerHTML = resultData.metrics_by_shot.map((row) => `
+          <tr>
+            <td>${row.shots_per_class}</td>
+            <td>${row.method === "zero_shot" ? "Zero-shot CLIP" : "Few-shot linear probe"}</td>
+            <td>${pct(row.accuracy)}</td>
+            <td>${pct(row.precision)}</td>
+            <td>${pct(row.f1_score)}</td>
+            <td>${pct(row.balanced_accuracy)}</td>
+          </tr>
+        `).join("");
+      }
+
+      fetch(DATA_PATH)
+        .then((response) => response.json())
+        .then((data) => {
+          resultData = data;
+          document.getElementById("comparison-caption").textContent =
+            `Saved run ${data.meta.run_timestamp}: zero-shot accuracy ${pct(data.methods.zero_shot.metrics.accuracy)} versus few-shot accuracy ${pct(data.methods.few_shot.metrics.accuracy)} at ${data.dataset.shots_per_class} shots per class.`;
+          renderSummary();
+          renderShotSelector();
+          renderShotTable();
+          renderBenchmarkTable();
+
+          document.querySelectorAll("[data-result-method]").forEach((button) => {
+            button.addEventListener("click", () => {
+              activeMethod = button.dataset.resultMethod;
+              document.querySelectorAll("[data-result-method]").forEach((tab) => tab.classList.remove("is-active"));
+              button.classList.add("is-active");
+              renderSummary();
+            });
+          });
+        });
+    </script>
   </body>
 </html>
