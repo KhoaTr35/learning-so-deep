@@ -136,6 +136,7 @@ dmypy.json
 # *.mp4
 output/
 artifacts/
+!docs/**/artifacts/
 # data/
 # datasets/
 # *.csv
