@@ -19,6 +19,12 @@ except ModuleNotFoundError:
 
 from transformers import AutoProcessor, CLIPModel
 
+try:
+    from torchvision import models, transforms
+except ModuleNotFoundError:
+    models = None
+    transforms = None
+
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 ASSIGNMENT_ROOT = Path(__file__).resolve().parent
@@ -26,6 +32,7 @@ IMAGE_ROOT = ASSIGNMENT_ROOT / "image"
 TEXT_ROOT = ASSIGNMENT_ROOT / "text"
 MULTIMODAL_ROOT = ASSIGNMENT_ROOT / "multimodal"
 
+IMAGE_RUNS_ROOT = ASSIGNMENT_ROOT / "run" / "runs_caltech256"
 PRIMARY_RUNS_ROOT = ASSIGNMENT_ROOT / "run" / "runs_food101_clip"
 FALLBACK_RUNS_ROOT = MULTIMODAL_ROOT / "artifacts" / "runs_food101_clip"
 DEFAULT_PROMPT_TEMPLATES = ("a photo of {}.",)
@@ -64,6 +71,23 @@ def _display_image_if_exists(path: Path, caption: str, use_container_width: bool
     image = _load_image(path)
     if image is not None:
         st.image(image, caption=caption, use_container_width=use_container_width)
+
+
+def _image_transform():
+    if transforms is None:
+        raise ModuleNotFoundError("torchvision")
+    return transforms.Compose(
+        [
+            transforms.Lambda(lambda image: image.convert("RGB")),
+            transforms.Resize((256, 256)),
+            transforms.CenterCrop(224),
+            transforms.ToTensor(),
+            transforms.Normalize(
+                mean=[0.485, 0.456, 0.406],
+                std=[0.229, 0.224, 0.225],
+            ),
+        ]
+    )
 
 
 def _list_prediction_examples(folder: Path, limit: int = 4) -> List[Path]:
@@ -193,6 +217,11 @@ def _load_json_data(path_str: str) -> dict:
     return _read_json(Path(path_str))
 
 
+@st.cache_data(show_spinner=False)
+def _load_categories(path_str: str) -> List[str]:
+    return Path(path_str).read_text(encoding="utf-8").splitlines()
+
+
 @st.cache_resource(show_spinner=False)
 def _load_clip(model_id: str, device_str: str) -> Tuple[CLIPModel, AutoProcessor]:
     if torch is None:
@@ -202,6 +231,36 @@ def _load_clip(model_id: str, device_str: str) -> Tuple[CLIPModel, AutoProcessor
     model = CLIPModel.from_pretrained(model_id).to(device)
     model.eval()
     return model, processor
+
+
+@st.cache_resource(show_spinner=False)
+def _load_resnet_classifier(checkpoint_path: str, device_str: str):
+    if torch is None or nn is None or models is None:
+        raise ModuleNotFoundError("torchvision")
+    device = torch.device(device_str)
+    model = models.resnet50(weights=None)
+    num_ftrs = model.fc.in_features
+    model.fc = nn.Linear(num_ftrs, 257)
+    state_dict = torch.load(checkpoint_path, map_location="cpu")
+    model.load_state_dict(state_dict)
+    model = model.to(device)
+    model.eval()
+    return model
+
+
+@st.cache_resource(show_spinner=False)
+def _load_vit_classifier(checkpoint_path: str, device_str: str):
+    if torch is None or nn is None or models is None:
+        raise ModuleNotFoundError("torchvision")
+    device = torch.device(device_str)
+    model = models.vit_b_16(weights=None)
+    num_ftrs = model.heads.head.in_features
+    model.heads.head = nn.Linear(num_ftrs, 257)
+    state_dict = torch.load(checkpoint_path, map_location="cpu")
+    model.load_state_dict(state_dict)
+    model = model.to(device)
+    model.eval()
+    return model
 
 
 @st.cache_resource(show_spinner=False)
@@ -322,6 +381,36 @@ def _render_prediction_table(predictions: Sequence[Tuple[str, float]]) -> None:
     )
 
 
+def _predict_image_classifier(
+    image: Image.Image,
+    model_name: str,
+    checkpoint_path: Path,
+    categories: Sequence[str],
+    top_k: int,
+    device: torch.device,
+) -> List[Tuple[str, float]]:
+    if torch is None:
+        raise ModuleNotFoundError("torch")
+
+    if model_name == "resnet50":
+        model = _load_resnet_classifier(str(checkpoint_path), str(device))
+    else:
+        model = _load_vit_classifier(str(checkpoint_path), str(device))
+
+    transform = _image_transform()
+    img_tensor = transform(image).unsqueeze(0).to(device)
+
+    with torch.inference_mode():
+        outputs = model(img_tensor)
+        probabilities = torch.softmax(outputs[0], dim=0)
+        values, indices = torch.topk(probabilities, k=min(top_k, probabilities.numel()))
+
+    return [
+        (categories[index], float(value))
+        for value, index in zip(values.tolist(), indices.tolist())
+    ]
+
+
 def _render_overview() -> None:
     st.subheader("Assignment 1 Workspace")
     st.write(
@@ -343,11 +432,12 @@ def _render_overview() -> None:
 
 def _render_image_tab() -> None:
     st.subheader("Image Classification")
-    st.caption("Caltech-256 experiment assets packaged with the repository.")
+    st.caption("Caltech-256 experiment assets and trained checkpoints packaged with the repository.")
 
     categories_path = IMAGE_ROOT / "artifacts" / "categories.txt"
+    categories = _load_categories(str(categories_path)) if categories_path.exists() else []
     if categories_path.exists():
-        class_count = len(categories_path.read_text(encoding="utf-8").splitlines())
+        class_count = len(categories)
         st.metric("Tracked categories", class_count)
 
     comparison_path = IMAGE_ROOT / "artifacts" / "Cmp_ResNet50_ViT.png"
@@ -365,14 +455,60 @@ def _render_image_tab() -> None:
             if example.name.startswith("Screenshot"):
                 _display_image_if_exists(example, example.name)
 
-    model_weights = sorted(IMAGE_ROOT.glob("**/*.pth"))
-    if model_weights:
-        st.success("Model weight files detected. This tab can be extended for live image inference.")
-    else:
+    resnet_checkpoint = IMAGE_RUNS_ROOT / "image_resnet" / "resnet50_best.pth"
+    vit_checkpoint = IMAGE_RUNS_ROOT / "image_vit" / "vit_b_16_best.pth"
+    if not resnet_checkpoint.exists() and not vit_checkpoint.exists():
         st.info(
-            "No deployable `.pth` checkpoints are tracked in the repository for the image app, "
-            "so this unified endpoint currently presents experiment artifacts only."
+            "No deployable Caltech-256 checkpoints were found under `assignments/assignment1/run/runs_caltech256`."
         )
+        return
+
+    st.markdown("### Live Prediction")
+    if torch is None or models is None or transforms is None:
+        st.error("PyTorch or torchvision is not available in this environment.")
+        return
+    if not categories:
+        st.error("Missing `categories.txt` under `image/artifacts`.")
+        return
+
+    options = []
+    if resnet_checkpoint.exists():
+        options.append(("ResNet50", "resnet50", resnet_checkpoint))
+    if vit_checkpoint.exists():
+        options.append(("ViT-B/16", "vit_b_16", vit_checkpoint))
+
+    option_labels = [label for label, _, _ in options]
+    selected_label = st.selectbox("Select image model", options=option_labels)
+    selected = next(item for item in options if item[0] == selected_label)
+    _, model_key, checkpoint_path = selected
+    top_k = st.slider("Image top-k predictions", min_value=1, max_value=10, value=3, key="image-top-k")
+    uploaded = st.file_uploader(
+        "Upload an image for Caltech-256 inference",
+        type=["jpg", "jpeg", "png", "webp"],
+        key="image-upload",
+    )
+
+    st.caption(f"Checkpoint: `{checkpoint_path}`")
+    if uploaded is None:
+        return
+
+    image = Image.open(uploaded).convert("RGB")
+    st.image(image, caption="Uploaded image", use_container_width=True)
+
+    try:
+        device = _resolve_device()
+        predictions = _predict_image_classifier(
+            image=image,
+            model_name=model_key,
+            checkpoint_path=checkpoint_path,
+            categories=categories,
+            top_k=top_k,
+            device=device,
+        )
+        st.caption(f"Running on device: `{device}`")
+        _render_prediction_table(predictions)
+    except Exception as exc:
+        st.exception(exc)
 
 
 def _render_text_tab() -> None:
