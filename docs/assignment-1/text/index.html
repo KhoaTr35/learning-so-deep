@@ -28,7 +28,7 @@
       <header class="hero assignment-hero inner-hero">
         <p class="eyebrow">Assignment 1 / Text Track</p>
         <h1>Text Classification</h1>
-        <p class="lead">20 Newsgroups — baseline BiGRU vs. advanced Transformer Encoder, topped with a learned ensemble meta-learner.</p>
+        <p class="lead">20 Newsgroups — fine-tuned BERT vs. BiLSTM with frozen BERT embeddings, topped with a learned ensemble meta-learner.</p>
         <p class="crumbs"><a href="../../assignment-1/">Assignment 1</a> / Text</p>
       </header>
 
@@ -47,28 +47,32 @@
               <td>20 Newsgroups — 11,314 train / 7,532 test / 20 classes</td>
             </tr>
             <tr>
+              <td>Tokenizer</td>
+              <td>bert-base-uncased — WordPiece, vocab 30,522, max_length=256</td>
+            </tr>
+            <tr>
               <td>Baseline</td>
-              <td>BiGRU (2-layer bidirectional GRU + attention pooling) — 9.85 M params</td>
+              <td>BiLSTM with frozen BERT embeddings + attention pooling — 7.4 M trainable params</td>
             </tr>
             <tr>
               <td>Advanced</td>
-              <td>Transformer Encoder (6 layers, 8 heads, d_model=256, Pre-LN) — 16.4 M params</td>
+              <td>Fine-tuned bert-base-uncased (AutoModelForSequenceClassification) — 109.5 M params, AMP FP16</td>
             </tr>
             <tr>
               <td>Ensemble</td>
-              <td>Learned meta-MLP over frozen backbones' logits — 7,340 trainable params</td>
+              <td>Learned meta-MLP over pre-computed logits from both models — 7,340 trainable params</td>
             </tr>
             <tr>
               <td>Best accuracy</td>
-              <td>59.27% (Ensemble) on 7,532 test samples</td>
+              <td>70.23% (BERT) on 7,532 test samples — BiLSTM 68.00%, Ensemble 69.48%</td>
             </tr>
             <tr>
               <td>Experiment tracking</td>
-              <td>Weights &amp; Biases — 3 runs logged (Transformer, BiGRU, Ensemble)</td>
+              <td>Weights &amp; Biases — 3 runs (BERT, BiLSTM, Ensemble)</td>
             </tr>
             <tr>
-              <td>Deliverable</td>
-              <td>Structured report with EDA, backbone, methodology, and evaluation pages.</td>
+              <td>GPU</td>
+              <td>NVIDIA RTX 3060 Laptop (6 GB VRAM) — CUDA 12.1, PyTorch 2.5.1</td>
             </tr>
           </tbody>
         </table>
@@ -83,25 +87,25 @@
           <article class="stage-card">
             <p class="track-chip">Section</p>
             <h3>Dataset EDA</h3>
-            <p>20-class distribution, word-count profiles, vocabulary analysis, and preprocessing decisions for 20 Newsgroups.</p>
+            <p>20-class distribution, word-count profiles, BERT tokenization decisions, and empty-text handling for 20 Newsgroups.</p>
             <a class="track-link" href="./dataset-eda.html">Open Dataset EDA</a>
           </article>
           <article class="stage-card">
             <p class="track-chip">Section</p>
             <h3>Model Backbone</h3>
-            <p>Full architecture specs for TransformerClassifier, BiGRU, and the learned ensemble meta-MLP — with parameter counts and design rationale.</p>
+            <p>Full specs for the fine-tuned BERT classifier, BiLSTM with frozen BERT embeddings, and the ensemble meta-MLP — with parameter counts and design rationale.</p>
             <a class="track-link" href="./model-backbone.html">Open Model Backbone</a>
           </article>
           <article class="stage-card">
             <p class="track-chip">Section</p>
             <h3>Methodology</h3>
-            <p>End-to-end pipeline, hyperparameter tables, regularisation strategy, and learning curves for all three models.</p>
+            <p>End-to-end pipeline, hyperparameter tables, AMP + gradient-accumulation strategy, regularisation, and learning curves for all three models.</p>
             <a class="track-link" href="./methodology.html">Open Methodology</a>
           </article>
           <article class="stage-card">
             <p class="track-chip">Section</p>
             <h3>Evaluation Results</h3>
-            <p>Test accuracy, macro F1, per-class F1 bars, confusion matrices, and ROC AUC — with error-analysis highlights.</p>
+            <p>Test accuracy (BERT 70.23%), macro F1, per-class F1 bars, confusion matrices, and ROC AUC — with error-analysis and next-step recommendations.</p>
             <a class="track-link" href="./evaluation-results.html">Open Evaluation Results</a>
           </article>
         </div>

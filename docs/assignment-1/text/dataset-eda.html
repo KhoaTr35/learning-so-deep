@@ -20,19 +20,14 @@
         box-shadow: var(--a1-shadow);
         overflow: hidden;
       }
-      .figure-block img {
-        width: 100%;
-        display: block;
-      }
+      .figure-block img { width: 100%; display: block; }
       .figure-caption {
         padding: 12px 18px;
         font-size: 0.88rem;
         color: var(--a1-muted);
         border-top: 1px solid var(--a1-line);
       }
-      .figure-caption strong {
-        color: var(--a1-ink);
-      }
+      .figure-caption strong { color: var(--a1-ink); }
       .stat-strip {
         display: grid;
         grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -61,14 +56,8 @@
         margin: 0;
         font-family: "Newsreader", Georgia, serif;
       }
-      .stat-tile .sub {
-        font-size: 0.82rem;
-        color: var(--a1-muted);
-        margin: 4px 0 0;
-      }
-      @media (max-width: 760px) {
-        .stat-strip { grid-template-columns: repeat(2, 1fr); }
-      }
+      .stat-tile .sub { font-size: 0.82rem; color: var(--a1-muted); margin: 4px 0 0; }
+      @media (max-width: 760px) { .stat-strip { grid-template-columns: repeat(2, 1fr); } }
     </style>
   </head>
   <body class="assignment-page">
@@ -87,7 +76,7 @@
       <header class="hero assignment-hero inner-hero">
         <p class="eyebrow">Assignment 1 / Text / Dataset EDA</p>
         <h1>Dataset EDA</h1>
-        <p class="lead">Exploring 20 Newsgroups — distribution shape, label balance, length statistics, and vocabulary profile before any model is trained.</p>
+        <p class="lead">Exploring 20 Newsgroups — class balance, word-count profiles, and the input representation fed to the shared BERT tokenizer.</p>
         <p class="crumbs"><a href="../../assignment-1/">Assignment 1</a> / <a href="./">Text</a> / Dataset EDA</p>
       </header>
 
@@ -98,12 +87,12 @@
           <div class="stat-tile">
             <p class="label">Training samples</p>
             <p class="value">11,314</p>
-            <p class="sub">From Hugging Face hub</p>
+            <p class="sub">218 empty after cleaning</p>
           </div>
           <div class="stat-tile">
             <p class="label">Test samples</p>
             <p class="value">7,532</p>
-            <p class="sub">Standard sklearn split</p>
+            <p class="sub">162 empty after cleaning</p>
           </div>
           <div class="stat-tile">
             <p class="label">Number of classes</p>
@@ -111,9 +100,9 @@
             <p class="sub">Newsgroup topics</p>
           </div>
           <div class="stat-tile">
-            <p class="label">Vocabulary size</p>
-            <p class="value">45,115</p>
-            <p class="sub">min-freq ≥ 2 after cleaning</p>
+            <p class="label">Max sequence length</p>
+            <p class="value">256</p>
+            <p class="sub">BERT subword tokens</p>
           </div>
         </div>
       </section>
@@ -131,31 +120,35 @@
           <tbody>
             <tr>
               <td>Dataset</td>
-              <td>20 Newsgroups (SetFit/20_newsgroups on Hugging Face)</td>
+              <td>20 Newsgroups (<code>SetFit/20_newsgroups</code> on Hugging Face)</td>
             </tr>
             <tr>
               <td>Train split</td>
-              <td>11,314 documents — 0 missing</td>
+              <td>11,314 documents (218 empty texts → treated as empty string)</td>
             </tr>
             <tr>
               <td>Test split</td>
-              <td>7,532 documents — 0 missing</td>
+              <td>7,532 documents (162 empty texts)</td>
             </tr>
             <tr>
               <td>Classes</td>
               <td>20 newsgroup topics (alt.atheism → talk.religion.misc)</td>
             </tr>
             <tr>
+              <td>Tokenizer</td>
+              <td><code>bert-base-uncased</code> — WordPiece, vocab size 30,522</td>
+            </tr>
+            <tr>
               <td>Max sequence length</td>
-              <td>192 tokens (post-preprocessing)</td>
+              <td>256 BERT subword tokens (covers &gt;95% of posts)</td>
             </tr>
             <tr>
               <td>Special tokens</td>
-              <td>&lt;PAD&gt;, &lt;UNK&gt;, &lt;CLS&gt;</td>
+              <td>[CLS], [SEP], [PAD] — standard BERT format</td>
             </tr>
             <tr>
-              <td>Vocabulary (min-freq=2)</td>
-              <td>45,115 unique tokens after header removal and lowercasing</td>
+              <td>Word-count median (train)</td>
+              <td>83 words per post (mean 185.8, max 11,765)</td>
             </tr>
           </tbody>
         </table>
@@ -172,30 +165,29 @@
           />
           <p class="figure-caption">
             <strong>Figure 1 — EDA overview.</strong>
-            Classes are near-balanced (≈480–600 samples each). Word-count median ≈110, P95≈712 — a 192-token cap covers most samples. <em>talk.*</em> posts are shorter than <em>comp.*</em> / <em>sci.*</em>.
+            Classes are near-balanced (≈480–600 samples each). Word-count median ≈83, P95 well above 256 words — the 256-token BERT cap covers the bulk of posts. <em>talk.*</em> groups tend shorter; <em>sci.*</em> and <em>comp.*</em> run longer.
           </p>
         </div>
       </section>
 
-      <!-- Findings + next step cards -->
+      <!-- Findings + preprocessing cards -->
       <section class="section report-grid">
         <article class="report-card">
           <h3>Primary Findings</h3>
           <ul>
-            <li><strong>Near-balanced classes:</strong> each topic holds ≈480–600 training samples, so no over-sampling was needed.</li>
-            <li><strong>Heavy length tail:</strong> P95 word count reaches 712 words, but the median is only ≈110 — a fixed cap of 192 tokens covers the majority while staying GPU-safe.</li>
-            <li><strong>Header noise:</strong> email metadata (From:, Subject:, Lines:) inflates token counts and shifts vocabulary; regex removal was applied before vocabulary construction.</li>
-            <li><strong>URL / email leakage:</strong> raw corpus contains many email addresses and URLs that would act as spurious class signals without preprocessing.</li>
+            <li><strong>Near-balanced classes:</strong> each topic holds ≈480–600 training samples — no oversampling needed.</li>
+            <li><strong>Heavy length tail:</strong> max post is 11,765 words; median is 83. A 256-token BERT cap safely covers the majority while staying within 6 GB VRAM.</li>
+            <li><strong>Empty texts:</strong> 218 train / 162 test samples are entirely empty after loading — passed as empty strings to the tokenizer (→ [CLS][SEP][PAD…]).</li>
+            <li><strong>Raw text requires no custom preprocessing</strong> beyond what BERT's WordPiece tokenizer handles — lowercasing is implicit in <code>bert-base-uncased</code>.</li>
           </ul>
         </article>
         <article class="report-card">
-          <h3>Preprocessing Decisions</h3>
+          <h3>Tokenization Decisions</h3>
           <ul>
-            <li>Lowercase + strip email headers with multi-pattern regex.</li>
-            <li>Remove URLs (<code>http*</code>) and email addresses (<code>*@*</code>).</li>
-            <li>Keep only <code>[a-z0-9'\s]</code> — punctuation is dropped.</li>
-            <li>Min-frequency threshold of 2 for vocabulary inclusion (removes rare typos / usernames).</li>
-            <li>CLS token prepended to every sequence for Transformer classification.</li>
+            <li><strong>Shared tokenizer:</strong> <code>bert-base-uncased</code> AutoTokenizer used by both the BERT fine-tuned model and the BiLSTM's frozen embedding layer.</li>
+            <li><strong>padding="max_length", truncation=True</strong> — every sequence is padded or truncated to exactly 256 tokens; attention mask marks valid positions.</li>
+            <li><strong>No custom vocab:</strong> the 30,522-word BERT WordPiece vocabulary handles OOV via subword splitting — no min-frequency filtering needed.</li>
+            <li><strong>Pre-tokenized in one batch</strong> and kept as <code>pt</code> tensors on CPU before DataLoader feeds them to GPU.</li>
           </ul>
         </article>
       </section>

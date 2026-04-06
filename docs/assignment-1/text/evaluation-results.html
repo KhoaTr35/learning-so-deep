@@ -1,3 +1,4 @@
+<!--- REWRITTEN for BTL_FINAL_V4 pipeline (BERT + BiLSTM + Ensemble) --->
 <!doctype html>
 <html lang="en">
   <head>
@@ -107,33 +108,33 @@
         <h2>Summary Metrics</h2>
         <div class="metric-strip">
 
-          <div class="metric-card">
-            <p class="model-label">Transformer</p>
-            <h3>50.86%</h3>
-            <div class="metric-row"><span>Macro Precision</span><strong>48.7%</strong></div>
-            <div class="metric-row"><span>Macro Recall</span><strong>49.1%</strong></div>
-            <div class="metric-row"><span>Macro F1</span><strong>48.5%</strong></div>
-            <div class="metric-row"><span>Macro ROC AUC</span><strong>0.9140</strong></div>
-            <div class="metric-row"><span>Parameters</span><strong>16.4 M</strong></div>
+          <div class="metric-card winner">
+            <p class="model-label">BERT ← best accuracy</p>
+            <h3>70.23%</h3>
+            <div class="metric-row"><span>Macro Precision</span><strong>68.86%</strong></div>
+            <div class="metric-row"><span>Macro Recall</span><strong>68.56%</strong></div>
+            <div class="metric-row"><span>Macro F1</span><strong>67.93%</strong></div>
+            <div class="metric-row"><span>Macro ROC AUC</span><strong>0.9640</strong></div>
+            <div class="metric-row"><span>Parameters</span><strong>109.5 M</strong></div>
           </div>
 
-          <div class="metric-card winner">
-            <p class="model-label">BiGRU ← best accuracy</p>
-            <h3>59.11%</h3>
-            <div class="metric-row"><span>Macro Precision</span><strong>59.1%</strong></div>
-            <div class="metric-row"><span>Macro Recall</span><strong>57.8%</strong></div>
-            <div class="metric-row"><span>Macro F1</span><strong>58.0%</strong></div>
-            <div class="metric-row"><span>Macro ROC AUC</span><strong>0.9362</strong></div>
-            <div class="metric-row"><span>Parameters</span><strong>9.85 M</strong></div>
+          <div class="metric-card">
+            <p class="model-label">BiLSTM</p>
+            <h3>68.00%</h3>
+            <div class="metric-row"><span>Macro Precision</span><strong>67.52%</strong></div>
+            <div class="metric-row"><span>Macro Recall</span><strong>66.72%</strong></div>
+            <div class="metric-row"><span>Macro F1</span><strong>66.86%</strong></div>
+            <div class="metric-row"><span>Macro ROC AUC</span><strong>0.9571</strong></div>
+            <div class="metric-row"><span>Trainable params</span><strong>7.4 M</strong></div>
           </div>
 
           <div class="metric-card">
             <p class="model-label">Ensemble</p>
-            <h3>59.27%</h3>
-            <div class="metric-row"><span>Macro Precision</span><strong>59.3%</strong></div>
-            <div class="metric-row"><span>Macro Recall</span><strong>58.3%</strong></div>
-            <div class="metric-row"><span>Macro F1</span><strong>58.5%</strong></div>
-            <div class="metric-row"><span>Macro ROC AUC</span><strong>0.9320</strong></div>
+            <h3>69.48%</h3>
+            <div class="metric-row"><span>Macro Precision</span><strong>68.19%</strong></div>
+            <div class="metric-row"><span>Macro Recall</span><strong>67.76%</strong></div>
+            <div class="metric-row"><span>Macro F1</span><strong>67.35%</strong></div>
+            <div class="metric-row"><span>Macro ROC AUC</span><strong>0.9589</strong></div>
             <div class="metric-row"><span>Trainable params</span><strong>7,340</strong></div>
           </div>
 
@@ -146,12 +147,12 @@
         <div class="figure-block">
           <img
             src="artifacts/f1_comparison.png"
-            alt="Grouped bar chart — per-class F1-score for Transformer, BiGRU, and Ensemble"
+            alt="Grouped bar chart — per-class F1-score for BERT, BiLSTM, and Ensemble"
             loading="lazy"
           />
           <p class="figure-caption">
             <strong>Figure 3 — Per-class F1.</strong>
-            Easiest: <em>rec.sport.hockey</em>, <em>misc.forsale</em>. Hardest: <em>talk.religion.misc</em> (TF F1=0.07) and <em>talk.politics.misc</em>. BiGRU leads in 16 of 20 classes.
+            Easiest: <em>rec.sport.hockey</em> (F1≈0.89), <em>misc.forsale</em> (0.83). Hardest: <em>talk.religion.misc</em> (BERT F1=0.07) and <em>alt.atheism</em>. BERT leads in most classes.
           </p>
         </div>
       </section>
@@ -162,12 +163,12 @@
         <div class="figure-block">
           <img
             src="artifacts/confusion_matrices.png"
-            alt="Three side-by-side confusion matrices for Transformer, BiGRU, and Ensemble"
+            alt="Three side-by-side confusion matrices for BERT, BiLSTM, and Ensemble"
             loading="lazy"
           />
           <p class="figure-caption">
             <strong>Figure 4 — Confusion matrices.</strong>
-            Transformer shows scattered off-diagonal errors; BiGRU has sharper diagonals. Top confusion pairs: <em>alt.atheism</em> ↔ <em>talk.religion.misc</em> and <em>sci.electronics</em> ↔ <em>comp.sys.*</em>.
+            BERT shows the sharpest diagonal. Top confusion pairs: <em>alt.atheism</em> ↔ <em>talk.religion.misc</em> and <em>rec.autos</em> ↔ <em>rec.motorcycles</em> across all three models.
           </p>
         </div>
       </section>
@@ -178,12 +179,12 @@
         <div class="figure-block">
           <img
             src="artifacts/roc_auc_comparison.png"
-            alt="Bar chart of macro one-vs-rest ROC AUC for all three models"
+            alt="Bar chart of macro one-vs-rest ROC AUC for BERT, BiLSTM, and Ensemble"
             loading="lazy"
           />
           <p class="figure-caption">
             <strong>Figure 5 — Macro ROC AUC.</strong>
-            All models exceed 0.91 AUC. BiGRU leads (0.9362); the Ensemble dips slightly (0.9320) due to meta-MLP recalibration; Transformer trails (0.9140), suggesting underfitting.
+            All models exceed 0.957 AUC. BERT leads (0.9640); Ensemble sits between (0.9589); BiLSTM trails slightly (0.9571) — all three produce well-calibrated probability estimates.
           </p>
         </div>
       </section>
@@ -195,34 +196,34 @@
           <thead>
             <tr>
               <th>Class</th>
-              <th>Transformer F1</th>
-              <th>BiGRU F1</th>
+              <th>BERT F1</th>
+              <th>BiLSTM F1</th>
               <th>Ensemble F1</th>
               <th>Support</th>
             </tr>
           </thead>
           <tbody>
-            <tr><td>alt.atheism</td><td>0.25</td><td>0.38</td><td>0.35</td><td>319</td></tr>
-            <tr><td>comp.graphics</td><td>0.52</td><td>0.59</td><td>0.58</td><td>389</td></tr>
-            <tr><td>comp.os.ms-windows.misc</td><td>0.52</td><td>0.56</td><td>0.57</td><td>394</td></tr>
-            <tr><td>comp.sys.ibm.pc.hardware</td><td>0.51</td><td>0.54</td><td>0.56</td><td>392</td></tr>
-            <tr><td>comp.sys.mac.hardware</td><td>0.52</td><td>0.61</td><td>0.62</td><td>385</td></tr>
-            <tr><td>comp.windows.x</td><td>0.63</td><td>0.71</td><td>0.72</td><td>395</td></tr>
-            <tr><td>misc.forsale</td><td>0.70</td><td>0.72</td><td>0.73</td><td>390</td></tr>
-            <tr><td>rec.autos</td><td>0.45</td><td>0.52</td><td>0.53</td><td>396</td></tr>
-            <tr><td>rec.motorcycles</td><td>0.57</td><td>0.61</td><td>0.61</td><td>398</td></tr>
-            <tr><td>rec.sport.baseball</td><td>0.51</td><td>0.72</td><td>0.71</td><td>397</td></tr>
-            <tr><td>rec.sport.hockey</td><td>0.65</td><td>0.79</td><td>0.81</td><td>399</td></tr>
-            <tr><td>sci.crypt</td><td>0.59</td><td>0.70</td><td>0.71</td><td>396</td></tr>
-            <tr><td>sci.electronics</td><td>0.34</td><td>0.48</td><td>0.48</td><td>393</td></tr>
-            <tr><td>sci.med</td><td>0.54</td><td>0.65</td><td>0.63</td><td>396</td></tr>
-            <tr><td>sci.space</td><td>0.47</td><td>0.65</td><td>0.63</td><td>394</td></tr>
-            <tr><td>soc.religion.christian</td><td>0.55</td><td>0.59</td><td>0.58</td><td>398</td></tr>
-            <tr><td>talk.politics.guns</td><td>0.46</td><td>0.52</td><td>0.53</td><td>364</td></tr>
-            <tr><td>talk.politics.mideast</td><td>0.62</td><td>0.67</td><td>0.67</td><td>376</td></tr>
-            <tr><td>talk.politics.misc</td><td>0.22</td><td>0.38</td><td>0.38</td><td>310</td></tr>
-            <tr><td>talk.religion.misc</td><td>0.07</td><td>0.25</td><td>0.26</td><td>251</td></tr>
-            <tr><td><strong>Macro avg</strong></td><td><strong>0.49</strong></td><td><strong>0.58</strong></td><td><strong>0.59</strong></td><td><strong>7,532</strong></td></tr>
+            <tr><td>alt.atheism</td><td>0.47</td><td>0.43</td><td>0.41</td><td>319</td></tr>
+            <tr><td>comp.graphics</td><td>0.70</td><td>0.69</td><td>0.56</td><td>389</td></tr>
+            <tr><td>comp.os.ms-windows.misc</td><td>0.68</td><td>0.64</td><td>0.66</td><td>394</td></tr>
+            <tr><td>comp.sys.ibm.pc.hardware</td><td>0.62</td><td>0.65</td><td>0.60</td><td>392</td></tr>
+            <tr><td>comp.sys.mac.hardware</td><td>0.69</td><td>0.71</td><td>0.67</td><td>385</td></tr>
+            <tr><td>comp.windows.x</td><td>0.81</td><td>0.79</td><td>0.81</td><td>395</td></tr>
+            <tr><td>misc.forsale</td><td>0.83</td><td>0.78</td><td>0.82</td><td>390</td></tr>
+            <tr><td>rec.autos</td><td>0.64</td><td>0.59</td><td>0.76</td><td>396</td></tr>
+            <tr><td>rec.motorcycles</td><td>0.74</td><td>0.70</td><td>0.75</td><td>398</td></tr>
+            <tr><td>rec.sport.baseball</td><td>0.86</td><td>0.83</td><td>0.88</td><td>397</td></tr>
+            <tr><td>rec.sport.hockey</td><td>0.89</td><td>0.86</td><td>0.88</td><td>399</td></tr>
+            <tr><td>sci.crypt</td><td>0.73</td><td>0.73</td><td>0.73</td><td>396</td></tr>
+            <tr><td>sci.electronics</td><td>0.63</td><td>0.60</td><td>0.64</td><td>393</td></tr>
+            <tr><td>sci.med</td><td>0.83</td><td>0.78</td><td>0.84</td><td>396</td></tr>
+            <tr><td>sci.space</td><td>0.78</td><td>0.77</td><td>0.78</td><td>394</td></tr>
+            <tr><td>soc.religion.christian</td><td>0.72</td><td>0.70</td><td>0.70</td><td>398</td></tr>
+            <tr><td>talk.politics.guns</td><td>0.60</td><td>0.58</td><td>0.59</td><td>364</td></tr>
+            <tr><td>talk.politics.mideast</td><td>0.82</td><td>0.79</td><td>0.82</td><td>376</td></tr>
+            <tr><td>talk.politics.misc</td><td>0.48</td><td>0.47</td><td>0.50</td><td>310</td></tr>
+            <tr><td>talk.religion.misc</td><td>0.07</td><td>0.27</td><td>0.08</td><td>251</td></tr>
+            <tr><td><strong>Macro avg</strong></td><td><strong>0.68</strong></td><td><strong>0.67</strong></td><td><strong>0.67</strong></td><td><strong>7,532</strong></td></tr>
           </tbody>
         </table>
       </section>
@@ -232,20 +233,20 @@
         <article class="report-card">
           <h3>Key Findings</h3>
           <ul>
-            <li><strong>BiGRU outperforms Transformer</strong> by +8.25% accuracy despite having 40% fewer parameters — faster convergence wins within the given epoch budget.</li>
-            <li><strong>Ensemble delivers marginal gain</strong> (+0.16% over BiGRU) with only 7,340 new parameters, showing that logit-level fusion can recover some Transformer diversity.</li>
-            <li><strong>Hardest classes:</strong> <em>talk.religion.misc</em> (TF F1=0.07) and <em>talk.politics.misc</em> — heavily overlapping vocabulary with adjacent topics causes systematic confusion.</li>
-            <li><strong>All models score AUC &gt; 0.91</strong> — calibrated probability estimates are robust even where hard-label accuracy is low.</li>
-            <li>The Transformer's slow convergence under <code>label_smoothing=0.1</code> and 6 deep layers suggests it needs either more epochs or a pre-trained initialisation.</li>
+            <li><strong>BERT wins convincingly</strong> at 70.23% — a +2.23% gap over BiLSTM, demonstrating the power of fine-tuning the full pre-trained Transformer versus using frozen embeddings alone.</li>
+            <li><strong>Ensemble falls between both</strong> (69.48%): the meta-MLP improves over BiLSTM (+1.48%) but cannot fully match BERT due to the BiLSTM's lower individual ceiling.</li>
+            <li><strong>Hardest classes:</strong> <em>talk.religion.misc</em> (BERT F1=0.07 — severe overlap with <em>alt.atheism</em> and <em>soc.religion.christian</em>) and <em>alt.atheism</em> across all models.</li>
+            <li><strong>All models exceed ROC AUC 0.957</strong> — probability calibration is strong even in hard classes.</li>
+            <li>BiLSTM's AMP-off (FP32) training prevents LayerNorm NaN issues but slows per-epoch speed vs BERT's AMP+grad-accum setup.</li>
           </ul>
         </article>
         <article class="report-card">
           <h3>Next Experiment Steps</h3>
           <ul>
-            <li>Pre-train embeddings on the full corpus (e.g., Word2Vec or GloVe) before fine-tuning the Transformer — this should close the gap with BiGRU.</li>
-            <li>Extend Transformer training to 25+ epochs or reduce dropout to 0.2 to surface its true capacity advantage.</li>
-            <li>Apply class-weighted loss for <em>talk.religion.misc</em> and <em>talk.politics.misc</em> to address the long tail of confusable low-recall classes.</li>
-            <li>Test temperature scaling on ensemble probability outputs to improve ROC AUC calibration.</li>
+            <li>Train BERT for more epochs (5–6) with a lower peak LR (1e-5) and cosine schedule — the current run stopped at 3 with clear room left to improve.</li>
+            <li>Experiment with <code>bert-large-uncased</code> or a domain-adapted variant (e.g., RoBERTa) to widen the accuracy ceiling.</li>
+            <li>Apply focal loss or class-weighted CE for <em>talk.religion.misc</em> — the model collapses this class to near-zero F1 under standard CE.</li>
+            <li>Use BERT's hidden states (all layers) in the BiLSTM rather than only the embedding module — this may close the 2% gap without full fine-tuning cost.</li>
           </ul>
         </article>
       </section>

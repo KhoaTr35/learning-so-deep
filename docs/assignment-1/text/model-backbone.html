@@ -1,255 +1,248 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Assignment 1 Text Model Backbone | Learning So Deep</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Newsreader:opsz,wght@6..72,500;6..72,700&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="../../styles.css" />
-    <style>
-      code {
-        font-family: ui-monospace, "SF Mono", monospace;
-        font-size: 0.88em;
-        background: rgba(35,63,93,0.08);
-        padding: 2px 5px;
-        border-radius: 5px;
-        color: var(--a1-accent);
-      }
-      .arch-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 16px;
-        margin: 18px 0;
-      }
-      .arch-card {
-        border: 1px solid var(--a1-line);
-        border-radius: 20px;
-        background: var(--a1-paper);
-        box-shadow: var(--a1-shadow);
-        overflow: hidden;
-      }
-      .arch-card-head {
-        padding: 16px 18px 12px;
-        border-bottom: 1px solid var(--a1-line);
-      }
-      .arch-card-head h3 { margin: 0 0 4px; font-size: 1.1rem; }
-      .arch-card-head .badge {
-        display: inline-block;
-        font-size: 0.74rem;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 0.07em;
-        padding: 3px 9px;
-        border-radius: 999px;
-      }
-      .badge-tf { background: rgba(0,113,227,0.1); color: var(--a1-accent); }
-      .badge-rnn { background: rgba(74,143,100,0.12); color: #2e6b47; }
-      .badge-ens { background: rgba(120,60,140,0.10); color: #6b2e8a; }
-      .arch-card-body { padding: 14px 18px; }
-      .arch-card-body ul { margin: 0; padding-left: 18px; display: grid; gap: 5px; }
-      .arch-card-body li { font-size: 0.92rem; color: var(--a1-muted); }
-      .arch-card-body li strong { color: var(--a1-ink); }
-      .param-badge {
-        margin-top: 10px;
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        font-size: 0.82rem;
-        font-weight: 700;
-        border: 1px solid var(--a1-line);
-        background: rgba(255,255,255,0.7);
-        padding: 5px 10px;
-        border-radius: 999px;
-      }
-      .param-badge::before {
-        content: "⚙";
-        font-size: 0.9em;
-      }
-      @media (max-width: 760px) {
-        .arch-grid { grid-template-columns: 1fr; }
-      }
-    </style>
-  </head>
-  <body class="assignment-page">
-    <div class="shell nav">
-      <div class="nav-inner">
-        <a class="brand" href="../../index.html">Learning So Deep</a>
-        <div class="nav-links">
-          <a class="nav-link" href="../../assignment-1/" aria-current="page">Assignment 1</a>
-          <a class="nav-link" href="../../assignment-2/">Assignment 2</a>
-          <a class="nav-link" href="../../assignment-3/">Assignment 3</a>
-        </div>
-      </div>
-    </div>
-
-    <main class="shell assignment-layout">
-      <header class="hero assignment-hero inner-hero">
-        <p class="eyebrow">Assignment 1 / Text / Model Backbone</p>
-        <h1>Model Backbone</h1>
-        <p class="lead">Architecture design for three models — a deep Transformer encoder, a bidirectional GRU with attention, and a learned ensemble meta-learner.</p>
-        <p class="crumbs"><a href="../../assignment-1/">Assignment 1</a> / <a href="./">Text</a> / Model Backbone</p>
-      </header>
-
-      <!-- Model cards -->
-      <section class="section">
-        <h2>Architecture Overview</h2>
-        <div class="arch-grid">
-
-          <!-- TransformerClassifier -->
-          <div class="arch-card">
-            <div class="arch-card-head">
-              <span class="badge badge-tf">Advanced</span>
-              <h3>TransformerClassifier</h3>
-            </div>
-            <div class="arch-card-body">
-              <ul>
-                <li><strong>Embedding:</strong> <code>nn.Embedding(45115, 256)</code> with pad masking</li>
-                <li><strong>Positional encoding:</strong> Sinusoidal (pre-computed, no learned params)</li>
-                <li><strong>Encoder stack:</strong> 6 × <code>TransformerEncoderLayer</code>, Pre-LN, GELU activation</li>
-                <li><strong>d_model:</strong> 256 &nbsp;|&nbsp; <strong>Heads:</strong> 8 &nbsp;|&nbsp; <strong>d_ff:</strong> 1024</li>
-                <li><strong>Pooling:</strong> CLS token repr + masked mean-pool → concat (512-dim)</li>
-                <li><strong>Classifier:</strong> LayerNorm → Linear(512→256) → GELU → Dropout(0.3) → Linear(256→20)</li>
-                <li><strong>Dropout:</strong> 0.3 (embedding + encoder layers)</li>
-                <li><strong>Final norm:</strong> extra <code>nn.LayerNorm</code> after encoder stack</li>
-              </ul>
-              <div class="param-badge">16,426,004 parameters</div>
-            </div>
-          </div>
-
-          <!-- RNNClassifier -->
-          <div class="arch-card">
-            <div class="arch-card-head">
-              <span class="badge badge-rnn">Baseline</span>
-              <h3>BiGRU (RNNClassifier)</h3>
-            </div>
-            <div class="arch-card-body">
-              <ul>
-                <li><strong>Embedding:</strong> <code>nn.Embedding(45115, 192)</code> with pad masking</li>
-                <li><strong>Recurrent layer:</strong> 2-layer bidirectional <code>nn.GRU</code></li>
-                <li><strong>hidden_size:</strong> 192 &nbsp;|&nbsp; <strong>Directions:</strong> 2 → 384-dim output</li>
-                <li><strong>Pack/pad:</strong> <code>pack_padded_sequence</code> for variable-length inputs</li>
-                <li><strong>Attention:</strong> learned scalar attention over GRU output tokens</li>
-                <li><strong>Pooling:</strong> softmax-weighted sum of all timestep representations</li>
-                <li><strong>Classifier:</strong> LayerNorm → Linear(384→192) → GELU → Dropout(0.3) → Linear(192→20)</li>
-                <li><strong>Dropout:</strong> 0.3 (embedding + between GRU layers)</li>
-              </ul>
-              <div class="param-badge">9,851,541 parameters</div>
-            </div>
-          </div>
-
-        </div>
-
-        <!-- Ensemble card (full width) -->
-        <div class="arch-card" style="margin-top: 4px;">
-          <div class="arch-card-head">
-            <span class="badge badge-ens">Ensemble</span>
-            <h3>LearnedEnsemble</h3>
-          </div>
-          <div class="arch-card-body">
-            <ul>
-              <li><strong>Backbones:</strong> frozen TransformerClassifier + frozen BiGRU (no gradient flows into them)</li>
-              <li><strong>Meta-input:</strong> concatenated logits from both models → shape (B, 40)</li>
-              <li><strong>Meta-MLP:</strong> Linear(40→80) → GELU → Dropout(0.15) → Linear(80→40) → GELU → Dropout(0.10) → Linear(40→20)</li>
-              <li><strong>Trainable params:</strong> 7,340 (meta-MLP only) — checkpoint is &lt; 100 KB</li>
-              <li><strong>Total params:</strong> 26,284,885 (including frozen backbones)</li>
-            </ul>
-            <div class="param-badge">7,340 trainable (meta only)</div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Comparison table -->
-      <section class="section scope-panel">
-        <h2>Architecture Comparison</h2>
-        <table>
-          <thead>
-            <tr>
-              <th>Property</th>
-              <th>TransformerClassifier</th>
-              <th>BiGRU</th>
-              <th>LearnedEnsemble</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Total parameters</td>
-              <td>16,426,004</td>
-              <td>9,851,541</td>
-              <td>26,284,885</td>
-            </tr>
-            <tr>
-              <td>Trainable params (own stage)</td>
-              <td>16,426,004</td>
-              <td>9,851,541</td>
-              <td>7,340</td>
-            </tr>
-            <tr>
-              <td>Sequence modelling</td>
-              <td>Self-attention (parallel)</td>
-              <td>Recurrent (sequential)</td>
-              <td>—</td>
-            </tr>
-            <tr>
-              <td>Positional awareness</td>
-              <td>Sinusoidal PE</td>
-              <td>Implicit (GRU order)</td>
-              <td>—</td>
-            </tr>
-            <tr>
-              <td>Pooling strategy</td>
-              <td>CLS + masked mean-pool (concat)</td>
-              <td>Learned attention-weighted sum</td>
-              <td>Direct logit fusion</td>
-            </tr>
-            <tr>
-              <td>Long-range dependencies</td>
-              <td>Full O(L²) attention</td>
-              <td>Limited by GRU memory</td>
-              <td>Inherited from backbones</td>
-            </tr>
-            <tr>
-              <td>Training speed (per epoch)</td>
-              <td>~43 s (GPU P100)</td>
-              <td>~11 s (GPU P100)</td>
-              <td>~22 s (GPU P100)</td>
-            </tr>
-            <tr>
-              <td>Best test accuracy</td>
-              <td>50.86%</td>
-              <td>59.11%</td>
-              <td>59.27%</td>
-            </tr>
-          </tbody>
-        </table>
-      </section>
-
-      <!-- Design rationale -->
-      <section class="section report-grid">
-        <article class="report-card">
-          <h3>Why These Architectures?</h3>
-          <ul>
-            <li><strong>Transformer</strong> provides the global context capture expected from the "advanced" setting; CLS + mean pooling gives a richer representation than CLS alone.</li>
-            <li><strong>BiGRU</strong> is chosen as baseline over simple LSTM because bidirectionality gives better context from both directions, and attention pooling avoids the GRU's vanishing-gradient pooling problem.</li>
-            <li><strong>Ensemble</strong> tests whether complementary error patterns in the two backbones can be exploited with a tiny trainable head, avoiding expensive full re-training.</li>
-          </ul>
-        </article>
-        <article class="report-card">
-          <h3>Key Design Decisions</h3>
-          <ul>
-            <li><strong>Pre-LN encoder layers</strong> (norm_first=True) stabilise Transformer training without an aggressive learning-rate schedule.</li>
-            <li><strong>pack_padded_sequence</strong> ensures the GRU never attends to padding positions, improving gradient quality for variable-length inputs.</li>
-            <li><strong>Frozen backbones in meta-stage</strong> prevent catastrophic forgetting of individual model strengths during ensemble fine-tuning.</li>
-            <li><strong>GELU activations</strong> used consistently across all classifiers for smoother gradient flow than ReLU.</li>
-          </ul>
-        </article>
-      </section>
-
-      <p class="footer"><a href="./">Back to Text Track</a></p>
-    </main>
-  </body>
-</html>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Assignment 1 Text Model Backbone | Learning So Deep</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Newsreader:opsz,wght@6..72,500;6..72,700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../../styles.css" />
+    <style>
+      code {
+        font-family: ui-monospace, "SF Mono", monospace;
+        font-size: 0.88em;
+        background: rgba(35,63,93,0.08);
+        padding: 2px 5px;
+        border-radius: 5px;
+        color: var(--a1-accent);
+      }
+      .arch-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+        margin: 18px 0;
+      }
+      .arch-card {
+        border: 1px solid var(--a1-line);
+        border-radius: 20px;
+        background: var(--a1-paper);
+        box-shadow: var(--a1-shadow);
+        overflow: hidden;
+      }
+      .arch-card-head {
+        padding: 16px 18px 12px;
+        border-bottom: 1px solid var(--a1-line);
+      }
+      .arch-card-head h3 { margin: 0 0 4px; font-size: 1.1rem; }
+      .arch-card-head .badge {
+        display: inline-block;
+        font-size: 0.74rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.07em;
+        padding: 3px 9px;
+        border-radius: 999px;
+      }
+      .badge-tf  { background: rgba(0,113,227,0.1);    color: var(--a1-accent); }
+      .badge-rnn { background: rgba(74,143,100,0.12);  color: #2e6b47; }
+      .badge-ens { background: rgba(120,60,140,0.10);  color: #6b2e8a; }
+      .arch-card-body { padding: 14px 18px; }
+      .arch-card-body ul { margin: 0; padding-left: 18px; display: grid; gap: 5px; }
+      .arch-card-body li { font-size: 0.92rem; color: var(--a1-muted); }
+      .arch-card-body li strong { color: var(--a1-ink); }
+      .param-badge {
+        margin-top: 10px;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 0.82rem;
+        font-weight: 700;
+        border: 1px solid var(--a1-line);
+        background: rgba(255,255,255,0.7);
+        padding: 5px 10px;
+        border-radius: 999px;
+      }
+      .param-badge::before { content: "⚙"; font-size: 0.9em; }
+      @media (max-width: 760px) { .arch-grid { grid-template-columns: 1fr; } }
+    </style>
+  </head>
+  <body class="assignment-page">
+    <div class="shell nav">
+      <div class="nav-inner">
+        <a class="brand" href="../../index.html">Learning So Deep</a>
+        <div class="nav-links">
+          <a class="nav-link" href="../../assignment-1/" aria-current="page">Assignment 1</a>
+          <a class="nav-link" href="../../assignment-2/">Assignment 2</a>
+          <a class="nav-link" href="../../assignment-3/">Assignment 3</a>
+        </div>
+      </div>
+    </div>
+
+    <main class="shell assignment-layout">
+      <header class="hero assignment-hero inner-hero">
+        <p class="eyebrow">Assignment 1 / Text / Model Backbone</p>
+        <h1>Model Backbone</h1>
+        <p class="lead">Three models built on pre-trained BERT — a fully fine-tuned BERT classifier, a BiLSTM with frozen BERT embeddings, and a learned ensemble meta-learner.</p>
+        <p class="crumbs"><a href="../../assignment-1/">Assignment 1</a> / <a href="./">Text</a> / Model Backbone</p>
+      </header>
+
+      <!-- Model cards -->
+      <section class="section">
+        <h2>Architecture Overview</h2>
+        <div class="arch-grid">
+
+          <!-- BERT Classifier -->
+          <div class="arch-card">
+            <div class="arch-card-head">
+              <span class="badge badge-tf">Advanced</span>
+              <h3>BERT Classifier</h3>
+            </div>
+            <div class="arch-card-body">
+              <ul>
+                <li><strong>Backbone:</strong> <code>bert-base-uncased</code> — 12-layer Transformer, d_model=768, 12 heads</li>
+                <li><strong>Loading:</strong> <code>AutoModelForSequenceClassification.from_pretrained()</code> — full fine-tuning</li>
+                <li><strong>Classifier head:</strong> BERT pooler output → Dropout(0.3) → Linear(768→20)</li>
+                <li><strong>Tokenization:</strong> WordPiece, max_length=256, [CLS]/[SEP]/[PAD] tokens</li>
+                <li><strong>All 109.5 M parameters</strong> are updated during fine-tuning (no freezing)</li>
+                <li><strong>AMP (FP16):</strong> enabled with <code>torch.amp.GradScaler</code> for RTX GPU training</li>
+                <li><strong>Gradient accumulation:</strong> 2 steps → effective batch = 32</li>
+              </ul>
+              <div class="param-badge">109,497,620 parameters (fully trainable)</div>
+            </div>
+          </div>
+
+          <!-- BiLSTM Classifier -->
+          <div class="arch-card">
+            <div class="arch-card-head">
+              <span class="badge badge-rnn">Baseline</span>
+              <h3>BiLSTM + Frozen BERT Embeddings</h3>
+            </div>
+            <div class="arch-card-body">
+              <ul>
+                <li><strong>Embedding:</strong> full BERT embedding module (<code>bert.embeddings</code>) — 768-dim, completely frozen</li>
+                <li><strong>Frozen params:</strong> 23,837,184 (word + position + token-type embeddings + LayerNorm)</li>
+                <li><strong>Recurrent layer:</strong> 2-layer bidirectional <code>nn.LSTM</code>, hidden=384 → 768-dim output</li>
+                <li><strong>Variable-length input:</strong> <code>pack_padded_sequence</code> respects attention mask</li>
+                <li><strong>Attention pooling:</strong> learned scalar attention over LSTM timesteps → softmax-weighted sum</li>
+                <li><strong>Classifier:</strong> LayerNorm → Linear(768→384) → GELU → Dropout(0.3) → Linear(384→20)</li>
+                <li><strong>AMP off</strong> — BERT LayerNorm uses eps=1e-12 (too small for FP16); trained in FP32</li>
+              </ul>
+              <div class="param-badge">7,395,477 trainable · 23,837,184 frozen</div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Ensemble card (full width) -->
+        <div class="arch-card" style="margin-top: 4px;">
+          <div class="arch-card-head">
+            <span class="badge badge-ens">Ensemble</span>
+            <h3>LearnedEnsemble (meta-MLP)</h3>
+          </div>
+          <div class="arch-card-body">
+            <ul>
+              <li><strong>Backbones:</strong> frozen BERT classifier + frozen BiLSTM — logits pre-computed, no gradient flows into them</li>
+              <li><strong>Meta-input:</strong> concatenated softmax logits from both models → shape (B, 40)</li>
+              <li><strong>Meta-MLP:</strong> Linear(40→80) → GELU → Dropout(0.15) → Linear(80→40) → GELU → Dropout(0.10) → Linear(40→20)</li>
+              <li><strong>Training on cached logits:</strong> both backbone logits pre-computed on GPU and stored on CPU — each ensemble epoch takes &lt; 1 s</li>
+              <li><strong>Trainable params:</strong> 7,340 (meta-MLP only) — checkpoint is &lt; 100 KB</li>
+            </ul>
+            <div class="param-badge">7,340 trainable (meta only)</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Comparison table -->
+      <section class="section scope-panel">
+        <h2>Architecture Comparison</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Property</th>
+              <th>BERT Classifier</th>
+              <th>BiLSTM</th>
+              <th>LearnedEnsemble</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Total parameters</td>
+              <td>109,497,620</td>
+              <td>31,232,661</td>
+              <td>140,730,281</td>
+            </tr>
+            <tr>
+              <td>Trainable params (own stage)</td>
+              <td>109,497,620</td>
+              <td>7,395,477</td>
+              <td>7,340</td>
+            </tr>
+            <tr>
+              <td>Pre-trained backbone</td>
+              <td>bert-base-uncased (full)</td>
+              <td>bert-base-uncased (embeddings only, frozen)</td>
+              <td>—</td>
+            </tr>
+            <tr>
+              <td>Sequence modelling</td>
+              <td>12-layer self-attention (parallel)</td>
+              <td>2-layer BiLSTM (sequential)</td>
+              <td>—</td>
+            </tr>
+            <tr>
+              <td>Pooling strategy</td>
+              <td>BERT [CLS] pooler output</td>
+              <td>Learned attention-weighted sum</td>
+              <td>Direct logit fusion</td>
+            </tr>
+            <tr>
+              <td>Mixed precision</td>
+              <td>AMP FP16 ✓</td>
+              <td>FP32 (LayerNorm eps stability)</td>
+              <td>FP32</td>
+            </tr>
+            <tr>
+              <td>Training speed (per epoch)</td>
+              <td>~160 s (RTX 3060 6 GB)</td>
+              <td>~74 s (RTX 3060 6 GB)</td>
+              <td>&lt; 1 s (cached logits)</td>
+            </tr>
+            <tr>
+              <td>Best test accuracy</td>
+              <td>70.23%</td>
+              <td>68.00%</td>
+              <td>69.48%</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- Design rationale -->
+      <section class="section report-grid">
+        <article class="report-card">
+          <h3>Why These Architectures?</h3>
+          <ul>
+            <li><strong>Fine-tuned BERT</strong> is the natural "advanced" choice — pre-trained contextual representations and a shared tokenizer give a massive head-start over random initialisation.</li>
+            <li><strong>BiLSTM with frozen BERT embeddings</strong> is the "baseline" — it reuses high-quality 768-dim token representations without the cost of fine-tuning the full Transformer stack; only the LSTM and classifier are learned.</li>
+            <li><strong>Ensemble meta-MLP</strong> tests whether logit-level complementarity between BERT's attention-based and the BiLSTM's sequential view can be exploited with minimal extra compute.</li>
+          </ul>
+        </article>
+        <article class="report-card">
+          <h3>Key Engineering Decisions</h3>
+          <ul>
+            <li><strong>AMP disabled for BiLSTM</strong> — BERT's embedding LayerNorm uses eps=1e-12, which underflows FP16 (~6e-8), producing NaN gradients. Training in FP32 is safe and fast enough within 6 GB VRAM.</li>
+            <li><strong>Gradient accumulation (2 steps) for BERT</strong> keeps effective batch at 32 while fitting the 16-sample per-step budget within VRAM.</li>
+            <li><strong>Pre-computed logits for ensemble</strong> — both backbones are moved to GPU one at a time (BERT then BiLSTM) to collect logits, then moved back to CPU. The meta-MLP trains on CPU-cached tensors — no VRAM needed for ensemble training.</li>
+            <li><strong>Separate weight-decay groups</strong> for BERT — bias/LayerNorm params are excluded from L2 penalty (standard BERT fine-tuning practice).</li>
+          </ul>
+        </article>
+      </section>
+
+      <p class="footer"><a href="./">Back to Text Track</a></p>
+    </main>
+  </body>
+</html>
