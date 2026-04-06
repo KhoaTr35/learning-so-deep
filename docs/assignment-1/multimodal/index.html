@@ -7,12 +7,12 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Newsreader:opsz,wght@6..72,500;6..72,700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Mono:wght@400;500&family=Public+Sans:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
     <link rel="stylesheet" href="../../styles.css" />
   </head>
-  <body class="assignment-page">
+  <body class="assignment-page multimodal-atlas">
     <div class="shell nav">
       <div class="nav-inner">
         <a class="brand" href="../../index.html">Learning So Deep</a>
@@ -24,74 +24,149 @@
       </div>
     </div>
 
-    <main class="shell assignment-layout">
-      <header class="hero assignment-hero inner-hero">
-        <p class="eyebrow">Assignment 1 / Multimodal Track</p>
-        <h1>Multimodal Classification</h1>
-        <p class="lead">Inspect how cross-modal cues improve prediction confidence and consistency.</p>
-        <p class="crumbs"><a href="../../assignment-1/">Assignment 1</a> / Multimodal</p>
+    <main class="shell mm-report">
+      <header class="hero">
+        <div class="mm-kicker-line">
+          <p class="eyebrow">Assignment 1 / Multimodal Track</p>
+          <span class="mm-stamp">Food101 x CLIP</span>
+          <span class="mm-stamp">Latest Run 2026-04-06</span>
+        </div>
+        <h1>One encoder, three decision routes, ten food classes.</h1>
+        <p class="lead">
+          This report documents the full multimodal pipeline for `ethz/food101`: preprocessing the 10-class subset,
+          extracting CLIP embeddings, evaluating zero-shot prompting, adapting with CoOp learnable context, and
+          benchmarking against a few-shot linear probe. The layout has been condensed into a single continuous
+          reading surface so every plot, table, and failure case sits in one consistent visual system.
+        </p>
+        <div class="mm-actions">
+          <a class="mm-button" href="./dataset-eda.html">Open Dataset EDA</a>
+          <a class="mm-button" href="./model-backbone.html">Open Model Backbone</a>
+          <a class="mm-button" href="./methodology.html">Open Methodology</a>
+          <a class="mm-button" href="./evaluation-results.html">Open Evaluation Results</a>
+          <a class="mm-button" href="https://wandb.ai/khoatran35-ho-chi-minh-city-university-of-technology/learning-so-deep-food101/reports/Multimodal-Experiment--VmlldzoxNjQzMzgzOA" target="_blank" rel="noreferrer">View WandB Report</a>
+        </div>
       </header>
 
-      <section class="section scope-panel">
-        <h2>Track Setup</h2>
-        <table>
-          <thead>
-            <tr>
-              <th>Component</th>
-              <th>Selection</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Baseline</td>
-              <td>Late Fusion</td>
-            </tr>
-            <tr>
-              <td>Advanced</td>
-              <td>Zero-shot / Few-shot</td>
-            </tr>
-            <tr>
-              <td>Deliverable</td>
-              <td>Structured report with EDA, backbone, methodology, and evaluation pages.</td>
-            </tr>
-          </tbody>
-        </table>
-      </section>
+      <nav class="mm-subnav" aria-label="Multimodal pages">
+        <a class="mm-pill" href="./index.html" aria-current="page">Overview</a>
+        <a class="mm-pill" href="./dataset-eda.html">Dataset EDA</a>
+        <a class="mm-pill" href="./model-backbone.html">Model Backbone</a>
+        <a class="mm-pill" href="./methodology.html">Methodology</a>
+        <a class="mm-pill" href="./evaluation-results.html">Evaluation Results</a>
+      </nav>
 
-      <section class="section stage-router" aria-label="Multimodal track page navigation">
-        <div class="track-router-head">
-          <h2>Track Pages</h2>
-          <p>Open each section to complete the full report for Multimodal track.</p>
-        </div>
-        <div class="stage-grid">
-          <article class="stage-card">
-            <p class="track-chip">Section</p>
-            <h3>Dataset EDA</h3>
-            <p>Data source, split profile, class imbalance, and representative samples.</p>
-            <a class="track-link" href="./dataset-eda.html">Open Dataset EDA</a>
-          </article>
-          <article class="stage-card">
-            <p class="track-chip">Section</p>
-            <h3>Model Backbone</h3>
-            <p>Architecture blocks, baseline-advanced comparison, and complexity notes.</p>
-            <a class="track-link" href="./model-backbone.html">Open Model Backbone</a>
-          </article>
-          <article class="stage-card">
-            <p class="track-chip">Section</p>
-            <h3>Methodology</h3>
-            <p>Training strategy, optimization settings, and ablation plan.</p>
-            <a class="track-link" href="./methodology.html">Open Methodology</a>
-          </article>
-          <article class="stage-card">
-            <p class="track-chip">Section</p>
-            <h3>Evaluation Results</h3>
-            <p>Primary metrics, confusion patterns, and error analysis highlights.</p>
-            <a class="track-link" href="./evaluation-results.html">Open Evaluation Results</a>
-          </article>
-        </div>
-      </section>
+      <div class="mm-stack">
+        <section class="mm-panel">
+          <div class="mm-section-tag">Report Snapshot</div>
+          <h2>Current system state</h2>
+          <p class="mm-prose">
+            The active experiment filters Food101 to 10 balanced classes, preserves the official validation split
+            as the held-out test set, and evaluates three classification strategies over shared CLIP image
+            embeddings. Zero-shot is still the strongest overall route in this run, but CoOp narrows the gap and
+            outperforms the linear probe at low-shot settings.
+          </p>
+          <div class="mm-metrics">
+            <article class="mm-metric">
+              <div class="mm-metric-label">Classes</div>
+              <div class="mm-metric-value">10</div>
+              <p class="mm-metric-note">Apple pie, bibimbap, chicken wings, donuts, eggs benedict, french fries, grilled cheese, hamburger, ice cream, pizza.</p>
+            </article>
+            <article class="mm-metric">
+              <div class="mm-metric-label">Train / Test Pool</div>
+              <div class="mm-metric-value">7.5k / 2.5k</div>
+              <p class="mm-metric-note">Filtered from the official Food101 train and validation splits.</p>
+            </article>
+            <article class="mm-metric">
+              <div class="mm-metric-label">Best Accuracy</div>
+              <div class="mm-metric-value">98.08%</div>
+              <p class="mm-metric-note">Zero-shot CLIP remains the strongest final method in the latest run.</p>
+            </article>
+            <article class="mm-metric">
+              <div class="mm-metric-label">Best Few-Shot</div>
+              <div class="mm-metric-value">97.40%</div>
+              <p class="mm-metric-note">CoOp at 128 shots edges the linear probe at the highest support budget.</p>
+            </article>
+          </div>
+        </section>
 
-      <p class="footer"><a href="../../assignment-1/">Back to Assignment 1</a></p>
+        <section class="mm-panel">
+          <div class="mm-section-tag">Comparison</div>
+          <h2>What changed in the latest report</h2>
+          <ul class="mm-note-list">
+            <li>Zero-shot now represents each class with the average of five prompt embeddings before computing image-text similarity.</li>
+            <li>Few-shot comparison now includes both a linear probe and CoOp prompt tuning with learnable context tokens.</li>
+            <li>Evaluation exports confusion matrices, top-failure tables, CoOp token decoding, and saliency maps into the docs asset bundle.</li>
+            <li>All current plots, metrics, CSV tables, and failure visualizations have been copied into `docs/assignment-1/multimodal/assets/results` for publication.</li>
+          </ul>
+          <figure class="mm-figure">
+            <img src="./assets/results/evaluation/plots/comparison_bar.png" alt="Bar chart comparing zero-shot, CoOp, and linear probe performance across few-shot settings." />
+            <figcaption>
+              The headline pattern is stable: zero-shot starts unexpectedly high at 98.08%, CoOp is consistently stronger than the linear probe at 8 to 32 shots, and both few-shot methods approach parity near 128 shots.
+            </figcaption>
+          </figure>
+        </section>
+
+        <section class="mm-panel">
+          <div class="mm-section-tag">Report Map</div>
+          <h2>Navigate the full-width report</h2>
+          <div class="mm-link-grid">
+            <a class="mm-link-card" href="./dataset-eda.html">
+              <h3>Dataset EDA</h3>
+              <p>Split design, geometry variation, class balance, and representative samples from the 10 selected classes.</p>
+            </a>
+            <a class="mm-link-card" href="./model-backbone.html">
+              <h3>Model Backbone</h3>
+              <p>Shared CLIP encoder, prompt ensemble for zero-shot, prompt learner for CoOp, and the linear-probe alternative.</p>
+            </a>
+            <a class="mm-link-card" href="./methodology.html">
+              <h3>Methodology</h3>
+              <p>Config surface, run order, split recipe, optimizer settings, and why the frozen-encoder design is useful here.</p>
+            </a>
+            <a class="mm-link-card" href="./evaluation-results.html">
+              <h3>Evaluation Results</h3>
+              <p>Metrics table, confusion matrices, CoOp token decoding, and high-confidence failures with gradient saliency maps.</p>
+            </a>
+          </div>
+        </section>
+
+        <section class="mm-panel">
+          <div class="mm-section-tag">Assets</div>
+          <h2>Published files</h2>
+          <p class="mm-prose">
+            The docs now ship with the latest run bundle, including the evaluation summary, metrics CSVs, confusion
+            matrices for zero-shot, CoOp, and linear probe, decoded CoOp context vectors, and saliency maps for the
+            top failed predictions.
+          </p>
+          <div class="mm-actions">
+            <a class="mm-button" href="./assets/results/summary.csv">summary.csv</a>
+            <a class="mm-button" href="./assets/results/evaluation/metrics_summary.csv">metrics_summary.csv</a>
+            <a class="mm-button" href="./assets/results/evaluation/failed_cases/top_failures.csv">top_failures.csv</a>
+            <a class="mm-button" href="./assets/results/processed_summary.json">processed_summary.json</a>
+          </div>
+        </section>
+
+        <section class="mm-panel">
+          <div class="mm-section-tag">WandB Report</div>
+          <h2>Interactive experiment report</h2>
+          <p class="mm-prose">
+            The full training log, method comparison, and tracked artifacts are also published in WandB for an
+            interactive version of the report.
+          </p>
+          <figure class="mm-figure">
+            <iframe
+              src="https://wandb.ai/khoatran35-ho-chi-minh-city-university-of-technology/learning-so-deep-food101/reports/Multimodal-Experiment--VmlldzoxNjQzMzgzOA"
+              style="border:none;height:1024px;width:100%"
+              title="WandB Multimodal Experiment Report"
+              loading="lazy"
+            ></iframe>
+            <figcaption>
+              Embedded WandB report for the latest multimodal experiment run.
+            </figcaption>
+          </figure>
+        </section>
+      </div>
+
+      <p class="mm-footer"><a href="../../assignment-1/">Back to Assignment 1</a></p>
     </main>
   </body>
 </html>

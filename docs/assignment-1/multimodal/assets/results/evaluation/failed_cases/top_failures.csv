@@ -1,0 +1,6 @@
+method,shots,record_id,true_label_id,true_label_name,predicted_label_id,predicted_label_name,confidence,image_path
+coop,128,validation:3824,0,apple_pie,3,donuts,0.9995549321174622,images/test/apple_pie/test_apple_pie_00074.jpg
+coop,32,validation:19363,3,donuts,7,hamburger,0.9991227984428406,images/test/donuts/test_donuts_00113.jpg
+zero_shot,0,validation:3824,0,apple_pie,3,donuts,0.9981362819671631,images/test/apple_pie/test_apple_pie_00074.jpg
+zero_shot,0,validation:19363,3,donuts,7,hamburger,0.9969624876976013,images/test/donuts/test_donuts_00113.jpg
+coop,32,validation:3824,0,apple_pie,3,donuts,0.996215283870697,images/test/apple_pie/test_apple_pie_00074.jpg

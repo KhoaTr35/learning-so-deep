@@ -7,12 +7,12 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Newsreader:opsz,wght@6..72,500;6..72,700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Mono:wght@400;500&family=Public+Sans:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
     <link rel="stylesheet" href="../../styles.css" />
   </head>
-  <body class="assignment-page mm-page">
+  <body class="assignment-page multimodal-atlas">
     <div class="shell nav">
       <div class="nav-inner">
         <a class="brand" href="../../index.html">Learning So Deep</a>
@@ -24,233 +24,252 @@
       </div>
     </div>
 
-    <main class="shell assignment-layout">
-      <header class="hero assignment-hero inner-hero">
-        <p class="eyebrow">Assignment 1 / Multimodal / Evaluation Results</p>
-        <h1>Results Console</h1>
-        <p class="lead">
-          Compare zero-shot and few-shot outcomes on the shared Food101 test split, inspect shot sensitivity, and
-          review the confusion structures that explain where the classifier still fails.
-        </p>
-        <p class="crumbs"><a href="../../assignment-1/">Assignment 1</a> / <a href="./">Multimodal</a> / Evaluation Results</p>
-        <div class="mm-hero-actions">
-          <a class="mm-action" href="./model-backbone.html">Back to Backbone</a>
-          <a class="mm-action" href="./methodology.html">Back to Methodology</a>
+    <main class="shell mm-report">
+      <header class="hero">
+        <div class="mm-kicker-line">
+          <p class="eyebrow">Assignment 1 / Multimodal / Evaluation Results</p>
+          <span class="mm-stamp">Run 20260406_094056</span>
+          <span class="mm-stamp">11 Reported Rows</span>
         </div>
+        <h1>Zero-shot wins the run, CoOp wins the low-shot adaptation story.</h1>
+        <p class="lead">
+          The latest run reports three consistent patterns. First, averaged five-prompt zero-shot CLIP is the
+          overall best method at 98.08% accuracy. Second, CoOp beats the linear probe at 8, 16, and 32 shots and
+          stays competitive through 128 shots. Third, the hardest failures are concentrated in visually plausible
+          dessert and sandwich confusions, especially apple pie versus donuts and donuts versus hamburger.
+        </p>
       </header>
 
-      <section class="section mm-panel-soft">
-        <div class="mm-tab-row">
-          <button class="mm-tab is-active" data-result-method="zero_shot" type="button">Zero-shot summary</button>
-          <button class="mm-tab" data-result-method="few_shot" type="button">Few-shot summary</button>
-        </div>
-        <div class="mm-divider"></div>
-        <div class="mm-metric-grid">
-          <article class="mm-metric-card">
-            <p class="mm-metric-label">Accuracy</p>
-            <p class="mm-metric-value" id="metric-accuracy"></p>
-            <p class="mm-metric-caption" id="metric-accuracy-caption"></p>
-          </article>
-          <article class="mm-metric-card">
-            <p class="mm-metric-label">Balanced Accuracy</p>
-            <p class="mm-metric-value" id="metric-balanced"></p>
-            <p class="mm-metric-caption">Useful here because all 10 classes are balanced in the test split.</p>
-          </article>
-          <article class="mm-metric-card">
-            <p class="mm-metric-label">Macro F1</p>
-            <p class="mm-metric-value" id="metric-f1"></p>
-            <p class="mm-metric-caption" id="metric-f1-caption"></p>
-          </article>
-          <article class="mm-metric-card">
-            <p class="mm-metric-label">Interpretation</p>
-            <p class="mm-metric-value" id="metric-verdict"></p>
-            <p class="mm-metric-caption" id="metric-verdict-caption"></p>
-          </article>
-        </div>
-      </section>
+      <nav class="mm-subnav" aria-label="Multimodal pages">
+        <a class="mm-pill" href="./index.html">Overview</a>
+        <a class="mm-pill" href="./dataset-eda.html">Dataset EDA</a>
+        <a class="mm-pill" href="./model-backbone.html">Model Backbone</a>
+        <a class="mm-pill" href="./methodology.html">Methodology</a>
+        <a class="mm-pill" href="./evaluation-results.html" aria-current="page">Evaluation Results</a>
+      </nav>
 
-      <section class="section mm-two-up">
-        <article class="mm-chart-card">
-          <p class="mm-kicker">Aggregate comparison</p>
-          <h2>Accuracy, precision, and F1 by method</h2>
-          <p>The saved benchmark run shows zero-shot slightly ahead of the 128-shot linear probe on the shared test split.</p>
-          <img src="./assets/report-data/comparison_bar.png" alt="Bar chart comparing zero-shot and few-shot metrics for the multimodal Food101 run." />
-          <p class="mm-chart-caption" id="comparison-caption"></p>
-        </article>
-
-        <article class="mm-panel">
-          <p class="mm-kicker">Shot sensitivity</p>
-          <h2>Few-shot scaling curve</h2>
-          <p>Use the shot buttons to inspect how the linear probe improves as more labeled support examples become available.</p>
-          <div class="mm-tab-row" id="shot-selector" style="margin-top: 14px;"></div>
-          <table class="mm-mini-table" style="margin-top: 16px;">
-            <thead>
-              <tr>
-                <th>Method</th>
-                <th>Accuracy</th>
-                <th>Precision</th>
-                <th>Macro F1</th>
-                <th>Balanced Acc.</th>
-              </tr>
-            </thead>
-            <tbody id="shot-table-body"></tbody>
-          </table>
-        </article>
-      </section>
-
-      <section class="section mm-two-up">
-        <article class="mm-chart-card">
-          <p class="mm-kicker">Confusion structure</p>
-          <h2 id="confusion-title">Zero-shot confusion matrix</h2>
-          <p id="confusion-body">
-            The confusion map highlights which visually similar food classes remain entangled after zero-shot prompting.
-          </p>
-          <img id="confusion-image" src="./assets/report-data/zero_shot_confusion.png" alt="Confusion matrix for zero-shot CLIP on the Food101 test split." />
-        </article>
-
-        <article class="mm-note-card">
-          <p class="mm-kicker">Decision</p>
-          <h2>What the current results imply</h2>
-          <ul class="mm-note-list" id="decision-list"></ul>
-          <div class="mm-link-row" style="margin-top: 14px;">
-            <a class="mm-action" href="./model-backbone.html">Inspect backbone design</a>
-            <a class="mm-action" href="./methodology.html">Inspect execution steps</a>
+      <div class="mm-stack">
+        <section class="mm-panel">
+          <div class="mm-section-tag">Headline Metrics</div>
+          <h2>Best scores in the current report</h2>
+          <div class="mm-metrics">
+            <article class="mm-metric">
+              <div class="mm-metric-label">Zero-Shot Accuracy</div>
+              <div class="mm-metric-value">98.08%</div>
+              <p class="mm-metric-note">Best overall result, using averaged prompt prototypes and no task-specific training.</p>
+            </article>
+            <article class="mm-metric">
+              <div class="mm-metric-label">Best CoOp</div>
+              <div class="mm-metric-value">97.40%</div>
+              <p class="mm-metric-note">CoOp at 128 shots is the strongest learned prompt run.</p>
+            </article>
+            <article class="mm-metric">
+              <div class="mm-metric-label">Best Linear Probe</div>
+              <div class="mm-metric-value">97.32%</div>
+              <p class="mm-metric-note">Linear probe at 128 shots nearly matches CoOp but remains below zero-shot.</p>
+            </article>
+            <article class="mm-metric">
+              <div class="mm-metric-label">Best Overall Method</div>
+              <div class="mm-metric-value">Zero-shot</div>
+              <p class="mm-metric-note">Averaged five-prompt zero-shot CLIP is the strongest result in the full benchmark.</p>
+            </article>
           </div>
-        </article>
-      </section>
+        </section>
 
-      <section class="section mm-panel">
-        <p class="mm-kicker">Full benchmark table</p>
-        <h2>Saved runs across shot budgets</h2>
-        <table class="mm-mini-table">
-          <thead>
-            <tr>
-              <th>Shots / class</th>
-              <th>Method</th>
-              <th>Accuracy</th>
-              <th>Precision</th>
-              <th>Macro F1</th>
-              <th>Balanced Acc.</th>
-            </tr>
-          </thead>
-          <tbody id="benchmark-table-body"></tbody>
-        </table>
-      </section>
+        <section class="mm-panel">
+          <div class="mm-section-tag">Highlights</div>
+          <h2>Best methods by regime</h2>
+          <div class="mm-table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Regime</th>
+                  <th>Best method</th>
+                  <th>Accuracy</th>
+                  <th>Why it matters</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Overall</td>
+                  <td><strong>Zero-shot</strong></td>
+                  <td><strong>0.9808</strong></td>
+                  <td>Best final result without any task-specific training.</td>
+                </tr>
+                <tr>
+                  <td>Few-shot 8</td>
+                  <td><strong>CoOp</strong></td>
+                  <td><strong>0.9708</strong></td>
+                  <td>Large gain over the linear probe at the smallest support budget.</td>
+                </tr>
+                <tr>
+                  <td>Few-shot 16</td>
+                  <td><strong>CoOp</strong></td>
+                  <td><strong>0.9724</strong></td>
+                  <td>Prompt learning remains clearly more sample-efficient.</td>
+                </tr>
+                <tr>
+                  <td>Few-shot 32</td>
+                  <td><strong>CoOp</strong></td>
+                  <td><strong>0.9724</strong></td>
+                  <td>CoOp still leads before the probe starts catching up.</td>
+                </tr>
+                <tr>
+                  <td>Few-shot 64</td>
+                  <td><strong>CoOp</strong></td>
+                  <td><strong>0.9692</strong></td>
+                  <td>The gap narrows, but CoOp is still marginally ahead.</td>
+                </tr>
+                <tr>
+                  <td>Few-shot 128</td>
+                  <td><strong>CoOp</strong></td>
+                  <td><strong>0.9740</strong></td>
+                  <td>CoOp remains the strongest learned adaptation route in this run.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="mm-callout">
+            The key story is not just that zero-shot wins. It is that CoOp is the best learned method at every
+            few-shot budget, which suggests prompt tuning is the more effective adaptation strategy than a linear
+            probe for this Food101 subset.
+          </div>
+        </section>
 
-      <p class="footer"><a href="./">Back to Multimodal Track</a></p>
+        <section class="mm-panel">
+          <div class="mm-section-tag">Metrics Table</div>
+          <h2>All reported settings</h2>
+          <div class="mm-table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Method</th>
+                  <th>Shots</th>
+                  <th>Accuracy</th>
+                  <th>Balanced Accuracy</th>
+                  <th>Macro Precision</th>
+                  <th>Macro F1</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td><strong>Zero-shot</strong></td><td>0</td><td><strong>0.9808</strong></td><td><strong>0.9808</strong></td><td><strong>0.9808</strong></td><td><strong>0.9808</strong></td></tr>
+                <tr><td><strong>CoOp</strong></td><td>8</td><td><strong>0.9708</strong></td><td><strong>0.9708</strong></td><td><strong>0.9709</strong></td><td><strong>0.9707</strong></td></tr>
+                <tr><td>Linear probe</td><td>8</td><td>0.9340</td><td>0.9340</td><td>0.9409</td><td>0.9345</td></tr>
+                <tr><td><strong>CoOp</strong></td><td>16</td><td><strong>0.9724</strong></td><td><strong>0.9724</strong></td><td><strong>0.9727</strong></td><td><strong>0.9724</strong></td></tr>
+                <tr><td>Linear probe</td><td>16</td><td>0.9544</td><td>0.9544</td><td>0.9565</td><td>0.9543</td></tr>
+                <tr><td><strong>CoOp</strong></td><td>32</td><td><strong>0.9724</strong></td><td><strong>0.9724</strong></td><td><strong>0.9726</strong></td><td><strong>0.9724</strong></td></tr>
+                <tr><td>Linear probe</td><td>32</td><td>0.9612</td><td>0.9612</td><td>0.9625</td><td>0.9613</td></tr>
+                <tr><td><strong>CoOp</strong></td><td>64</td><td><strong>0.9692</strong></td><td><strong>0.9692</strong></td><td><strong>0.9697</strong></td><td><strong>0.9691</strong></td></tr>
+                <tr><td>Linear probe</td><td>64</td><td>0.9672</td><td>0.9672</td><td>0.9680</td><td>0.9673</td></tr>
+                <tr><td><strong>CoOp</strong></td><td>128</td><td><strong>0.9740</strong></td><td><strong>0.9740</strong></td><td><strong>0.9743</strong></td><td><strong>0.9740</strong></td></tr>
+                <tr><td>Linear probe</td><td>128</td><td>0.9732</td><td>0.9732</td><td>0.9732</td><td>0.9732</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="mm-actions">
+            <a class="mm-button" href="./assets/results/evaluation/metrics_summary.csv">Download metrics_summary.csv</a>
+            <a class="mm-button" href="./assets/results/summary.csv">Download run summary.csv</a>
+            <a class="mm-button" href="./assets/results/evaluation/failed_cases/top_failures.csv">Download top_failures.csv</a>
+          </div>
+        </section>
+
+        <section class="mm-panel">
+          <div class="mm-section-tag">Plot</div>
+          <h2>Comparison across methods and support budgets</h2>
+          <figure class="mm-figure">
+            <img src="./assets/results/evaluation/plots/comparison_bar.png" alt="Comparison bar chart for zero-shot, CoOp, and linear probe metrics." />
+            <figcaption>
+              The plot makes two things obvious: zero-shot starts from an unusually strong baseline, and CoOp is the
+              more sample-efficient few-shot method through the low- and mid-shot regime.
+            </figcaption>
+          </figure>
+        </section>
+
+        <section class="mm-panel">
+          <div class="mm-section-tag">Confusion</div>
+          <h2>Method-level confusion matrices</h2>
+          <div class="mm-gallery">
+            <img src="./assets/results/evaluation/confusion_matrices/zero_shot.png" alt="Zero-shot confusion matrix." />
+            <img src="./assets/results/evaluation/confusion_matrices/coop_128.png" alt="CoOp 128-shot confusion matrix." />
+            <img src="./assets/results/evaluation/confusion_matrices/linear_probe_128.png" alt="Linear probe 128-shot confusion matrix." />
+            <img src="./assets/results/evaluation/confusion_matrices/coop_32.png" alt="CoOp 32-shot confusion matrix." />
+          </div>
+          <div class="mm-callout">
+            The main residual confusions are not random. They cluster around visually adjacent foods with similar
+            textures or silhouettes: fried rings and pastry surfaces for donuts, layered crust and browned surfaces
+            for apple pie, and bread-heavy compositions for hamburger-like mistakes.
+          </div>
+        </section>
+
+        <section class="mm-panel">
+          <div class="mm-section-tag">CoOp Analysis</div>
+          <h2>Decoded prompt context is not human-readable language</h2>
+          <p class="mm-prose">
+            Nearest-token decoding of the learned CoOp context shows why prompt tuning should not be interpreted as
+            conventional text editing. The learned vectors do not settle into fluent phrases; instead they occupy
+            regions of CLIP token space that are useful for classification even when the nearest vocabulary items
+            look fragmented or semantically unrelated.
+          </p>
+          <div class="mm-table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Class</th>
+                  <th>Context token</th>
+                  <th>Nearest decoded tokens</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>apple_pie</td><td>0</td><td>slowdown, replacement-char, dumping, ringing, accounting</td></tr>
+                <tr><td>apple_pie</td><td>1</td><td>rou, muck, ora, poz, crock</td></tr>
+                <tr><td>apple_pie</td><td>2</td><td>!, flower-emoji, !!, lor, cr</td></tr>
+                <tr><td>apple_pie</td><td>3</td><td>llen, death, sous, poured, grading</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="mm-actions">
+            <a class="mm-button" href="./assets/results/evaluation/coop_128_decoded_context.json">Open decoded CoOp context JSON</a>
+          </div>
+        </section>
+
+        <section class="mm-panel">
+          <div class="mm-section-tag">Failure Analysis</div>
+          <h2>Top failed tests and saliency</h2>
+          <p class="mm-prose">
+            The highest-confidence failures are especially useful because they reveal what the system believes very
+            strongly but incorrectly. In this run, the most repeated failure cases are `apple_pie -> donuts` and
+            `donuts -> hamburger`, and both persist across zero-shot and CoOp.
+          </p>
+          <div class="mm-table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Method</th>
+                  <th>Shots</th>
+                  <th>True</th>
+                  <th>Predicted</th>
+                  <th>Confidence</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>CoOp</td><td>128</td><td>apple_pie</td><td>donuts</td><td>0.9996</td></tr>
+                <tr><td>CoOp</td><td>32</td><td>donuts</td><td>hamburger</td><td>0.9991</td></tr>
+                <tr><td>Zero-shot</td><td>0</td><td>apple_pie</td><td>donuts</td><td>0.9981</td></tr>
+                <tr><td>Zero-shot</td><td>0</td><td>donuts</td><td>hamburger</td><td>0.9970</td></tr>
+                <tr><td>CoOp</td><td>32</td><td>apple_pie</td><td>donuts</td><td>0.9962</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="mm-gallery">
+            <img src="./assets/results/evaluation/saliency/00_coop_shot128_true-apple_pie_pred-donuts.png" alt="CoOp saliency map for apple pie predicted as donuts." />
+            <img src="./assets/results/evaluation/saliency/01_coop_shot32_true-donuts_pred-hamburger.png" alt="CoOp saliency map for donuts predicted as hamburger." />
+            <img src="./assets/results/evaluation/saliency/02_zero_shot_shot0_true-apple_pie_pred-donuts.png" alt="Zero-shot saliency map for apple pie predicted as donuts." />
+            <img src="./assets/results/evaluation/saliency/03_zero_shot_shot0_true-donuts_pred-hamburger.png" alt="Zero-shot saliency map for donuts predicted as hamburger." />
+          </div>
+        </section>
+      </div>
+
+      <p class="mm-footer"><a href="./">Back to Multimodal Track</a></p>
     </main>
-
-    <script>
-      const DATA_PATH = "./assets/report-data/multimodal_report_data.json";
-      let resultData = null;
-      let activeMethod = "zero_shot";
-      let activeShot = 128;
-
-      function pct(value) {
-        return `${Number(value).toFixed(2)}%`;
-      }
-
-      function renderSummary() {
-        const method = activeMethod === "zero_shot" ? resultData.methods.zero_shot : resultData.methods.few_shot;
-        document.getElementById("metric-accuracy").textContent = pct(method.metrics.accuracy);
-        document.getElementById("metric-balanced").textContent = pct(method.metrics.balanced_accuracy);
-        document.getElementById("metric-f1").textContent = pct(method.metrics.macro_f1);
-
-        if (activeMethod === "zero_shot") {
-          document.getElementById("metric-accuracy-caption").textContent = "Best saved overall test accuracy in the exported runs.";
-          document.getElementById("metric-f1-caption").textContent = "Macro F1 stays aligned with accuracy because the test set is balanced.";
-          document.getElementById("metric-verdict").textContent = "Lead";
-          document.getElementById("metric-verdict-caption").textContent = "Zero-shot remains the strongest current baseline despite requiring no head training.";
-          document.getElementById("confusion-title").textContent = "Zero-shot confusion matrix";
-          document.getElementById("confusion-body").textContent = "This view shows how prompt-based class prototypes separate the 10 selected dishes on the test split.";
-          document.getElementById("confusion-image").src = "./assets/report-data/zero_shot_confusion.png";
-          document.getElementById("confusion-image").alt = "Confusion matrix for zero-shot CLIP on the Food101 test split.";
-          document.getElementById("decision-list").innerHTML = `
-            <li>Keep zero-shot CLIP as the baseline to beat because it already reaches ${pct(method.metrics.accuracy)} test accuracy without supervised head fitting.</li>
-            <li>Prompt engineering remains a high-leverage next step because this method depends directly on text prototype quality.</li>
-            <li>Any future finetuning should justify added complexity with a measurable improvement over the current zero-shot margin.</li>
-          `;
-        } else {
-          document.getElementById("metric-accuracy-caption").textContent = "Best saved few-shot result from the 128-shot linear probe run.";
-          document.getElementById("metric-f1-caption").textContent = `Best dev accuracy reached ${pct(method.metrics.best_dev_accuracy)} before final test export.`;
-          document.getElementById("metric-verdict").textContent = "Close";
-          document.getElementById("metric-verdict-caption").textContent = "The probe is competitive, but still trails the saved zero-shot result.";
-          document.getElementById("confusion-title").textContent = "Few-shot confusion matrix";
-          document.getElementById("confusion-body").textContent = "This view shows where the learned linear head helps and where frozen CLIP features still confuse visually similar dishes.";
-          document.getElementById("confusion-image").src = "./assets/report-data/few_shot_confusion.png";
-          document.getElementById("confusion-image").alt = "Confusion matrix for the few-shot linear probe on the Food101 test split.";
-          document.getElementById("decision-list").innerHTML = `
-            <li>The few-shot probe improves strongly with more support examples, which suggests the frozen CLIP embeddings are already highly usable.</li>
-            <li>The final 128-shot model reaches ${pct(method.metrics.accuracy)} test accuracy, so the remaining gap to zero-shot is narrow but real.</li>
-            <li>If pursuing supervised adaptation further, the next experiments should test prompt-tuning or partial backbone finetuning rather than only increasing linear probe epochs.</li>
-          `;
-        }
-      }
-
-      function renderShotSelector() {
-        const shots = [...new Set(resultData.metrics_by_shot.filter((row) => row.method === "few_shot_linear_probe").map((row) => row.shots_per_class))];
-        document.getElementById("shot-selector").innerHTML = shots.map((shot) => `
-          <button class="mm-tab ${shot === activeShot ? "is-active" : ""}" data-shot="${shot}" type="button">${shot} shots</button>
-        `).join("");
-
-        document.querySelectorAll("[data-shot]").forEach((button) => {
-          button.addEventListener("click", () => {
-            activeShot = Number(button.dataset.shot);
-            renderShotSelector();
-            renderShotTable();
-          });
-        });
-      }
-
-      function renderShotTable() {
-        const zero = resultData.metrics_by_shot.find((row) => row.method === "zero_shot" && row.shots_per_class === activeShot)
-          || resultData.metrics_by_shot.find((row) => row.method === "zero_shot");
-        const few = resultData.metrics_by_shot.find((row) => row.method === "few_shot_linear_probe" && row.shots_per_class === activeShot);
-        const rows = [zero, few].filter(Boolean);
-        document.getElementById("shot-table-body").innerHTML = rows.map((row) => `
-          <tr>
-            <td>${row.method === "zero_shot" ? "Zero-shot CLIP" : `Few-shot (${row.shots_per_class})`}</td>
-            <td>${pct(row.accuracy)}</td>
-            <td>${pct(row.precision)}</td>
-            <td>${pct(row.f1_score)}</td>
-            <td>${pct(row.balanced_accuracy)}</td>
-          </tr>
-        `).join("");
-      }
-
-      function renderBenchmarkTable() {
-        document.getElementById("benchmark-table-body").innerHTML = resultData.metrics_by_shot.map((row) => `
-          <tr>
-            <td>${row.shots_per_class}</td>
-            <td>${row.method === "zero_shot" ? "Zero-shot CLIP" : "Few-shot linear probe"}</td>
-            <td>${pct(row.accuracy)}</td>
-            <td>${pct(row.precision)}</td>
-            <td>${pct(row.f1_score)}</td>
-            <td>${pct(row.balanced_accuracy)}</td>
-          </tr>
-        `).join("");
-      }
-
-      fetch(DATA_PATH)
-        .then((response) => response.json())
-        .then((data) => {
-          resultData = data;
-          document.getElementById("comparison-caption").textContent =
-            `Saved run ${data.meta.run_timestamp}: zero-shot accuracy ${pct(data.methods.zero_shot.metrics.accuracy)} versus few-shot accuracy ${pct(data.methods.few_shot.metrics.accuracy)} at ${data.dataset.shots_per_class} shots per class.`;
-          renderSummary();
-          renderShotSelector();
-          renderShotTable();
-          renderBenchmarkTable();
-
-          document.querySelectorAll("[data-result-method]").forEach((button) => {
-            button.addEventListener("click", () => {
-              activeMethod = button.dataset.resultMethod;
-              document.querySelectorAll("[data-result-method]").forEach((tab) => tab.classList.remove("is-active"));
-              button.classList.add("is-active");
-              renderSummary();
-            });
-          });
-        });
-    </script>
   </body>
 </html>

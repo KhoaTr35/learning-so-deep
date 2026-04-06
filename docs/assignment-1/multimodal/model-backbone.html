@@ -7,12 +7,12 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Newsreader:opsz,wght@6..72,500;6..72,700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Mono:wght@400;500&family=Public+Sans:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
     <link rel="stylesheet" href="../../styles.css" />
   </head>
-  <body class="assignment-page mm-page">
+  <body class="assignment-page multimodal-atlas">
     <div class="shell nav">
       <div class="nav-inner">
         <a class="brand" href="../../index.html">Learning So Deep</a>
@@ -24,295 +24,194 @@
       </div>
     </div>
 
-    <main class="shell assignment-layout">
-      <header class="hero assignment-hero inner-hero">
-        <p class="eyebrow">Assignment 1 / Multimodal / Model Backbone</p>
-        <h1>Pipeline Backbone</h1>
-        <p class="lead">
-          This page explains the multimodal classification stack as an interactive system: image input enters a
-          shared CLIP backbone, then routes into either a zero-shot text-matching head or a few-shot linear probe.
-        </p>
-        <p class="crumbs"><a href="../../assignment-1/">Assignment 1</a> / <a href="./">Multimodal</a> / Model Backbone</p>
-        <div class="mm-hero-actions">
-          <a class="mm-action" href="./methodology.html">Open Methodology</a>
-          <a class="mm-action" href="./evaluation-results.html">Open Evaluation Results</a>
-          <a class="mm-action" href="./dataset-eda.html">Open Dataset EDA</a>
+    <main class="shell mm-report">
+      <header class="hero">
+        <div class="mm-kicker-line">
+          <p class="eyebrow">Assignment 1 / Multimodal / Model Backbone</p>
+          <span class="mm-stamp">Shared CLIP Encoder</span>
+          <span class="mm-stamp">Zero-Shot + CoOp + Linear Probe</span>
         </div>
+        <h1>One representation space, three ways to make a decision.</h1>
+        <p class="lead">
+          The entire report is anchored on `openai/clip-vit-base-patch32`. Images are encoded once into a shared
+          embedding space, then evaluated through three heads: averaged prompt prototypes for zero-shot, learnable
+          context prompts for CoOp, and a linear classifier for the few-shot probe baseline.
+        </p>
       </header>
 
-      <section class="section mm-grid">
-        <article class="mm-panel">
-          <p class="mm-kicker">Shared architecture</p>
-          <h2>One encoder, two decision paths</h2>
-          <p>
-            The experiment freezes `openai/clip-vit-base-patch32` as the representation engine. After preprocessing,
-            the image embedding branches into either direct text-prototype matching or a trained linear probe. The
-            interactive strip below lets you inspect each stage in order.
+      <nav class="mm-subnav" aria-label="Multimodal pages">
+        <a class="mm-pill" href="./index.html">Overview</a>
+        <a class="mm-pill" href="./dataset-eda.html">Dataset EDA</a>
+        <a class="mm-pill" href="./model-backbone.html" aria-current="page">Model Backbone</a>
+        <a class="mm-pill" href="./methodology.html">Methodology</a>
+        <a class="mm-pill" href="./evaluation-results.html">Evaluation Results</a>
+      </nav>
+
+      <div class="mm-stack">
+        <section class="mm-panel">
+          <div class="mm-section-tag">Architecture</div>
+          <h2>Shared image encoder</h2>
+          <p class="mm-prose">
+            CLIP ViT-B/32 acts as the fixed representation engine for every route in the report. That design removes
+            backbone retraining from the comparison, which makes the downstream question cleaner: how much adaptation
+            is really needed once a strong image-text encoder is already available?
           </p>
-          <div class="mm-chip-row" id="class-chip-row"></div>
-        </article>
-
-        <div class="mm-metric-grid">
-          <article class="mm-metric-card">
-            <p class="mm-metric-label">Backbone</p>
-            <p class="mm-metric-value">CLIP</p>
-            <p class="mm-metric-caption">ViT-B/32 image-text encoder with shared embedding space.</p>
-          </article>
-          <article class="mm-metric-card">
-            <p class="mm-metric-label">Classes</p>
-            <p class="mm-metric-value" id="class-count">10</p>
-            <p class="mm-metric-caption">Selected Food101 categories used throughout the report.</p>
-          </article>
-          <article class="mm-metric-card">
-            <p class="mm-metric-label">Prompt Bank</p>
-            <p class="mm-metric-value" id="prompt-count">5</p>
-            <p class="mm-metric-caption">Template ensemble used to stabilize zero-shot class text features.</p>
-          </article>
-          <article class="mm-metric-card">
-            <p class="mm-metric-label">Support Budget</p>
-            <p class="mm-metric-value" id="shots-per-class">128</p>
-            <p class="mm-metric-caption">Few-shot training images per class for the latest saved run.</p>
-          </article>
-        </div>
-      </section>
-
-      <section class="section mm-panel-soft">
-        <div class="mm-tab-row" aria-label="Method switch">
-          <button class="mm-tab is-active" data-method-tab="zero_shot" type="button">Zero-shot route</button>
-          <button class="mm-tab" data-method-tab="few_shot" type="button">Few-shot route</button>
-        </div>
-        <div class="mm-divider"></div>
-        <div class="mm-pipeline-flow" id="pipeline-stage-strip"></div>
-        <article class="mm-stage-inspector" id="pipeline-stage-inspector"></article>
-      </section>
-
-      <section class="section mm-two-up">
-        <article class="mm-method-card" id="zero-shot-card">
-          <p class="mm-kicker">Alternative A</p>
-          <h2>Zero-shot CLIP</h2>
-          <p id="zero-shot-tagline"></p>
-          <div class="mm-metric-grid" style="margin-top: 14px;">
-            <article class="mm-metric-card">
-              <p class="mm-metric-label">Accuracy</p>
-              <p class="mm-metric-value" id="zs-accuracy"></p>
+          <div class="mm-metrics">
+            <article class="mm-metric">
+              <div class="mm-metric-label">Backbone</div>
+              <div class="mm-metric-value">ViT-B/32</div>
+              <p class="mm-metric-note">OpenAI CLIP image-text model with a shared projection space.</p>
             </article>
-            <article class="mm-metric-card">
-              <p class="mm-metric-label">Balanced Acc.</p>
-              <p class="mm-metric-value" id="zs-balanced"></p>
+            <article class="mm-metric">
+              <div class="mm-metric-label">Prompt Ensemble</div>
+              <div class="mm-metric-value">5</div>
+              <p class="mm-metric-note">Each class is represented by the average of five prompt embeddings in zero-shot mode.</p>
             </article>
-            <article class="mm-metric-card">
-              <p class="mm-metric-label">Macro F1</p>
-              <p class="mm-metric-value" id="zs-f1"></p>
+            <article class="mm-metric">
+              <div class="mm-metric-label">CoOp Context</div>
+              <div class="mm-metric-value">16</div>
+              <p class="mm-metric-note">Sixteen learnable context tokens are inserted before the class label by default.</p>
+            </article>
+            <article class="mm-metric">
+              <div class="mm-metric-label">Frozen Weights</div>
+              <div class="mm-metric-value">CLIP</div>
+              <p class="mm-metric-note">CLIP stays frozen for both CoOp and the linear probe; only the head or prompt context changes.</p>
             </article>
           </div>
-          <ul class="mm-method-list" id="zs-strengths"></ul>
-        </article>
+          <figure class="mm-figure">
+            <img src="./assets/ClipFig.png" alt="Overview diagram of the CLIP model showing image and text encoders in a shared embedding space." />
+            <figcaption>
+              CLIP aligns image and text representations into a shared embedding space. The multimodal track reuses
+              that joint space directly for zero-shot prompting and as the base layer for CoOp and linear-probe
+              adaptation.
+            </figcaption>
+          </figure>
+        </section>
 
-        <article class="mm-method-card" id="few-shot-card">
-          <p class="mm-kicker">Alternative B</p>
-          <h2>Few-shot Linear Probe</h2>
-          <p id="few-shot-tagline"></p>
-          <div class="mm-metric-grid" style="margin-top: 14px;">
-            <article class="mm-metric-card">
-              <p class="mm-metric-label">Accuracy</p>
-              <p class="mm-metric-value" id="fs-accuracy"></p>
-            </article>
-            <article class="mm-metric-card">
-              <p class="mm-metric-label">Balanced Acc.</p>
-              <p class="mm-metric-value" id="fs-balanced"></p>
-            </article>
-            <article class="mm-metric-card">
-              <p class="mm-metric-label">Macro F1</p>
-              <p class="mm-metric-value" id="fs-f1"></p>
-            </article>
-            <article class="mm-metric-card">
-              <p class="mm-metric-label">Best Dev</p>
-              <p class="mm-metric-value" id="fs-dev"></p>
-            </article>
+        <section class="mm-panel">
+          <div class="mm-section-tag">Flow</div>
+          <h2>Decision routes</h2>
+          <div class="mm-table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Route</th>
+                  <th>Text representation</th>
+                  <th>Trainable part</th>
+                  <th>Inference rule</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Zero-shot</td>
+                  <td>Five hand-written prompt templates per class, averaged into one class prototype.</td>
+                  <td>None</td>
+                  <td>Image embedding multiplied with averaged prompt embeddings.</td>
+                </tr>
+                <tr>
+                  <td>CoOp</td>
+                  <td>Class label plus learnable context tokens encoded by frozen CLIP text tower.</td>
+                  <td>Context tokens only</td>
+                  <td>Image embedding compared with learned text embeddings.</td>
+                </tr>
+                <tr>
+                  <td>Linear probe</td>
+                  <td>No text at inference</td>
+                  <td>Linear classifier on frozen image features</td>
+                  <td>Image embedding sent through a trained linear layer.</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
-          <ul class="mm-method-list" id="fs-strengths"></ul>
-        </article>
-      </section>
+          <pre class="mm-code"><code>image -> CLIP image encoder -> normalized image embedding
 
-      <section class="section mm-two-up">
-        <article class="mm-code-card">
-          <p class="mm-kicker">Execution sketch</p>
-          <h2>Backbone orchestration</h2>
-          <pre><code>datasets_by_split, class_names, dataset_summary = load_food101_datasets(config)
-model = CLIPModel.from_pretrained(config.model_id).to(device)
-processor = AutoProcessor.from_pretrained(config.model_id)
+zero-shot:
+  5 prompt templates per class
+  -> CLIP text encoder
+  -> average 5 prompt embeddings
+  -> similarity(image_embed, class_prompt_embed)
 
-for split_name, dataloader in dataloaders.items():
-    features, labels, indices = extract_image_features(
-        model=model,
-        processor=processor,
-        dataloader=dataloader,
-        device=device,
+CoOp:
+  class label + learnable context tokens
+  -> frozen CLIP text encoder
+  -> learned text embeddings
+  -> similarity(image_embed, learned_text_embed)
+
+linear probe:
+  normalized image embedding
+  -> trainable linear classifier</code></pre>
+          <div class="mm-figure-grid">
+            <figure class="mm-figure">
+              <img src="./assets/results/evaluation/confusion_matrices/zero_shot.png" alt="Zero-shot confusion matrix." />
+              <figcaption>Zero-shot operates by matching image embeddings against averaged prompt embeddings.</figcaption>
+            </figure>
+            <figure class="mm-figure">
+              <img src="./assets/results/evaluation/confusion_matrices/coop_128.png" alt="CoOp confusion matrix at 128 shots." />
+              <figcaption>CoOp keeps the same image encoder but replaces fixed prompts with learned context tokens.</figcaption>
+            </figure>
+          </div>
+        </section>
+
+        <section class="mm-panel">
+          <div class="mm-section-tag">Source Code</div>
+          <h2>Relevant implementation in <code>src/</code></h2>
+          <p class="mm-prose">
+            The actual backbone logic lives in the training and embedding scripts. Zero-shot depends on prompt
+            averaging from <code>extract_embedding.py</code>, while CoOp and the linear probe are implemented in
+            <code>train.py</code>.
+          </p>
+          <pre class="mm-code"><code># assignments/assignment1/multimodal/src/extract_embedding.py
+def build_text_embeddings(model, processor, class_names, prompt_templates, device):
+    for label_id, class_name in enumerate(class_names):
+        prompts = [template.format(humanize_class_name(class_name)) for template in prompt_templates]
+        text_inputs = processor(text=prompts, return_tensors="pt", padding=True, truncation=True)
+        text_outputs = model.get_text_features(**text_inputs)
+        prompt_embeddings = text_outputs / text_outputs.norm(dim=-1, keepdim=True)
+        pooled_embedding = prompt_embeddings.mean(dim=0)
+        pooled_embedding = pooled_embedding / pooled_embedding.norm()
+        class_embeddings.append(pooled_embedding.cpu())</code></pre>
+          <pre class="mm-code"><code># assignments/assignment1/multimodal/src/train.py
+def run_zero_shot(test_payload, text_payload, batch_size):
+    logit_scale = float(text_payload["logit_scale"])
+    logits = compute_similarity_logits(
+        image_embeddings=test_payload["embeddings"],
+        text_embeddings=text_payload["class_embeddings"],
+        logit_scale=logit_scale,
+        batch_size=batch_size,
     )
-    split_features[split_name] = features
+    predictions = logits.argmax(dim=-1)
+    metrics = compute_metrics(
+        true_labels=test_payload["label_ids"].tolist(),
+        predicted_labels=predictions.tolist(),
+    )
+    return metrics, logits</code></pre>
+          <pre class="mm-code"><code># assignments/assignment1/multimodal/src/train.py
+def train_linear_probe(train_embeddings, train_labels, val_embeddings, val_labels, ...):
+    classifier = nn.Linear(train_embeddings.shape[1], num_classes).to(device)
+    optimizer = torch.optim.AdamW(classifier.parameters(), lr=learning_rate, weight_decay=weight_decay)
+    criterion = nn.CrossEntropyLoss()
+    ...
+    logits = classifier(batch_embeddings)
+    loss = criterion(logits, batch_labels)</code></pre>
+        </section>
 
-text_features = build_zero_shot_text_features(
-    model=model,
-    processor=processor,
-    class_names=class_names,
-    prompt_templates=config.prompt_templates,
-    device=device,
-)</code></pre>
-        </article>
-
-        <article class="mm-note-card">
-          <p class="mm-kicker">Why this backbone</p>
-          <h2>Design rationale</h2>
+        <section class="mm-panel">
+          <div class="mm-section-tag">Why This Design</div>
+          <h2>Why the fixed backbone matters</h2>
           <ul class="mm-note-list">
-            <li>The image tower is strong enough to separate the 10 selected food categories without full end-to-end fine-tuning.</li>
-            <li>The shared embedding space makes zero-shot prompting and few-shot adaptation directly comparable under one encoder.</li>
-            <li>Freezing CLIP lowers training cost and keeps the experiment focused on the classifier head decision, not backbone optimization.</li>
-            <li>The same embedding extractor powers the Streamlit demo and the offline experiment pipeline, which reduces product-model drift.</li>
+            <li>It keeps the comparison honest by isolating the head rather than conflating head choice with backbone fine-tuning.</li>
+            <li>It makes zero-shot, CoOp, and linear-probe results directly comparable because they consume the same image feature space.</li>
+            <li>It reduces training cost and lets the report focus on prompt engineering versus lightweight adaptation.</li>
+            <li>It supports practical deployment because embeddings can be precomputed and reused across methods.</li>
           </ul>
-          <div class="mm-link-row" style="margin-top: 14px;">
-            <a class="mm-action" href="./methodology.html">See training recipe</a>
-            <a class="mm-action" href="./evaluation-results.html">See test metrics</a>
+          <div class="mm-callout">
+            The key finding from this run is unintuitive but important: the frozen backbone is already strong enough
+            that zero-shot with averaged prompts beats every few-shot variant on final test accuracy.
           </div>
-        </article>
-      </section>
+        </section>
+      </div>
 
-      <p class="footer"><a href="./">Back to Multimodal Track</a></p>
+      <p class="mm-footer"><a href="./">Back to Multimodal Track</a></p>
     </main>
-
-    <script>
-      const DATA_PATH = "./assets/report-data/multimodal_report_data.json";
-      let activeMethod = "zero_shot";
-      let activeStageIndex = 0;
-      let reportData = null;
-
-      const methodSpecificNotes = {
-        zero_shot: {
-          input: "The same image is compared against text-derived class prototypes without updating task-specific weights.",
-          preprocess: "Prompt templates are tokenized alongside image tensors so both modalities live in the same CLIP pipeline.",
-          backbone: "The text tower matters here because class semantics are represented explicitly through prompts.",
-          head: "Head = normalized text features averaged across prompt templates and scaled by CLIP's learned logit scale.",
-          results: "This route currently delivers the strongest saved test accuracy among the exported runs."
-        },
-        few_shot: {
-          input: "Input handling is identical to zero-shot so the comparison isolates the classifier head choice.",
-          preprocess: "Only images feed the probe path after CLIP feature extraction. Prompts are not used at inference time.",
-          backbone: "The encoder stays frozen and acts as a feature generator for the downstream linear probe.",
-          head: "Head = trainable linear classifier fit on 128 support examples per class and selected with dev metrics.",
-          results: "This route improves sharply with more shots, but the saved zero-shot baseline still stays ahead."
-        }
-      };
-
-      function percent(value) {
-        return `${Number(value).toFixed(2)}%`;
-      }
-
-      function renderMethodCards(data) {
-        document.getElementById("zero-shot-tagline").textContent = data.methods.zero_shot.tagline;
-        document.getElementById("few-shot-tagline").textContent = data.methods.few_shot.tagline;
-
-        document.getElementById("zs-accuracy").textContent = percent(data.methods.zero_shot.metrics.accuracy);
-        document.getElementById("zs-balanced").textContent = percent(data.methods.zero_shot.metrics.balanced_accuracy);
-        document.getElementById("zs-f1").textContent = percent(data.methods.zero_shot.metrics.macro_f1);
-
-        document.getElementById("fs-accuracy").textContent = percent(data.methods.few_shot.metrics.accuracy);
-        document.getElementById("fs-balanced").textContent = percent(data.methods.few_shot.metrics.balanced_accuracy);
-        document.getElementById("fs-f1").textContent = percent(data.methods.few_shot.metrics.macro_f1);
-        document.getElementById("fs-dev").textContent = percent(data.methods.few_shot.metrics.best_dev_accuracy);
-
-        document.getElementById("zs-strengths").innerHTML = data.methods.zero_shot.strengths.map((item) => `<li>${item}</li>`).join("");
-        document.getElementById("fs-strengths").innerHTML = data.methods.few_shot.strengths.map((item) => `<li>${item}</li>`).join("");
-      }
-
-      function renderStageButtons(data) {
-        const strip = document.getElementById("pipeline-stage-strip");
-        strip.innerHTML = data.pipeline.map((stage, index) => {
-          const block = `
-            <article class="mm-stage-button ${index === activeStageIndex ? "is-active" : ""}" data-stage-index="${index}" role="button" tabindex="0" aria-expanded="${index === activeStageIndex ? "true" : "false"}">
-              <span class="mm-stage-index">${stage.eyebrow}</span>
-              <span class="mm-stage-title">${stage.title}</span>
-              <span class="mm-stage-summary">${stage.summary}</span>
-            </article>
-          `;
-          if (index === data.pipeline.length - 1) {
-            return block;
-          }
-          return `${block}<div class="mm-pipeline-arrow" aria-hidden="true">→</div>`;
-        }).join("");
-
-        strip.querySelectorAll("[data-stage-index]").forEach((button) => {
-          const activate = () => {
-            activeStageIndex = Number(button.dataset.stageIndex);
-            renderStageButtons(data);
-            renderStageInspector(data);
-          };
-          button.addEventListener("click", activate);
-          button.addEventListener("keydown", (event) => {
-            if (event.key === "Enter" || event.key === " ") {
-              event.preventDefault();
-              activate();
-            }
-          });
-        });
-      }
-
-      function renderStageInspector(data) {
-        const stage = data.pipeline[activeStageIndex];
-        const methodTitle = activeMethod === "zero_shot" ? data.methods.zero_shot.title : data.methods.few_shot.title;
-        const inspector = document.getElementById("pipeline-stage-inspector");
-        inspector.innerHTML = `
-          <div class="mm-stage-inspector-head">
-            <div>
-              <p class="mm-kicker">${stage.eyebrow}</p>
-              <h2>${stage.title}</h2>
-              <p>${stage.summary}</p>
-            </div>
-            <div class="mm-stage-inspector-meta">
-              <span class="mm-stage-pill">${methodTitle}</span>
-              <span class="mm-stage-pill">Active stage</span>
-            </div>
-          </div>
-          <div class="mm-stage-inspector-body">
-            <div>
-              <div class="mm-stage-note">
-                <strong>Method-specific interpretation</strong>
-                <span>${methodSpecificNotes[activeMethod][stage.id]}</span>
-              </div>
-              <ul class="mm-stage-inline-list">
-                ${stage.details.map((item) => `<li>${item}</li>`).join("")}
-              </ul>
-            </div>
-            <pre><code>${stage.code.replaceAll("<", "&lt;").replaceAll(">", "&gt;")}</code></pre>
-          </div>
-        `;
-      }
-
-      function boot(data) {
-        reportData = data;
-        document.getElementById("class-count").textContent = data.meta.classes.length;
-        document.getElementById("prompt-count").textContent = data.meta.prompt_templates.length;
-        document.getElementById("shots-per-class").textContent = data.dataset.shots_per_class;
-        document.getElementById("class-chip-row").innerHTML = data.meta.classes.map((name) => `<span class="mm-chip">${name}</span>`).join("");
-        renderMethodCards(data);
-        renderStageButtons(data);
-        renderStageInspector(data);
-
-        document.querySelectorAll("[data-method-tab]").forEach((button) => {
-          button.addEventListener("click", () => {
-            activeMethod = button.dataset.methodTab;
-            document.querySelectorAll("[data-method-tab]").forEach((tab) => tab.classList.remove("is-active"));
-            button.classList.add("is-active");
-            renderStageButtons(reportData);
-            renderStageInspector(reportData);
-          });
-        });
-      }
-
-      fetch(DATA_PATH)
-        .then((response) => response.json())
-        .then(boot)
-        .catch((error) => {
-          document.getElementById("pipeline-stage-inspector").innerHTML = `<p>Unable to load report data: ${error}</p>`;
-        });
-    </script>
   </body>
 </html>

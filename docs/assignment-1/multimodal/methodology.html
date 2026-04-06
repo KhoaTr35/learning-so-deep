@@ -7,12 +7,12 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Newsreader:opsz,wght@6..72,500;6..72,700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Mono:wght@400;500&family=Public+Sans:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
     <link rel="stylesheet" href="../../styles.css" />
   </head>
-  <body class="assignment-page mm-page">
+  <body class="assignment-page multimodal-atlas">
     <div class="shell nav">
       <div class="nav-inner">
         <a class="brand" href="../../index.html">Learning So Deep</a>
@@ -24,267 +24,271 @@
       </div>
     </div>
 
-    <main class="shell assignment-layout">
-      <header class="hero assignment-hero inner-hero">
-        <p class="eyebrow">Assignment 1 / Multimodal / Methodology</p>
-        <h1>Execution Methodology</h1>
-        <p class="lead">
-          This page turns the multimodal experiment into a stage-by-stage operating recipe. The pipeline stays fixed
-          above, while the selected process expands into one full-width inspector below with implementation details,
-          code, and method-specific notes.
-        </p>
-        <p class="crumbs"><a href="../../assignment-1/">Assignment 1</a> / <a href="./">Multimodal</a> / Methodology</p>
-        <div class="mm-hero-actions">
-          <a class="mm-action" href="./model-backbone.html">Open Backbone Map</a>
-          <a class="mm-action" href="./evaluation-results.html">Open Results Console</a>
-          <a class="mm-action" href="./dataset-eda.html">Open Dataset EDA</a>
+    <main class="shell mm-report">
+      <header class="hero">
+        <div class="mm-kicker-line">
+          <p class="eyebrow">Assignment 1 / Multimodal / Methodology</p>
+          <span class="mm-stamp">Config-Driven Pipeline</span>
+          <span class="mm-stamp">WandB Logged</span>
         </div>
+        <h1>The experiment is a reproducible sequence, not a notebook-only artifact.</h1>
+        <p class="lead">
+          The multimodal workflow is defined through a single YAML config, split into explicit stages for download,
+          preprocessing, embedding extraction, training, inference, and evaluation. This keeps the pipeline auditable
+          and lets the final HTML report mirror the exact artifacts produced by the training run.
+        </p>
       </header>
 
-      <section class="section mm-three-up">
-        <article class="mm-metric-card">
-          <p class="mm-metric-label">Train Support</p>
-          <p class="mm-metric-value" id="train-size"></p>
-          <p class="mm-metric-caption">Balanced support set used for the few-shot linear probe.</p>
-        </article>
-        <article class="mm-metric-card">
-          <p class="mm-metric-label">Prompt Templates</p>
-          <p class="mm-metric-value" id="prompt-count"></p>
-          <p class="mm-metric-caption">Prompt ensemble averaged per class in the zero-shot branch.</p>
-        </article>
-        <article class="mm-metric-card">
-          <p class="mm-metric-label">Test Protocol</p>
-          <p class="mm-metric-value" id="test-size"></p>
-          <p class="mm-metric-caption">Shared held-out split used for the final comparison.</p>
-        </article>
-      </section>
+      <nav class="mm-subnav" aria-label="Multimodal pages">
+        <a class="mm-pill" href="./index.html">Overview</a>
+        <a class="mm-pill" href="./dataset-eda.html">Dataset EDA</a>
+        <a class="mm-pill" href="./model-backbone.html">Model Backbone</a>
+        <a class="mm-pill" href="./methodology.html" aria-current="page">Methodology</a>
+        <a class="mm-pill" href="./evaluation-results.html">Evaluation Results</a>
+      </nav>
 
-      <section class="section mm-panel-soft">
-        <div class="mm-tab-row" aria-label="Method switch">
-          <button class="mm-tab is-active" data-method-tab="zero_shot" type="button">Zero-shot route</button>
-          <button class="mm-tab" data-method-tab="few_shot" type="button">Few-shot route</button>
-        </div>
-        <div class="mm-divider"></div>
-        <div class="mm-pipeline-flow" id="pipeline-stage-strip"></div>
-        <article class="mm-stage-inspector" id="pipeline-stage-inspector"></article>
-      </section>
+      <div class="mm-stack">
+        <section class="mm-panel">
+          <div class="mm-section-tag">Run Order</div>
+          <h2>Process graph</h2>
+          <pre class="mm-code"><code>1. download.py
+   -> export Food101 images + labels to disk
 
-      <section class="section mm-two-up">
-        <article class="mm-chart-card">
-          <p class="mm-kicker">Prompt ensemble</p>
-          <h2>Zero-shot text prototype construction</h2>
-          <p>
-            The zero-shot branch tokenizes multiple prompt templates per class, encodes them with the CLIP text
-            tower, then averages the normalized text features to stabilize the class prototype.
-          </p>
-          <div class="mm-prompt-stack" id="prompt-stack"></div>
-        </article>
+2. preprocess.py
+   -> filter to 10 selected classes
+   -> write train_full.csv and test.csv
+   -> create fewshot_{8,16,32,64,128}/{train,val}.csv
 
-        <article class="mm-chart-card">
-          <p class="mm-kicker">Probe optimization</p>
-          <h2>Few-shot training dynamics</h2>
-          <p>The saved 128-shot run reaches its strongest dev result early, then mostly refines loss without large metric jumps.</p>
-          <img src="./assets/report-data/training_curves.png" alt="Few-shot linear probe training curves for the 128-shot Food101 run." />
-          <p class="mm-chart-caption" id="curve-caption"></p>
-        </article>
-      </section>
+3. extract_embedding.py
+   -> extract CLIP image embeddings for train_full and test
+   -> extract 5 prompt embeddings per class
+   -> average 5 prompt embeddings into one class prototype
 
-      <section class="section mm-two-up">
-        <article class="mm-note-card">
-          <p class="mm-kicker">Protocol comparison</p>
-          <h2>Method decision logic</h2>
+4. train.py
+   -> zero-shot evaluation
+   -> CoOp training per shot setting
+   -> linear probe training per shot setting
+
+5. infer.py
+   -> load zero-shot, linear probe, or CoOp
+
+6. evaluate.py
+   -> build summary.csv, confusion matrices, failure analysis, saliency maps</code></pre>
+        </section>
+
+        <section class="mm-panel">
+          <div class="mm-section-tag">Core Config</div>
+          <h2>What the YAML controls</h2>
+          <div class="mm-table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Config block</th>
+                  <th>Purpose</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>`model`</td><td>CLIP model id, currently `openai/clip-vit-base-patch32`.</td></tr>
+                <tr><td>`dataset`</td><td>Hugging Face dataset id and the 10 selected Food101 classes.</td></tr>
+                <tr><td>`prompts`</td><td>Five zero-shot templates, averaged per class.</td></tr>
+                <tr><td>`few_shot`</td><td>Support budgets: 8, 16, 32, 64, 128 shots per class.</td></tr>
+                <tr><td>`splits`</td><td>Validation-per-class budget and deterministic seed.</td></tr>
+                <tr><td>`training`</td><td>Linear-probe optimizer settings.</td></tr>
+                <tr><td>`coop`</td><td>Number of context tokens, class-token placement, class-specific context toggle, and prompt-optimizer settings.</td></tr>
+                <tr><td>`wandb`</td><td>Tracking mode, project, entity, and tags.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="mm-panel">
+          <div class="mm-section-tag">Method Choices</div>
+          <h2>Training strategy by head</h2>
           <ul class="mm-note-list">
-            <li>Zero-shot tests whether pretrained vision-language alignment is already sufficient for the chosen 10-class Food101 task.</li>
-            <li>Few-shot tests whether a lightweight supervised head can improve task fit without expensive backbone finetuning.</li>
-            <li>Both branches share the same CLIP image encoder, preprocessing stack, and test split so the comparison isolates head strategy.</li>
-            <li>The saved runs show zero-shot still ahead, which means future work should focus on stronger adaptation than a plain linear probe.</li>
+            <li>Zero-shot uses no task-specific weight updates and relies only on CLIP similarity between image embeddings and averaged class prompt embeddings.</li>
+            <li>CoOp freezes CLIP and learns only the prompt context vectors, which keeps adaptation parameter-efficient.</li>
+            <li>The linear probe uses the same frozen image features but learns a linear classification head from support images only.</li>
+            <li>Each few-shot setting shares the same held-out test set, so improvements are directly comparable across support budgets.</li>
           </ul>
-        </article>
+          <figure class="mm-figure">
+            <img src="./assets/results/evaluation/plots/comparison_bar.png" alt="Comparison bar chart across methods and shot settings." />
+            <figcaption>
+              Methodology is only useful if it reveals a tradeoff. Here the tradeoff is clear: prompt learning helps
+              at low-shot settings, but the backbone itself is already so strong that zero-shot remains hard to beat.
+            </figcaption>
+          </figure>
+        </section>
 
-        <article class="mm-code-card">
-          <p class="mm-kicker">CLI snapshot</p>
-          <h2>Experiment configuration</h2>
-          <pre><code>python3 assignments/assignment1/multimodal/models/food101_experiment.py \
-  --model-id openai/clip-vit-base-patch32 \
-  --top-k 10 \
-  --shots-per-class 128 \
-  --val-per-class 20 \
-  --epochs 20 \
-  --learning-rate 1e-3 \
-  --weight-decay 1e-4</code></pre>
-        </article>
-      </section>
+        <section class="mm-panel">
+          <div class="mm-section-tag">Architecture Size</div>
+          <h2>Linear probe and CoOp are both lightweight adapters</h2>
+          <p class="mm-prose">
+            Neither learned method fine-tunes CLIP itself. The image encoder, text encoder, and projection layers
+            stay frozen. The only trainable difference is whether adaptation happens in a small classifier on the
+            image side or in a bank of learnable prompt vectors on the text side.
+          </p>
+          <div class="mm-table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Method</th>
+                  <th>Trainable component</th>
+                  <th>Shape</th>
+                  <th>Trainable params</th>
+                  <th>Notes</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Zero-shot</td>
+                  <td>None</td>
+                  <td>0</td>
+                  <td><strong>0</strong></td>
+                  <td>Uses averaged prompt embeddings and CLIP similarity only.</td>
+                </tr>
+                <tr>
+                  <td>Linear probe</td>
+                  <td>Classifier weight + bias</td>
+                  <td>512 x 10 + 10</td>
+                  <td><strong>5,130</strong></td>
+                  <td>A single linear layer on top of the 512-d normalized CLIP image embedding.</td>
+                </tr>
+                <tr>
+                  <td>CoOp</td>
+                  <td>Shared context tokens</td>
+                  <td>16 x 512</td>
+                  <td><strong>8,192</strong></td>
+                  <td>Sixteen learnable prompt vectors because `class_specific_context: false` in the current config.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="mm-callout">
+            CoOp has slightly more trainable parameters than the linear probe in this setup, but it is still a very
+            small adapter. If `class_specific_context` were enabled, CoOp would scale to `10 x 16 x 512 = 81,920`
+            prompt parameters for the 10 classes.
+          </div>
+        </section>
 
-      <p class="footer"><a href="./">Back to Multimodal Track</a></p>
+        <section class="mm-panel">
+          <div class="mm-section-tag">CoOp</div>
+          <h2>Why prompt learning changes the few-shot regime</h2>
+          <p class="mm-prose">
+            CoOp replaces the fixed hand-written prompt bank with learnable context tokens that are optimized against
+            the few-shot support set while the CLIP backbone stays frozen. This keeps adaptation lightweight but lets
+            the text side bend toward the current task.
+          </p>
+          <figure class="mm-figure">
+            <img src="./assets/CoOpFig.png" alt="Illustration of CoOp with learnable context tokens around the class label." />
+            <figcaption>
+              CoOp inserts learnable context tokens around the class label, feeds the full prompt through the frozen
+              CLIP text encoder, and updates only the context vectors to improve image-text alignment for the target
+              classes.
+            </figcaption>
+          </figure>
+        </section>
+
+        <section class="mm-panel">
+          <div class="mm-section-tag">Source Code</div>
+          <h2>Zero-shot, linear probe, and CoOp implementations in <code>src/</code></h2>
+          <pre class="mm-code"><code># assignments/assignment1/multimodal/src/extract_embedding.py
+def build_text_embeddings(model, processor, class_names, prompt_templates, device):
+    ...
+    prompt_embeddings = text_features / text_features.norm(dim=-1, keepdim=True)
+    pooled_embedding = prompt_embeddings.mean(dim=0)
+    pooled_embedding = pooled_embedding / pooled_embedding.norm()
+    class_embeddings.append(pooled_embedding.cpu())</code></pre>
+          <pre class="mm-code"><code># assignments/assignment1/multimodal/src/train.py
+def train_linear_probe(train_embeddings, train_labels, val_embeddings, val_labels, ...):
+    classifier = nn.Linear(train_embeddings.shape[1], num_classes).to(device)
+    optimizer = torch.optim.AdamW(classifier.parameters(), lr=learning_rate, weight_decay=weight_decay)
+    criterion = nn.CrossEntropyLoss()
+    ...
+    logits = classifier(batch_embeddings)
+    loss = criterion(logits, batch_labels)</code></pre>
+          <div class="mm-table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Architecture</th>
+                  <th>Forward rule</th>
+                  <th>Effective size in this pipeline</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Zero-shot</td>
+                  <td><code>image_embed @ avg_prompt_embed.T</code></td>
+                  <td>No task-specific trainable parameters.</td>
+                </tr>
+                <tr>
+                  <td>Linear probe</td>
+                  <td><code>Linear(512 -&gt; 10)</code></td>
+                  <td>5,130 trainable parameters.</td>
+                </tr>
+                <tr>
+                  <td>CoOp</td>
+                  <td><code>16 learnable prompt vectors -&gt; frozen CLIP text encoder</code></td>
+                  <td>8,192 trainable parameters with shared context.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <pre class="mm-code"><code># assignments/assignment1/multimodal/src/train.py
+class CoOpPromptLearner(nn.Module):
+    def __init__(..., num_context_tokens, class_token_position, class_specific_context, ...):
+        self.token_embedding = clip_model.text_model.embeddings.token_embedding
+        context_vectors = self._initialize_context(...)
+        if class_specific_context:
+            context_vectors = context_vectors.unsqueeze(0).repeat(self.num_classes, 1, 1)
+        self.context = nn.Parameter(context_vectors)
+
+def train_coop(train_embeddings, train_labels, val_embeddings, val_labels, class_names, model_id, coop_config, device):
+    clip_model = CLIPModel.from_pretrained(model_id).to(device)
+    for parameter in clip_model.parameters():
+        parameter.requires_grad = False
+    prompt_learner = CoOpPromptLearner(...)
+    ...
+    text_features = build_coop_text_features(prompt_learner, clip_model, device=device)
+    logits = clip_model.logit_scale.exp() * (batch_embeddings @ text_features.T)</code></pre>
+          <div class="mm-callout">
+            The important methodological distinction is that zero-shot changes no task-specific weights, the linear
+            probe changes only the classifier, and CoOp changes only the prompt context vectors.
+          </div>
+        </section>
+
+        <section class="mm-panel">
+          <div class="mm-section-tag">Observed Optimization</div>
+          <h2>What training histories show</h2>
+          <p class="mm-prose">
+            The 128-shot histories expose two different learning profiles. CoOp drops its training loss quickly and
+            reaches near-saturated validation macro-F1 early, while the linear probe improves more gradually and
+            plateaus lower on validation despite steady training progress.
+          </p>
+          <div class="mm-table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Method</th>
+                  <th>Epoch 1 loss</th>
+                  <th>Final epoch loss</th>
+                  <th>Peak val macro-F1</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>CoOp (128-shot)</td><td>0.334</td><td>0.028</td><td>0.980</td></tr>
+                <tr><td>Linear probe (128-shot)</td><td>2.266</td><td>1.010</td><td>0.970</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="mm-callout">
+            CoOp’s learned context reaches a stronger validation regime with far fewer trainable parameters than the
+            linear probe, which is exactly why prompt tuning is worth evaluating in a small-data setting.
+          </div>
+        </section>
+      </div>
+
+      <p class="mm-footer"><a href="./">Back to Multimodal Track</a></p>
     </main>
-
-    <script>
-      const DATA_PATH = "./assets/report-data/multimodal_report_data.json";
-      let activeMethod = "zero_shot";
-      let activeStageIndex = 0;
-      let reportData = null;
-
-      const stageContent = {
-        input: {
-          title: "Input X",
-          summary: "The pipeline starts from one RGB food image, either sampled from the Food101 test split or uploaded manually in the interactive demo.",
-          details: [
-            "The active experiment uses 10 selected Food101 classes.",
-            "The same raw image can be evaluated by both zero-shot CLIP and the few-shot linear probe.",
-            "Ground-truth labels are used only for support supervision and final metric calculation.",
-          ],
-          code: `from PIL import Image\n\nimage = Image.open(image_path).convert("RGB")\ninputs = processor(images=image, return_tensors="pt")\npixel_values = inputs["pixel_values"].to(device)`,
-        },
-        preprocess: {
-          title: "Preprocessing",
-          summary: "A shared CLIP processor handles resize, crop, tensor conversion, normalization, and batch packaging so both branches see exactly the same visual representation format.",
-          details: [
-            "CLIP ViT-B/32 expects 224 x 224 RGB inputs after processor-managed resize and center crop.",
-            "Normalization follows CLIP's pretrained mean/std settings through `AutoProcessor`, not a custom torchvision chain.",
-            "The zero-shot branch also tokenizes prompt templates through the same processor to keep image and text handling aligned.",
-          ],
-          code: `from transformers import AutoProcessor\n\nprocessor = AutoProcessor.from_pretrained("openai/clip-vit-base-patch32")\n\nimage_inputs = processor(\n    images=batch["images"],\n    return_tensors="pt"\n)\npixel_values = image_inputs["pixel_values"].to(device)\n\ntext_inputs = processor(\n    text=prompts,\n    return_tensors="pt",\n    padding=True,\n    truncation=True,\n)`,
-        },
-        backbone: {
-          title: "Backbone",
-          summary: "The shared representation engine is CLIP ViT-B/32, which projects images and text into one aligned embedding space.",
-          details: [
-            "Model: `openai/clip-vit-base-patch32` from Hugging Face Transformers.",
-            "Visual backbone: Vision Transformer Base with 32 x 32 patch size.",
-            "Image input resolution: 224 x 224 RGB.",
-            "Text and image towers both produce normalized embeddings before similarity scoring or probe classification.",
-            "The methodology keeps the backbone frozen so the experiment isolates classifier-head behavior.",
-          ],
-          code: `from transformers import CLIPModel\n\nmodel = CLIPModel.from_pretrained("openai/clip-vit-base-patch32").to(device)\nmodel.eval()\n\nimage_outputs = model.get_image_features(pixel_values=pixel_values)\nimage_features = image_outputs / image_outputs.norm(dim=-1, keepdim=True)`,
-        },
-        head: {
-          title: "Classifier Head",
-          summary: "The experiment branches here: zero-shot uses text-derived class prototypes, while few-shot fits a linear classifier over frozen image embeddings.",
-          details: [
-            "Zero-shot head: prompt-averaged text embeddings compared against image embeddings with CLIP logit scaling.",
-            "Few-shot head: one linear layer trained for 20 epochs with learning rate 1e-3 and weight decay 1e-4.",
-            "Few-shot model selection uses the dev split to choose the best probe state before final test evaluation.",
-          ],
-          code: `# Zero-shot path\ntext_features = build_zero_shot_text_features(\n    model=model,\n    processor=processor,\n    class_names=class_names,\n    prompt_templates=config.prompt_templates,\n    device=device,\n)\nzero_shot_logits = logit_scale * (image_features @ text_features.T)\n\n# Few-shot path\nprobe = nn.Linear(feature_dim, num_classes).to(device)\nlogits = probe(image_features)`,
-        },
-        results: {
-          title: "Classification Results",
-          summary: "Both branches end with probability scores, predicted labels, and exported metrics on the same held-out test split.",
-          details: [
-            "Saved zero-shot test accuracy: 97.96%.",
-            "Saved few-shot linear probe test accuracy: 97.08% at 128 shots per class.",
-            "Metrics, confusion matrices, and prediction CSVs are exported for reproducible reporting.",
-          ],
-          code: `probs = torch.softmax(logits, dim=-1)\nvalues, indices = torch.topk(probs, k=min(top_k, probs.numel()))\nevaluation = evaluate_logits(\n    logits=logits,\n    labels=split_labels["test"],\n    indices=split_indices["test"],\n    class_names=class_names,\n    method_name=method_name,\n)`,
-        },
-      };
-
-      const methodSpecificNotes = {
-        zero_shot: {
-          input: "The image enters a fully frozen CLIP system and never sees supervised head fitting.",
-          preprocess: "Prompt templates and image pixels are both packaged by the same processor before inference.",
-          backbone: "The text tower is active here because class prompts define the classifier prototypes.",
-          head: "Classification happens by embedding similarity, not by a learned task-specific classifier.",
-          results: "This route currently delivers the strongest saved test metrics in the exported runs.",
-        },
-        few_shot: {
-          input: "The raw image path is identical, which keeps comparison fair against the zero-shot route.",
-          preprocess: "Preprocessing stays unchanged so the only new learned component is the probe head.",
-          backbone: "CLIP acts purely as a frozen feature extractor for the downstream classifier.",
-          head: "The linear probe is the only trainable block and is selected by dev performance before final testing.",
-          results: "This route narrows the gap, but still trails the saved zero-shot baseline.",
-        },
-      };
-
-      function renderPipeline(data) {
-        const strip = document.getElementById("pipeline-stage-strip");
-        strip.innerHTML = data.pipeline.map((stage, index) => {
-          const block = `
-            <article class="mm-stage-button ${index === activeStageIndex ? "is-active" : ""}" data-stage-index="${index}" role="button" tabindex="0" aria-expanded="${index === activeStageIndex ? "true" : "false"}">
-              <span class="mm-stage-index">${stage.eyebrow}</span>
-              <span class="mm-stage-title">${stage.title}</span>
-              <span class="mm-stage-summary">${stage.summary}</span>
-            </article>
-          `;
-          return index === data.pipeline.length - 1 ? block : `${block}<div class="mm-pipeline-arrow" aria-hidden="true">→</div>`;
-        }).join("");
-
-        strip.querySelectorAll("[data-stage-index]").forEach((button) => {
-          const activate = () => {
-            activeStageIndex = Number(button.dataset.stageIndex);
-            renderPipeline(data);
-            renderInspector(data);
-          };
-          button.addEventListener("click", activate);
-          button.addEventListener("keydown", (event) => {
-            if (event.key === "Enter" || event.key === " ") {
-              event.preventDefault();
-              activate();
-            }
-          });
-        });
-      }
-
-      function renderInspector(data) {
-        const stage = data.pipeline[activeStageIndex];
-        const content = stageContent[stage.id];
-        const inspector = document.getElementById("pipeline-stage-inspector");
-        const methodTitle = activeMethod === "zero_shot" ? data.methods.zero_shot.title : data.methods.few_shot.title;
-        inspector.innerHTML = `
-          <div class="mm-stage-inspector-head">
-            <div>
-              <p class="mm-kicker">${stage.eyebrow}</p>
-              <h2>${content.title}</h2>
-              <p>${content.summary}</p>
-            </div>
-            <div class="mm-stage-inspector-meta">
-              <span class="mm-stage-pill">${methodTitle}</span>
-              <span class="mm-stage-pill">Methodology focus</span>
-            </div>
-          </div>
-          <div class="mm-stage-inspector-body">
-            <div>
-              <div class="mm-stage-note">
-                <strong>Method-specific interpretation</strong>
-                <span>${methodSpecificNotes[activeMethod][stage.id]}</span>
-              </div>
-              <ul class="mm-stage-inline-list">
-                ${content.details.map((item) => `<li>${item}</li>`).join("")}
-              </ul>
-            </div>
-            <pre><code>${content.code.replaceAll("<", "&lt;").replaceAll(">", "&gt;")}</code></pre>
-          </div>
-        `;
-      }
-
-      fetch(DATA_PATH)
-        .then((response) => response.json())
-        .then((data) => {
-          reportData = data;
-          document.getElementById("train-size").textContent = data.dataset.few_shot_train_size;
-          document.getElementById("prompt-count").textContent = data.meta.prompt_templates.length;
-          document.getElementById("test-size").textContent = data.dataset.test_size;
-          document.getElementById("prompt-stack").innerHTML = data.meta.prompt_templates.map((prompt) => `<div class="mm-prompt">${prompt}</div>`).join("");
-
-          const bestEpoch = [...data.few_shot_curve].sort((a, b) => b.dev_accuracy - a.dev_accuracy)[0];
-          document.getElementById("curve-caption").textContent = `Best saved dev checkpoint reached ${bestEpoch.dev_accuracy.toFixed(2)}% accuracy at epoch ${bestEpoch.epoch}.`;
-
-          renderPipeline(data);
-          renderInspector(data);
-
-          document.querySelectorAll("[data-method-tab]").forEach((button) => {
-            button.addEventListener("click", () => {
-              activeMethod = button.dataset.methodTab;
-              document.querySelectorAll("[data-method-tab]").forEach((tab) => tab.classList.remove("is-active"));
-              button.classList.add("is-active");
-              renderPipeline(reportData);
-              renderInspector(reportData);
-            });
-          });
-        })
-        .catch((error) => {
-          document.getElementById("pipeline-stage-inspector").innerHTML = `<p>Unable to load report data: ${error}</p>`;
-        });
-    </script>
   </body>
 </html>

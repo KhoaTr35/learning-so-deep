@@ -1,0 +1,2884 @@
+{
+  "rows": [
+    {
+      "class_name": "apple_pie",
+      "context_token_index": 0,
+      "nearest_tokens": [
+        "grew",
+        "buffer",
+        "\u751f",
+        "\uc6b0",
+        "cos"
+      ],
+      "nearest_scores": [
+        0.17993617057800293,
+        0.1743825376033783,
+        0.17383089661598206,
+        0.1709156036376953,
+        0.17085978388786316
+      ]
+    },
+    {
+      "class_name": "apple_pie",
+      "context_token_index": 1,
+      "nearest_tokens": [
+        "consent",
+        "eres",
+        "ahhh",
+        "awak",
+        "\ud83e\udd19"
+      ],
+      "nearest_scores": [
+        0.20316344499588013,
+        0.18896996974945068,
+        0.18025223910808563,
+        0.1649409830570221,
+        0.1640799343585968
+      ]
+    },
+    {
+      "class_name": "apple_pie",
+      "context_token_index": 2,
+      "nearest_tokens": [
+        "endof",
+        "some",
+        "noman",
+        "ead",
+        "dost"
+      ],
+      "nearest_scores": [
+        0.185725599527359,
+        0.17248713970184326,
+        0.1597699075937271,
+        0.15829405188560486,
+        0.15752840042114258
+      ]
+    },
+    {
+      "class_name": "apple_pie",
+      "context_token_index": 3,
+      "nearest_tokens": [
+        "shop",
+        "ise",
+        "etz",
+        "war",
+        "boar"
+      ],
+      "nearest_scores": [
+        0.20800359547138214,
+        0.18588890135288239,
+        0.1742606908082962,
+        0.17382940649986267,
+        0.16635781526565552
+      ]
+    },
+    {
+      "class_name": "apple_pie",
+      "context_token_index": 4,
+      "nearest_tokens": [
+        "dispatch",
+        "despic",
+        "groupe",
+        "grabbing",
+        "optimis"
+      ],
+      "nearest_scores": [
+        0.1961406171321869,
+        0.19191919267177582,
+        0.1714572161436081,
+        0.17051249742507935,
+        0.17038407921791077
+      ]
+    },
+    {
+      "class_name": "apple_pie",
+      "context_token_index": 5,
+      "nearest_tokens": [
+        "antarctic",
+        "chardon",
+        "gripping",
+        "stans",
+        "islamist"
+      ],
+      "nearest_scores": [
+        0.18627727031707764,
+        0.18138915300369263,
+        0.18119391798973083,
+        0.18085511028766632,
+        0.1803445816040039
+      ]
+    },
+    {
+      "class_name": "apple_pie",
+      "context_token_index": 6,
+      "nearest_tokens": [
+        "analyses",
+        "destiny",
+        "librarian",
+        "kwang",
+        "inglis"
+      ],
+      "nearest_scores": [
+        0.1826467365026474,
+        0.17814525961875916,
+        0.1731824278831482,
+        0.17293637990951538,
+        0.17239882051944733
+      ]
+    },
+    {
+      "class_name": "apple_pie",
+      "context_token_index": 7,
+      "nearest_tokens": [
+        "sox",
+        "philia",
+        "huck",
+        "foot",
+        "scot"
+      ],
+      "nearest_scores": [
+        0.17718908190727234,
+        0.17239700257778168,
+        0.17218908667564392,
+        0.1709921807050705,
+        0.16971755027770996
+      ]
+    },
+    {
+      "class_name": "apple_pie",
+      "context_token_index": 8,
+      "nearest_tokens": [
+        "yp",
+        "zzzz",
+        "erson",
+        "heir",
+        "consol"
+      ],
+      "nearest_scores": [
+        0.19220763444900513,
+        0.19057026505470276,
+        0.16520532965660095,
+        0.16475342214107513,
+        0.16446714103221893
+      ]
+    },
+    {
+      "class_name": "apple_pie",
+      "context_token_index": 9,
+      "nearest_tokens": [
+        "fei",
+        "discla",
+        "jaw",
+        "seiz",
+        "vandy"
+      ],
+      "nearest_scores": [
+        0.18663731217384338,
+        0.18625253438949585,
+        0.18464983999729156,
+        0.18367338180541992,
+        0.18265116214752197
+      ]
+    },
+    {
+      "class_name": "apple_pie",
+      "context_token_index": 10,
+      "nearest_tokens": [
+        "xu",
+        "shand",
+        "\u0e04\ufffd",
+        "\ufffd",
+        "\u0e34"
+      ],
+      "nearest_scores": [
+        0.22487418353557587,
+        0.21147069334983826,
+        0.1992080956697464,
+        0.1981356143951416,
+        0.1915866881608963
+      ]
+    },
+    {
+      "class_name": "apple_pie",
+      "context_token_index": 11,
+      "nearest_tokens": [
+        "madrid",
+        "\ufffd\ufffd",
+        "\u2026",
+        "\ufffd",
+        "survi"
+      ],
+      "nearest_scores": [
+        0.2137846052646637,
+        0.19934694468975067,
+        0.19760799407958984,
+        0.18826264142990112,
+        0.17701025307178497
+      ]
+    },
+    {
+      "class_name": "apple_pie",
+      "context_token_index": 12,
+      "nearest_tokens": [
+        "asthour",
+        "\u0e34",
+        "\ufffd",
+        "iver",
+        "\ud83c\udffe\u200d\u2642\ufe0f"
+      ],
+      "nearest_scores": [
+        0.16746819019317627,
+        0.16224439442157745,
+        0.16125482320785522,
+        0.16121383011341095,
+        0.16081388294696808
+      ]
+    },
+    {
+      "class_name": "apple_pie",
+      "context_token_index": 13,
+      "nearest_tokens": [
+        "guts",
+        "preventive",
+        "sewing",
+        "\ud83d\udca5\ud83d\udca5",
+        "faz"
+      ],
+      "nearest_scores": [
+        0.1794484704732895,
+        0.17504027485847473,
+        0.17306114733219147,
+        0.1698359251022339,
+        0.16840362548828125
+      ]
+    },
+    {
+      "class_name": "apple_pie",
+      "context_token_index": 14,
+      "nearest_tokens": [
+        "estu",
+        "rs",
+        "shuk",
+        "home",
+        "hold"
+      ],
+      "nearest_scores": [
+        0.18104153871536255,
+        0.1700727939605713,
+        0.16697877645492554,
+        0.16090010106563568,
+        0.16023944318294525
+      ]
+    },
+    {
+      "class_name": "apple_pie",
+      "context_token_index": 15,
+      "nearest_tokens": [
+        "childrens",
+        "children",
+        "\u043e\u0434",
+        "intuition",
+        "unesco"
+      ],
+      "nearest_scores": [
+        0.1862911581993103,
+        0.18051940202713013,
+        0.16909712553024292,
+        0.16840164363384247,
+        0.16623644530773163
+      ]
+    },
+    {
+      "class_name": "bibimbap",
+      "context_token_index": 0,
+      "nearest_tokens": [
+        "grew",
+        "buffer",
+        "\u751f",
+        "\uc6b0",
+        "cos"
+      ],
+      "nearest_scores": [
+        0.17993617057800293,
+        0.1743825376033783,
+        0.17383089661598206,
+        0.1709156036376953,
+        0.17085978388786316
+      ]
+    },
+    {
+      "class_name": "bibimbap",
+      "context_token_index": 1,
+      "nearest_tokens": [
+        "consent",
+        "eres",
+        "ahhh",
+        "awak",
+        "\ud83e\udd19"
+      ],
+      "nearest_scores": [
+        0.20316344499588013,
+        0.18896996974945068,
+        0.18025223910808563,
+        0.1649409830570221,
+        0.1640799343585968
+      ]
+    },
+    {
+      "class_name": "bibimbap",
+      "context_token_index": 2,
+      "nearest_tokens": [
+        "endof",
+        "some",
+        "noman",
+        "ead",
+        "dost"
+      ],
+      "nearest_scores": [
+        0.185725599527359,
+        0.17248713970184326,
+        0.1597699075937271,
+        0.15829405188560486,
+        0.15752840042114258
+      ]
+    },
+    {
+      "class_name": "bibimbap",
+      "context_token_index": 3,
+      "nearest_tokens": [
+        "shop",
+        "ise",
+        "etz",
+        "war",
+        "boar"
+      ],
+      "nearest_scores": [
+        0.20800359547138214,
+        0.18588890135288239,
+        0.1742606908082962,
+        0.17382940649986267,
+        0.16635781526565552
+      ]
+    },
+    {
+      "class_name": "bibimbap",
+      "context_token_index": 4,
+      "nearest_tokens": [
+        "dispatch",
+        "despic",
+        "groupe",
+        "grabbing",
+        "optimis"
+      ],
+      "nearest_scores": [
+        0.1961406171321869,
+        0.19191919267177582,
+        0.1714572161436081,
+        0.17051249742507935,
+        0.17038407921791077
+      ]
+    },
+    {
+      "class_name": "bibimbap",
+      "context_token_index": 5,
+      "nearest_tokens": [
+        "antarctic",
+        "chardon",
+        "gripping",
+        "stans",
+        "islamist"
+      ],
+      "nearest_scores": [
+        0.18627727031707764,
+        0.18138915300369263,
+        0.18119391798973083,
+        0.18085511028766632,
+        0.1803445816040039
+      ]
+    },
+    {
+      "class_name": "bibimbap",
+      "context_token_index": 6,
+      "nearest_tokens": [
+        "analyses",
+        "destiny",
+        "librarian",
+        "kwang",
+        "inglis"
+      ],
+      "nearest_scores": [
+        0.1826467365026474,
+        0.17814525961875916,
+        0.1731824278831482,
+        0.17293637990951538,
+        0.17239882051944733
+      ]
+    },
+    {
+      "class_name": "bibimbap",
+      "context_token_index": 7,
+      "nearest_tokens": [
+        "sox",
+        "philia",
+        "huck",
+        "foot",
+        "scot"
+      ],
+      "nearest_scores": [
+        0.17718908190727234,
+        0.17239700257778168,
+        0.17218908667564392,
+        0.1709921807050705,
+        0.16971755027770996
+      ]
+    },
+    {
+      "class_name": "bibimbap",
+      "context_token_index": 8,
+      "nearest_tokens": [
+        "yp",
+        "zzzz",
+        "erson",
+        "heir",
+        "consol"
+      ],
+      "nearest_scores": [
+        0.19220763444900513,
+        0.19057026505470276,
+        0.16520532965660095,
+        0.16475342214107513,
+        0.16446714103221893
+      ]
+    },
+    {
+      "class_name": "bibimbap",
+      "context_token_index": 9,
+      "nearest_tokens": [
+        "fei",
+        "discla",
+        "jaw",
+        "seiz",
+        "vandy"
+      ],
+      "nearest_scores": [
+        0.18663731217384338,
+        0.18625253438949585,
+        0.18464983999729156,
+        0.18367338180541992,
+        0.18265116214752197
+      ]
+    },
+    {
+      "class_name": "bibimbap",
+      "context_token_index": 10,
+      "nearest_tokens": [
+        "xu",
+        "shand",
+        "\u0e04\ufffd",
+        "\ufffd",
+        "\u0e34"
+      ],
+      "nearest_scores": [
+        0.22487418353557587,
+        0.21147069334983826,
+        0.1992080956697464,
+        0.1981356143951416,
+        0.1915866881608963
+      ]
+    },
+    {
+      "class_name": "bibimbap",
+      "context_token_index": 11,
+      "nearest_tokens": [
+        "madrid",
+        "\ufffd\ufffd",
+        "\u2026",
+        "\ufffd",
+        "survi"
+      ],
+      "nearest_scores": [
+        0.2137846052646637,
+        0.19934694468975067,
+        0.19760799407958984,
+        0.18826264142990112,
+        0.17701025307178497
+      ]
+    },
+    {
+      "class_name": "bibimbap",
+      "context_token_index": 12,
+      "nearest_tokens": [
+        "asthour",
+        "\u0e34",
+        "\ufffd",
+        "iver",
+        "\ud83c\udffe\u200d\u2642\ufe0f"
+      ],
+      "nearest_scores": [
+        0.16746819019317627,
+        0.16224439442157745,
+        0.16125482320785522,
+        0.16121383011341095,
+        0.16081388294696808
+      ]
+    },
+    {
+      "class_name": "bibimbap",
+      "context_token_index": 13,
+      "nearest_tokens": [
+        "guts",
+        "preventive",
+        "sewing",
+        "\ud83d\udca5\ud83d\udca5",
+        "faz"
+      ],
+      "nearest_scores": [
+        0.1794484704732895,
+        0.17504027485847473,
+        0.17306114733219147,
+        0.1698359251022339,
+        0.16840362548828125
+      ]
+    },
+    {
+      "class_name": "bibimbap",
+      "context_token_index": 14,
+      "nearest_tokens": [
+        "estu",
+        "rs",
+        "shuk",
+        "home",
+        "hold"
+      ],
+      "nearest_scores": [
+        0.18104153871536255,
+        0.1700727939605713,
+        0.16697877645492554,
+        0.16090010106563568,
+        0.16023944318294525
+      ]
+    },
+    {
+      "class_name": "bibimbap",
+      "context_token_index": 15,
+      "nearest_tokens": [
+        "childrens",
+        "children",
+        "\u043e\u0434",
+        "intuition",
+        "unesco"
+      ],
+      "nearest_scores": [
+        0.1862911581993103,
+        0.18051940202713013,
+        0.16909712553024292,
+        0.16840164363384247,
+        0.16623644530773163
+      ]
+    },
+    {
+      "class_name": "chicken_wings",
+      "context_token_index": 0,
+      "nearest_tokens": [
+        "grew",
+        "buffer",
+        "\u751f",
+        "\uc6b0",
+        "cos"
+      ],
+      "nearest_scores": [
+        0.17993617057800293,
+        0.1743825376033783,
+        0.17383089661598206,
+        0.1709156036376953,
+        0.17085978388786316
+      ]
+    },
+    {
+      "class_name": "chicken_wings",
+      "context_token_index": 1,
+      "nearest_tokens": [
+        "consent",
+        "eres",
+        "ahhh",
+        "awak",
+        "\ud83e\udd19"
+      ],
+      "nearest_scores": [
+        0.20316344499588013,
+        0.18896996974945068,
+        0.18025223910808563,
+        0.1649409830570221,
+        0.1640799343585968
+      ]
+    },
+    {
+      "class_name": "chicken_wings",
+      "context_token_index": 2,
+      "nearest_tokens": [
+        "endof",
+        "some",
+        "noman",
+        "ead",
+        "dost"
+      ],
+      "nearest_scores": [
+        0.185725599527359,
+        0.17248713970184326,
+        0.1597699075937271,
+        0.15829405188560486,
+        0.15752840042114258
+      ]
+    },
+    {
+      "class_name": "chicken_wings",
+      "context_token_index": 3,
+      "nearest_tokens": [
+        "shop",
+        "ise",
+        "etz",
+        "war",
+        "boar"
+      ],
+      "nearest_scores": [
+        0.20800359547138214,
+        0.18588890135288239,
+        0.1742606908082962,
+        0.17382940649986267,
+        0.16635781526565552
+      ]
+    },
+    {
+      "class_name": "chicken_wings",
+      "context_token_index": 4,
+      "nearest_tokens": [
+        "dispatch",
+        "despic",
+        "groupe",
+        "grabbing",
+        "optimis"
+      ],
+      "nearest_scores": [
+        0.1961406171321869,
+        0.19191919267177582,
+        0.1714572161436081,
+        0.17051249742507935,
+        0.17038407921791077
+      ]
+    },
+    {
+      "class_name": "chicken_wings",
+      "context_token_index": 5,
+      "nearest_tokens": [
+        "antarctic",
+        "chardon",
+        "gripping",
+        "stans",
+        "islamist"
+      ],
+      "nearest_scores": [
+        0.18627727031707764,
+        0.18138915300369263,
+        0.18119391798973083,
+        0.18085511028766632,
+        0.1803445816040039
+      ]
+    },
+    {
+      "class_name": "chicken_wings",
+      "context_token_index": 6,
+      "nearest_tokens": [
+        "analyses",
+        "destiny",
+        "librarian",
+        "kwang",
+        "inglis"
+      ],
+      "nearest_scores": [
+        0.1826467365026474,
+        0.17814525961875916,
+        0.1731824278831482,
+        0.17293637990951538,
+        0.17239882051944733
+      ]
+    },
+    {
+      "class_name": "chicken_wings",
+      "context_token_index": 7,
+      "nearest_tokens": [
+        "sox",
+        "philia",
+        "huck",
+        "foot",
+        "scot"
+      ],
+      "nearest_scores": [
+        0.17718908190727234,
+        0.17239700257778168,
+        0.17218908667564392,
+        0.1709921807050705,
+        0.16971755027770996
+      ]
+    },
+    {
+      "class_name": "chicken_wings",
+      "context_token_index": 8,
+      "nearest_tokens": [
+        "yp",
+        "zzzz",
+        "erson",
+        "heir",
+        "consol"
+      ],
+      "nearest_scores": [
+        0.19220763444900513,
+        0.19057026505470276,
+        0.16520532965660095,
+        0.16475342214107513,
+        0.16446714103221893
+      ]
+    },
+    {
+      "class_name": "chicken_wings",
+      "context_token_index": 9,
+      "nearest_tokens": [
+        "fei",
+        "discla",
+        "jaw",
+        "seiz",
+        "vandy"
+      ],
+      "nearest_scores": [
+        0.18663731217384338,
+        0.18625253438949585,
+        0.18464983999729156,
+        0.18367338180541992,
+        0.18265116214752197
+      ]
+    },
+    {
+      "class_name": "chicken_wings",
+      "context_token_index": 10,
+      "nearest_tokens": [
+        "xu",
+        "shand",
+        "\u0e04\ufffd",
+        "\ufffd",
+        "\u0e34"
+      ],
+      "nearest_scores": [
+        0.22487418353557587,
+        0.21147069334983826,
+        0.1992080956697464,
+        0.1981356143951416,
+        0.1915866881608963
+      ]
+    },
+    {
+      "class_name": "chicken_wings",
+      "context_token_index": 11,
+      "nearest_tokens": [
+        "madrid",
+        "\ufffd\ufffd",
+        "\u2026",
+        "\ufffd",
+        "survi"
+      ],
+      "nearest_scores": [
+        0.2137846052646637,
+        0.19934694468975067,
+        0.19760799407958984,
+        0.18826264142990112,
+        0.17701025307178497
+      ]
+    },
+    {
+      "class_name": "chicken_wings",
+      "context_token_index": 12,
+      "nearest_tokens": [
+        "asthour",
+        "\u0e34",
+        "\ufffd",
+        "iver",
+        "\ud83c\udffe\u200d\u2642\ufe0f"
+      ],
+      "nearest_scores": [
+        0.16746819019317627,
+        0.16224439442157745,
+        0.16125482320785522,
+        0.16121383011341095,
+        0.16081388294696808
+      ]
+    },
+    {
+      "class_name": "chicken_wings",
+      "context_token_index": 13,
+      "nearest_tokens": [
+        "guts",
+        "preventive",
+        "sewing",
+        "\ud83d\udca5\ud83d\udca5",
+        "faz"
+      ],
+      "nearest_scores": [
+        0.1794484704732895,
+        0.17504027485847473,
+        0.17306114733219147,
+        0.1698359251022339,
+        0.16840362548828125
+      ]
+    },
+    {
+      "class_name": "chicken_wings",
+      "context_token_index": 14,
+      "nearest_tokens": [
+        "estu",
+        "rs",
+        "shuk",
+        "home",
+        "hold"
+      ],
+      "nearest_scores": [
+        0.18104153871536255,
+        0.1700727939605713,
+        0.16697877645492554,
+        0.16090010106563568,
+        0.16023944318294525
+      ]
+    },
+    {
+      "class_name": "chicken_wings",
+      "context_token_index": 15,
+      "nearest_tokens": [
+        "childrens",
+        "children",
+        "\u043e\u0434",
+        "intuition",
+        "unesco"
+      ],
+      "nearest_scores": [
+        0.1862911581993103,
+        0.18051940202713013,
+        0.16909712553024292,
+        0.16840164363384247,
+        0.16623644530773163
+      ]
+    },
+    {
+      "class_name": "donuts",
+      "context_token_index": 0,
+      "nearest_tokens": [
+        "grew",
+        "buffer",
+        "\u751f",
+        "\uc6b0",
+        "cos"
+      ],
+      "nearest_scores": [
+        0.17993617057800293,
+        0.1743825376033783,
+        0.17383089661598206,
+        0.1709156036376953,
+        0.17085978388786316
+      ]
+    },
+    {
+      "class_name": "donuts",
+      "context_token_index": 1,
+      "nearest_tokens": [
+        "consent",
+        "eres",
+        "ahhh",
+        "awak",
+        "\ud83e\udd19"
+      ],
+      "nearest_scores": [
+        0.20316344499588013,
+        0.18896996974945068,
+        0.18025223910808563,
+        0.1649409830570221,
+        0.1640799343585968
+      ]
+    },
+    {
+      "class_name": "donuts",
+      "context_token_index": 2,
+      "nearest_tokens": [
+        "endof",
+        "some",
+        "noman",
+        "ead",
+        "dost"
+      ],
+      "nearest_scores": [
+        0.185725599527359,
+        0.17248713970184326,
+        0.1597699075937271,
+        0.15829405188560486,
+        0.15752840042114258
+      ]
+    },
+    {
+      "class_name": "donuts",
+      "context_token_index": 3,
+      "nearest_tokens": [
+        "shop",
+        "ise",
+        "etz",
+        "war",
+        "boar"
+      ],
+      "nearest_scores": [
+        0.20800359547138214,
+        0.18588890135288239,
+        0.1742606908082962,
+        0.17382940649986267,
+        0.16635781526565552
+      ]
+    },
+    {
+      "class_name": "donuts",
+      "context_token_index": 4,
+      "nearest_tokens": [
+        "dispatch",
+        "despic",
+        "groupe",
+        "grabbing",
+        "optimis"
+      ],
+      "nearest_scores": [
+        0.1961406171321869,
+        0.19191919267177582,
+        0.1714572161436081,
+        0.17051249742507935,
+        0.17038407921791077
+      ]
+    },
+    {
+      "class_name": "donuts",
+      "context_token_index": 5,
+      "nearest_tokens": [
+        "antarctic",
+        "chardon",
+        "gripping",
+        "stans",
+        "islamist"
+      ],
+      "nearest_scores": [
+        0.18627727031707764,
+        0.18138915300369263,
+        0.18119391798973083,
+        0.18085511028766632,
+        0.1803445816040039
+      ]
+    },
+    {
+      "class_name": "donuts",
+      "context_token_index": 6,
+      "nearest_tokens": [
+        "analyses",
+        "destiny",
+        "librarian",
+        "kwang",
+        "inglis"
+      ],
+      "nearest_scores": [
+        0.1826467365026474,
+        0.17814525961875916,
+        0.1731824278831482,
+        0.17293637990951538,
+        0.17239882051944733
+      ]
+    },
+    {
+      "class_name": "donuts",
+      "context_token_index": 7,
+      "nearest_tokens": [
+        "sox",
+        "philia",
+        "huck",
+        "foot",
+        "scot"
+      ],
+      "nearest_scores": [
+        0.17718908190727234,
+        0.17239700257778168,
+        0.17218908667564392,
+        0.1709921807050705,
+        0.16971755027770996
+      ]
+    },
+    {
+      "class_name": "donuts",
+      "context_token_index": 8,
+      "nearest_tokens": [
+        "yp",
+        "zzzz",
+        "erson",
+        "heir",
+        "consol"
+      ],
+      "nearest_scores": [
+        0.19220763444900513,
+        0.19057026505470276,
+        0.16520532965660095,
+        0.16475342214107513,
+        0.16446714103221893
+      ]
+    },
+    {
+      "class_name": "donuts",
+      "context_token_index": 9,
+      "nearest_tokens": [
+        "fei",
+        "discla",
+        "jaw",
+        "seiz",
+        "vandy"
+      ],
+      "nearest_scores": [
+        0.18663731217384338,
+        0.18625253438949585,
+        0.18464983999729156,
+        0.18367338180541992,
+        0.18265116214752197
+      ]
+    },
+    {
+      "class_name": "donuts",
+      "context_token_index": 10,
+      "nearest_tokens": [
+        "xu",
+        "shand",
+        "\u0e04\ufffd",
+        "\ufffd",
+        "\u0e34"
+      ],
+      "nearest_scores": [
+        0.22487418353557587,
+        0.21147069334983826,
+        0.1992080956697464,
+        0.1981356143951416,
+        0.1915866881608963
+      ]
+    },
+    {
+      "class_name": "donuts",
+      "context_token_index": 11,
+      "nearest_tokens": [
+        "madrid",
+        "\ufffd\ufffd",
+        "\u2026",
+        "\ufffd",
+        "survi"
+      ],
+      "nearest_scores": [
+        0.2137846052646637,
+        0.19934694468975067,
+        0.19760799407958984,
+        0.18826264142990112,
+        0.17701025307178497
+      ]
+    },
+    {
+      "class_name": "donuts",
+      "context_token_index": 12,
+      "nearest_tokens": [
+        "asthour",
+        "\u0e34",
+        "\ufffd",
+        "iver",
+        "\ud83c\udffe\u200d\u2642\ufe0f"
+      ],
+      "nearest_scores": [
+        0.16746819019317627,
+        0.16224439442157745,
+        0.16125482320785522,
+        0.16121383011341095,
+        0.16081388294696808
+      ]
+    },
+    {
+      "class_name": "donuts",
+      "context_token_index": 13,
+      "nearest_tokens": [
+        "guts",
+        "preventive",
+        "sewing",
+        "\ud83d\udca5\ud83d\udca5",
+        "faz"
+      ],
+      "nearest_scores": [
+        0.1794484704732895,
+        0.17504027485847473,
+        0.17306114733219147,
+        0.1698359251022339,
+        0.16840362548828125
+      ]
+    },
+    {
+      "class_name": "donuts",
+      "context_token_index": 14,
+      "nearest_tokens": [
+        "estu",
+        "rs",
+        "shuk",
+        "home",
+        "hold"
+      ],
+      "nearest_scores": [
+        0.18104153871536255,
+        0.1700727939605713,
+        0.16697877645492554,
+        0.16090010106563568,
+        0.16023944318294525
+      ]
+    },
+    {
+      "class_name": "donuts",
+      "context_token_index": 15,
+      "nearest_tokens": [
+        "childrens",
+        "children",
+        "\u043e\u0434",
+        "intuition",
+        "unesco"
+      ],
+      "nearest_scores": [
+        0.1862911581993103,
+        0.18051940202713013,
+        0.16909712553024292,
+        0.16840164363384247,
+        0.16623644530773163
+      ]
+    },
+    {
+      "class_name": "eggs_benedict",
+      "context_token_index": 0,
+      "nearest_tokens": [
+        "grew",
+        "buffer",
+        "\u751f",
+        "\uc6b0",
+        "cos"
+      ],
+      "nearest_scores": [
+        0.17993617057800293,
+        0.1743825376033783,
+        0.17383089661598206,
+        0.1709156036376953,
+        0.17085978388786316
+      ]
+    },
+    {
+      "class_name": "eggs_benedict",
+      "context_token_index": 1,
+      "nearest_tokens": [
+        "consent",
+        "eres",
+        "ahhh",
+        "awak",
+        "\ud83e\udd19"
+      ],
+      "nearest_scores": [
+        0.20316344499588013,
+        0.18896996974945068,
+        0.18025223910808563,
+        0.1649409830570221,
+        0.1640799343585968
+      ]
+    },
+    {
+      "class_name": "eggs_benedict",
+      "context_token_index": 2,
+      "nearest_tokens": [
+        "endof",
+        "some",
+        "noman",
+        "ead",
+        "dost"
+      ],
+      "nearest_scores": [
+        0.185725599527359,
+        0.17248713970184326,
+        0.1597699075937271,
+        0.15829405188560486,
+        0.15752840042114258
+      ]
+    },
+    {
+      "class_name": "eggs_benedict",
+      "context_token_index": 3,
+      "nearest_tokens": [
+        "shop",
+        "ise",
+        "etz",
+        "war",
+        "boar"
+      ],
+      "nearest_scores": [
+        0.20800359547138214,
+        0.18588890135288239,
+        0.1742606908082962,
+        0.17382940649986267,
+        0.16635781526565552
+      ]
+    },
+    {
+      "class_name": "eggs_benedict",
+      "context_token_index": 4,
+      "nearest_tokens": [
+        "dispatch",
+        "despic",
+        "groupe",
+        "grabbing",
+        "optimis"
+      ],
+      "nearest_scores": [
+        0.1961406171321869,
+        0.19191919267177582,
+        0.1714572161436081,
+        0.17051249742507935,
+        0.17038407921791077
+      ]
+    },
+    {
+      "class_name": "eggs_benedict",
+      "context_token_index": 5,
+      "nearest_tokens": [
+        "antarctic",
+        "chardon",
+        "gripping",
+        "stans",
+        "islamist"
+      ],
+      "nearest_scores": [
+        0.18627727031707764,
+        0.18138915300369263,
+        0.18119391798973083,
+        0.18085511028766632,
+        0.1803445816040039
+      ]
+    },
+    {
+      "class_name": "eggs_benedict",
+      "context_token_index": 6,
+      "nearest_tokens": [
+        "analyses",
+        "destiny",
+        "librarian",
+        "kwang",
+        "inglis"
+      ],
+      "nearest_scores": [
+        0.1826467365026474,
+        0.17814525961875916,
+        0.1731824278831482,
+        0.17293637990951538,
+        0.17239882051944733
+      ]
+    },
+    {
+      "class_name": "eggs_benedict",
+      "context_token_index": 7,
+      "nearest_tokens": [
+        "sox",
+        "philia",
+        "huck",
+        "foot",
+        "scot"
+      ],
+      "nearest_scores": [
+        0.17718908190727234,
+        0.17239700257778168,
+        0.17218908667564392,
+        0.1709921807050705,
+        0.16971755027770996
+      ]
+    },
+    {
+      "class_name": "eggs_benedict",
+      "context_token_index": 8,
+      "nearest_tokens": [
+        "yp",
+        "zzzz",
+        "erson",
+        "heir",
+        "consol"
+      ],
+      "nearest_scores": [
+        0.19220763444900513,
+        0.19057026505470276,
+        0.16520532965660095,
+        0.16475342214107513,
+        0.16446714103221893
+      ]
+    },
+    {
+      "class_name": "eggs_benedict",
+      "context_token_index": 9,
+      "nearest_tokens": [
+        "fei",
+        "discla",
+        "jaw",
+        "seiz",
+        "vandy"
+      ],
+      "nearest_scores": [
+        0.18663731217384338,
+        0.18625253438949585,
+        0.18464983999729156,
+        0.18367338180541992,
+        0.18265116214752197
+      ]
+    },
+    {
+      "class_name": "eggs_benedict",
+      "context_token_index": 10,
+      "nearest_tokens": [
+        "xu",
+        "shand",
+        "\u0e04\ufffd",
+        "\ufffd",
+        "\u0e34"
+      ],
+      "nearest_scores": [
+        0.22487418353557587,
+        0.21147069334983826,
+        0.1992080956697464,
+        0.1981356143951416,
+        0.1915866881608963
+      ]
+    },
+    {
+      "class_name": "eggs_benedict",
+      "context_token_index": 11,
+      "nearest_tokens": [
+        "madrid",
+        "\ufffd\ufffd",
+        "\u2026",
+        "\ufffd",
+        "survi"
+      ],
+      "nearest_scores": [
+        0.2137846052646637,
+        0.19934694468975067,
+        0.19760799407958984,
+        0.18826264142990112,
+        0.17701025307178497
+      ]
+    },
+    {
+      "class_name": "eggs_benedict",
+      "context_token_index": 12,
+      "nearest_tokens": [
+        "asthour",
+        "\u0e34",
+        "\ufffd",
+        "iver",
+        "\ud83c\udffe\u200d\u2642\ufe0f"
+      ],
+      "nearest_scores": [
+        0.16746819019317627,
+        0.16224439442157745,
+        0.16125482320785522,
+        0.16121383011341095,
+        0.16081388294696808
+      ]
+    },
+    {
+      "class_name": "eggs_benedict",
+      "context_token_index": 13,
+      "nearest_tokens": [
+        "guts",
+        "preventive",
+        "sewing",
+        "\ud83d\udca5\ud83d\udca5",
+        "faz"
+      ],
+      "nearest_scores": [
+        0.1794484704732895,
+        0.17504027485847473,
+        0.17306114733219147,
+        0.1698359251022339,
+        0.16840362548828125
+      ]
+    },
+    {
+      "class_name": "eggs_benedict",
+      "context_token_index": 14,
+      "nearest_tokens": [
+        "estu",
+        "rs",
+        "shuk",
+        "home",
+        "hold"
+      ],
+      "nearest_scores": [
+        0.18104153871536255,
+        0.1700727939605713,
+        0.16697877645492554,
+        0.16090010106563568,
+        0.16023944318294525
+      ]
+    },
+    {
+      "class_name": "eggs_benedict",
+      "context_token_index": 15,
+      "nearest_tokens": [
+        "childrens",
+        "children",
+        "\u043e\u0434",
+        "intuition",
+        "unesco"
+      ],
+      "nearest_scores": [
+        0.1862911581993103,
+        0.18051940202713013,
+        0.16909712553024292,
+        0.16840164363384247,
+        0.16623644530773163
+      ]
+    },
+    {
+      "class_name": "french_fries",
+      "context_token_index": 0,
+      "nearest_tokens": [
+        "grew",
+        "buffer",
+        "\u751f",
+        "\uc6b0",
+        "cos"
+      ],
+      "nearest_scores": [
+        0.17993617057800293,
+        0.1743825376033783,
+        0.17383089661598206,
+        0.1709156036376953,
+        0.17085978388786316
+      ]
+    },
+    {
+      "class_name": "french_fries",
+      "context_token_index": 1,
+      "nearest_tokens": [
+        "consent",
+        "eres",
+        "ahhh",
+        "awak",
+        "\ud83e\udd19"
+      ],
+      "nearest_scores": [
+        0.20316344499588013,
+        0.18896996974945068,
+        0.18025223910808563,
+        0.1649409830570221,
+        0.1640799343585968
+      ]
+    },
+    {
+      "class_name": "french_fries",
+      "context_token_index": 2,
+      "nearest_tokens": [
+        "endof",
+        "some",
+        "noman",
+        "ead",
+        "dost"
+      ],
+      "nearest_scores": [
+        0.185725599527359,
+        0.17248713970184326,
+        0.1597699075937271,
+        0.15829405188560486,
+        0.15752840042114258
+      ]
+    },
+    {
+      "class_name": "french_fries",
+      "context_token_index": 3,
+      "nearest_tokens": [
+        "shop",
+        "ise",
+        "etz",
+        "war",
+        "boar"
+      ],
+      "nearest_scores": [
+        0.20800359547138214,
+        0.18588890135288239,
+        0.1742606908082962,
+        0.17382940649986267,
+        0.16635781526565552
+      ]
+    },
+    {
+      "class_name": "french_fries",
+      "context_token_index": 4,
+      "nearest_tokens": [
+        "dispatch",
+        "despic",
+        "groupe",
+        "grabbing",
+        "optimis"
+      ],
+      "nearest_scores": [
+        0.1961406171321869,
+        0.19191919267177582,
+        0.1714572161436081,
+        0.17051249742507935,
+        0.17038407921791077
+      ]
+    },
+    {
+      "class_name": "french_fries",
+      "context_token_index": 5,
+      "nearest_tokens": [
+        "antarctic",
+        "chardon",
+        "gripping",
+        "stans",
+        "islamist"
+      ],
+      "nearest_scores": [
+        0.18627727031707764,
+        0.18138915300369263,
+        0.18119391798973083,
+        0.18085511028766632,
+        0.1803445816040039
+      ]
+    },
+    {
+      "class_name": "french_fries",
+      "context_token_index": 6,
+      "nearest_tokens": [
+        "analyses",
+        "destiny",
+        "librarian",
+        "kwang",
+        "inglis"
+      ],
+      "nearest_scores": [
+        0.1826467365026474,
+        0.17814525961875916,
+        0.1731824278831482,
+        0.17293637990951538,
+        0.17239882051944733
+      ]
+    },
+    {
+      "class_name": "french_fries",
+      "context_token_index": 7,
+      "nearest_tokens": [
+        "sox",
+        "philia",
+        "huck",
+        "foot",
+        "scot"
+      ],
+      "nearest_scores": [
+        0.17718908190727234,
+        0.17239700257778168,
+        0.17218908667564392,
+        0.1709921807050705,
+        0.16971755027770996
+      ]
+    },
+    {
+      "class_name": "french_fries",
+      "context_token_index": 8,
+      "nearest_tokens": [
+        "yp",
+        "zzzz",
+        "erson",
+        "heir",
+        "consol"
+      ],
+      "nearest_scores": [
+        0.19220763444900513,
+        0.19057026505470276,
+        0.16520532965660095,
+        0.16475342214107513,
+        0.16446714103221893
+      ]
+    },
+    {
+      "class_name": "french_fries",
+      "context_token_index": 9,
+      "nearest_tokens": [
+        "fei",
+        "discla",
+        "jaw",
+        "seiz",
+        "vandy"
+      ],
+      "nearest_scores": [
+        0.18663731217384338,
+        0.18625253438949585,
+        0.18464983999729156,
+        0.18367338180541992,
+        0.18265116214752197
+      ]
+    },
+    {
+      "class_name": "french_fries",
+      "context_token_index": 10,
+      "nearest_tokens": [
+        "xu",
+        "shand",
+        "\u0e04\ufffd",
+        "\ufffd",
+        "\u0e34"
+      ],
+      "nearest_scores": [
+        0.22487418353557587,
+        0.21147069334983826,
+        0.1992080956697464,
+        0.1981356143951416,
+        0.1915866881608963
+      ]
+    },
+    {
+      "class_name": "french_fries",
+      "context_token_index": 11,
+      "nearest_tokens": [
+        "madrid",
+        "\ufffd\ufffd",
+        "\u2026",
+        "\ufffd",
+        "survi"
+      ],
+      "nearest_scores": [
+        0.2137846052646637,
+        0.19934694468975067,
+        0.19760799407958984,
+        0.18826264142990112,
+        0.17701025307178497
+      ]
+    },
+    {
+      "class_name": "french_fries",
+      "context_token_index": 12,
+      "nearest_tokens": [
+        "asthour",
+        "\u0e34",
+        "\ufffd",
+        "iver",
+        "\ud83c\udffe\u200d\u2642\ufe0f"
+      ],
+      "nearest_scores": [
+        0.16746819019317627,
+        0.16224439442157745,
+        0.16125482320785522,
+        0.16121383011341095,
+        0.16081388294696808
+      ]
+    },
+    {
+      "class_name": "french_fries",
+      "context_token_index": 13,
+      "nearest_tokens": [
+        "guts",
+        "preventive",
+        "sewing",
+        "\ud83d\udca5\ud83d\udca5",
+        "faz"
+      ],
+      "nearest_scores": [
+        0.1794484704732895,
+        0.17504027485847473,
+        0.17306114733219147,
+        0.1698359251022339,
+        0.16840362548828125
+      ]
+    },
+    {
+      "class_name": "french_fries",
+      "context_token_index": 14,
+      "nearest_tokens": [
+        "estu",
+        "rs",
+        "shuk",
+        "home",
+        "hold"
+      ],
+      "nearest_scores": [
+        0.18104153871536255,
+        0.1700727939605713,
+        0.16697877645492554,
+        0.16090010106563568,
+        0.16023944318294525
+      ]
+    },
+    {
+      "class_name": "french_fries",
+      "context_token_index": 15,
+      "nearest_tokens": [
+        "childrens",
+        "children",
+        "\u043e\u0434",
+        "intuition",
+        "unesco"
+      ],
+      "nearest_scores": [
+        0.1862911581993103,
+        0.18051940202713013,
+        0.16909712553024292,
+        0.16840164363384247,
+        0.16623644530773163
+      ]
+    },
+    {
+      "class_name": "grilled_cheese_sandwich",
+      "context_token_index": 0,
+      "nearest_tokens": [
+        "grew",
+        "buffer",
+        "\u751f",
+        "\uc6b0",
+        "cos"
+      ],
+      "nearest_scores": [
+        0.17993617057800293,
+        0.1743825376033783,
+        0.17383089661598206,
+        0.1709156036376953,
+        0.17085978388786316
+      ]
+    },
+    {
+      "class_name": "grilled_cheese_sandwich",
+      "context_token_index": 1,
+      "nearest_tokens": [
+        "consent",
+        "eres",
+        "ahhh",
+        "awak",
+        "\ud83e\udd19"
+      ],
+      "nearest_scores": [
+        0.20316344499588013,
+        0.18896996974945068,
+        0.18025223910808563,
+        0.1649409830570221,
+        0.1640799343585968
+      ]
+    },
+    {
+      "class_name": "grilled_cheese_sandwich",
+      "context_token_index": 2,
+      "nearest_tokens": [
+        "endof",
+        "some",
+        "noman",
+        "ead",
+        "dost"
+      ],
+      "nearest_scores": [
+        0.185725599527359,
+        0.17248713970184326,
+        0.1597699075937271,
+        0.15829405188560486,
+        0.15752840042114258
+      ]
+    },
+    {
+      "class_name": "grilled_cheese_sandwich",
+      "context_token_index": 3,
+      "nearest_tokens": [
+        "shop",
+        "ise",
+        "etz",
+        "war",
+        "boar"
+      ],
+      "nearest_scores": [
+        0.20800359547138214,
+        0.18588890135288239,
+        0.1742606908082962,
+        0.17382940649986267,
+        0.16635781526565552
+      ]
+    },
+    {
+      "class_name": "grilled_cheese_sandwich",
+      "context_token_index": 4,
+      "nearest_tokens": [
+        "dispatch",
+        "despic",
+        "groupe",
+        "grabbing",
+        "optimis"
+      ],
+      "nearest_scores": [
+        0.1961406171321869,
+        0.19191919267177582,
+        0.1714572161436081,
+        0.17051249742507935,
+        0.17038407921791077
+      ]
+    },
+    {
+      "class_name": "grilled_cheese_sandwich",
+      "context_token_index": 5,
+      "nearest_tokens": [
+        "antarctic",
+        "chardon",
+        "gripping",
+        "stans",
+        "islamist"
+      ],
+      "nearest_scores": [
+        0.18627727031707764,
+        0.18138915300369263,
+        0.18119391798973083,
+        0.18085511028766632,
+        0.1803445816040039
+      ]
+    },
+    {
+      "class_name": "grilled_cheese_sandwich",
+      "context_token_index": 6,
+      "nearest_tokens": [
+        "analyses",
+        "destiny",
+        "librarian",
+        "kwang",
+        "inglis"
+      ],
+      "nearest_scores": [
+        0.1826467365026474,
+        0.17814525961875916,
+        0.1731824278831482,
+        0.17293637990951538,
+        0.17239882051944733
+      ]
+    },
+    {
+      "class_name": "grilled_cheese_sandwich",
+      "context_token_index": 7,
+      "nearest_tokens": [
+        "sox",
+        "philia",
+        "huck",
+        "foot",
+        "scot"
+      ],
+      "nearest_scores": [
+        0.17718908190727234,
+        0.17239700257778168,
+        0.17218908667564392,
+        0.1709921807050705,
+        0.16971755027770996
+      ]
+    },
+    {
+      "class_name": "grilled_cheese_sandwich",
+      "context_token_index": 8,
+      "nearest_tokens": [
+        "yp",
+        "zzzz",
+        "erson",
+        "heir",
+        "consol"
+      ],
+      "nearest_scores": [
+        0.19220763444900513,
+        0.19057026505470276,
+        0.16520532965660095,
+        0.16475342214107513,
+        0.16446714103221893
+      ]
+    },
+    {
+      "class_name": "grilled_cheese_sandwich",
+      "context_token_index": 9,
+      "nearest_tokens": [
+        "fei",
+        "discla",
+        "jaw",
+        "seiz",
+        "vandy"
+      ],
+      "nearest_scores": [
+        0.18663731217384338,
+        0.18625253438949585,
+        0.18464983999729156,
+        0.18367338180541992,
+        0.18265116214752197
+      ]
+    },
+    {
+      "class_name": "grilled_cheese_sandwich",
+      "context_token_index": 10,
+      "nearest_tokens": [
+        "xu",
+        "shand",
+        "\u0e04\ufffd",
+        "\ufffd",
+        "\u0e34"
+      ],
+      "nearest_scores": [
+        0.22487418353557587,
+        0.21147069334983826,
+        0.1992080956697464,
+        0.1981356143951416,
+        0.1915866881608963
+      ]
+    },
+    {
+      "class_name": "grilled_cheese_sandwich",
+      "context_token_index": 11,
+      "nearest_tokens": [
+        "madrid",
+        "\ufffd\ufffd",
+        "\u2026",
+        "\ufffd",
+        "survi"
+      ],
+      "nearest_scores": [
+        0.2137846052646637,
+        0.19934694468975067,
+        0.19760799407958984,
+        0.18826264142990112,
+        0.17701025307178497
+      ]
+    },
+    {
+      "class_name": "grilled_cheese_sandwich",
+      "context_token_index": 12,
+      "nearest_tokens": [
+        "asthour",
+        "\u0e34",
+        "\ufffd",
+        "iver",
+        "\ud83c\udffe\u200d\u2642\ufe0f"
+      ],
+      "nearest_scores": [
+        0.16746819019317627,
+        0.16224439442157745,
+        0.16125482320785522,
+        0.16121383011341095,
+        0.16081388294696808
+      ]
+    },
+    {
+      "class_name": "grilled_cheese_sandwich",
+      "context_token_index": 13,
+      "nearest_tokens": [
+        "guts",
+        "preventive",
+        "sewing",
+        "\ud83d\udca5\ud83d\udca5",
+        "faz"
+      ],
+      "nearest_scores": [
+        0.1794484704732895,
+        0.17504027485847473,
+        0.17306114733219147,
+        0.1698359251022339,
+        0.16840362548828125
+      ]
+    },
+    {
+      "class_name": "grilled_cheese_sandwich",
+      "context_token_index": 14,
+      "nearest_tokens": [
+        "estu",
+        "rs",
+        "shuk",
+        "home",
+        "hold"
+      ],
+      "nearest_scores": [
+        0.18104153871536255,
+        0.1700727939605713,
+        0.16697877645492554,
+        0.16090010106563568,
+        0.16023944318294525
+      ]
+    },
+    {
+      "class_name": "grilled_cheese_sandwich",
+      "context_token_index": 15,
+      "nearest_tokens": [
+        "childrens",
+        "children",
+        "\u043e\u0434",
+        "intuition",
+        "unesco"
+      ],
+      "nearest_scores": [
+        0.1862911581993103,
+        0.18051940202713013,
+        0.16909712553024292,
+        0.16840164363384247,
+        0.16623644530773163
+      ]
+    },
+    {
+      "class_name": "hamburger",
+      "context_token_index": 0,
+      "nearest_tokens": [
+        "grew",
+        "buffer",
+        "\u751f",
+        "\uc6b0",
+        "cos"
+      ],
+      "nearest_scores": [
+        0.17993617057800293,
+        0.1743825376033783,
+        0.17383089661598206,
+        0.1709156036376953,
+        0.17085978388786316
+      ]
+    },
+    {
+      "class_name": "hamburger",
+      "context_token_index": 1,
+      "nearest_tokens": [
+        "consent",
+        "eres",
+        "ahhh",
+        "awak",
+        "\ud83e\udd19"
+      ],
+      "nearest_scores": [
+        0.20316344499588013,
+        0.18896996974945068,
+        0.18025223910808563,
+        0.1649409830570221,
+        0.1640799343585968
+      ]
+    },
+    {
+      "class_name": "hamburger",
+      "context_token_index": 2,
+      "nearest_tokens": [
+        "endof",
+        "some",
+        "noman",
+        "ead",
+        "dost"
+      ],
+      "nearest_scores": [
+        0.185725599527359,
+        0.17248713970184326,
+        0.1597699075937271,
+        0.15829405188560486,
+        0.15752840042114258
+      ]
+    },
+    {
+      "class_name": "hamburger",
+      "context_token_index": 3,
+      "nearest_tokens": [
+        "shop",
+        "ise",
+        "etz",
+        "war",
+        "boar"
+      ],
+      "nearest_scores": [
+        0.20800359547138214,
+        0.18588890135288239,
+        0.1742606908082962,
+        0.17382940649986267,
+        0.16635781526565552
+      ]
+    },
+    {
+      "class_name": "hamburger",
+      "context_token_index": 4,
+      "nearest_tokens": [
+        "dispatch",
+        "despic",
+        "groupe",
+        "grabbing",
+        "optimis"
+      ],
+      "nearest_scores": [
+        0.1961406171321869,
+        0.19191919267177582,
+        0.1714572161436081,
+        0.17051249742507935,
+        0.17038407921791077
+      ]
+    },
+    {
+      "class_name": "hamburger",
+      "context_token_index": 5,
+      "nearest_tokens": [
+        "antarctic",
+        "chardon",
+        "gripping",
+        "stans",
+        "islamist"
+      ],
+      "nearest_scores": [
+        0.18627727031707764,
+        0.18138915300369263,
+        0.18119391798973083,
+        0.18085511028766632,
+        0.1803445816040039
+      ]
+    },
+    {
+      "class_name": "hamburger",
+      "context_token_index": 6,
+      "nearest_tokens": [
+        "analyses",
+        "destiny",
+        "librarian",
+        "kwang",
+        "inglis"
+      ],
+      "nearest_scores": [
+        0.1826467365026474,
+        0.17814525961875916,
+        0.1731824278831482,
+        0.17293637990951538,
+        0.17239882051944733
+      ]
+    },
+    {
+      "class_name": "hamburger",
+      "context_token_index": 7,
+      "nearest_tokens": [
+        "sox",
+        "philia",
+        "huck",
+        "foot",
+        "scot"
+      ],
+      "nearest_scores": [
+        0.17718908190727234,
+        0.17239700257778168,
+        0.17218908667564392,
+        0.1709921807050705,
+        0.16971755027770996
+      ]
+    },
+    {
+      "class_name": "hamburger",
+      "context_token_index": 8,
+      "nearest_tokens": [
+        "yp",
+        "zzzz",
+        "erson",
+        "heir",
+        "consol"
+      ],
+      "nearest_scores": [
+        0.19220763444900513,
+        0.19057026505470276,
+        0.16520532965660095,
+        0.16475342214107513,
+        0.16446714103221893
+      ]
+    },
+    {
+      "class_name": "hamburger",
+      "context_token_index": 9,
+      "nearest_tokens": [
+        "fei",
+        "discla",
+        "jaw",
+        "seiz",
+        "vandy"
+      ],
+      "nearest_scores": [
+        0.18663731217384338,
+        0.18625253438949585,
+        0.18464983999729156,
+        0.18367338180541992,
+        0.18265116214752197
+      ]
+    },
+    {
+      "class_name": "hamburger",
+      "context_token_index": 10,
+      "nearest_tokens": [
+        "xu",
+        "shand",
+        "\u0e04\ufffd",
+        "\ufffd",
+        "\u0e34"
+      ],
+      "nearest_scores": [
+        0.22487418353557587,
+        0.21147069334983826,
+        0.1992080956697464,
+        0.1981356143951416,
+        0.1915866881608963
+      ]
+    },
+    {
+      "class_name": "hamburger",
+      "context_token_index": 11,
+      "nearest_tokens": [
+        "madrid",
+        "\ufffd\ufffd",
+        "\u2026",
+        "\ufffd",
+        "survi"
+      ],
+      "nearest_scores": [
+        0.2137846052646637,
+        0.19934694468975067,
+        0.19760799407958984,
+        0.18826264142990112,
+        0.17701025307178497
+      ]
+    },
+    {
+      "class_name": "hamburger",
+      "context_token_index": 12,
+      "nearest_tokens": [
+        "asthour",
+        "\u0e34",
+        "\ufffd",
+        "iver",
+        "\ud83c\udffe\u200d\u2642\ufe0f"
+      ],
+      "nearest_scores": [
+        0.16746819019317627,
+        0.16224439442157745,
+        0.16125482320785522,
+        0.16121383011341095,
+        0.16081388294696808
+      ]
+    },
+    {
+      "class_name": "hamburger",
+      "context_token_index": 13,
+      "nearest_tokens": [
+        "guts",
+        "preventive",
+        "sewing",
+        "\ud83d\udca5\ud83d\udca5",
+        "faz"
+      ],
+      "nearest_scores": [
+        0.1794484704732895,
+        0.17504027485847473,
+        0.17306114733219147,
+        0.1698359251022339,
+        0.16840362548828125
+      ]
+    },
+    {
+      "class_name": "hamburger",
+      "context_token_index": 14,
+      "nearest_tokens": [
+        "estu",
+        "rs",
+        "shuk",
+        "home",
+        "hold"
+      ],
+      "nearest_scores": [
+        0.18104153871536255,
+        0.1700727939605713,
+        0.16697877645492554,
+        0.16090010106563568,
+        0.16023944318294525
+      ]
+    },
+    {
+      "class_name": "hamburger",
+      "context_token_index": 15,
+      "nearest_tokens": [
+        "childrens",
+        "children",
+        "\u043e\u0434",
+        "intuition",
+        "unesco"
+      ],
+      "nearest_scores": [
+        0.1862911581993103,
+        0.18051940202713013,
+        0.16909712553024292,
+        0.16840164363384247,
+        0.16623644530773163
+      ]
+    },
+    {
+      "class_name": "ice_cream",
+      "context_token_index": 0,
+      "nearest_tokens": [
+        "grew",
+        "buffer",
+        "\u751f",
+        "\uc6b0",
+        "cos"
+      ],
+      "nearest_scores": [
+        0.17993617057800293,
+        0.1743825376033783,
+        0.17383089661598206,
+        0.1709156036376953,
+        0.17085978388786316
+      ]
+    },
+    {
+      "class_name": "ice_cream",
+      "context_token_index": 1,
+      "nearest_tokens": [
+        "consent",
+        "eres",
+        "ahhh",
+        "awak",
+        "\ud83e\udd19"
+      ],
+      "nearest_scores": [
+        0.20316344499588013,
+        0.18896996974945068,
+        0.18025223910808563,
+        0.1649409830570221,
+        0.1640799343585968
+      ]
+    },
+    {
+      "class_name": "ice_cream",
+      "context_token_index": 2,
+      "nearest_tokens": [
+        "endof",
+        "some",
+        "noman",
+        "ead",
+        "dost"
+      ],
+      "nearest_scores": [
+        0.185725599527359,
+        0.17248713970184326,
+        0.1597699075937271,
+        0.15829405188560486,
+        0.15752840042114258
+      ]
+    },
+    {
+      "class_name": "ice_cream",
+      "context_token_index": 3,
+      "nearest_tokens": [
+        "shop",
+        "ise",
+        "etz",
+        "war",
+        "boar"
+      ],
+      "nearest_scores": [
+        0.20800359547138214,
+        0.18588890135288239,
+        0.1742606908082962,
+        0.17382940649986267,
+        0.16635781526565552
+      ]
+    },
+    {
+      "class_name": "ice_cream",
+      "context_token_index": 4,
+      "nearest_tokens": [
+        "dispatch",
+        "despic",
+        "groupe",
+        "grabbing",
+        "optimis"
+      ],
+      "nearest_scores": [
+        0.1961406171321869,
+        0.19191919267177582,
+        0.1714572161436081,
+        0.17051249742507935,
+        0.17038407921791077
+      ]
+    },
+    {
+      "class_name": "ice_cream",
+      "context_token_index": 5,
+      "nearest_tokens": [
+        "antarctic",
+        "chardon",
+        "gripping",
+        "stans",
+        "islamist"
+      ],
+      "nearest_scores": [
+        0.18627727031707764,
+        0.18138915300369263,
+        0.18119391798973083,
+        0.18085511028766632,
+        0.1803445816040039
+      ]
+    },
+    {
+      "class_name": "ice_cream",
+      "context_token_index": 6,
+      "nearest_tokens": [
+        "analyses",
+        "destiny",
+        "librarian",
+        "kwang",
+        "inglis"
+      ],
+      "nearest_scores": [
+        0.1826467365026474,
+        0.17814525961875916,
+        0.1731824278831482,
+        0.17293637990951538,
+        0.17239882051944733
+      ]
+    },
+    {
+      "class_name": "ice_cream",
+      "context_token_index": 7,
+      "nearest_tokens": [
+        "sox",
+        "philia",
+        "huck",
+        "foot",
+        "scot"
+      ],
+      "nearest_scores": [
+        0.17718908190727234,
+        0.17239700257778168,
+        0.17218908667564392,
+        0.1709921807050705,
+        0.16971755027770996
+      ]
+    },
+    {
+      "class_name": "ice_cream",
+      "context_token_index": 8,
+      "nearest_tokens": [
+        "yp",
+        "zzzz",
+        "erson",
+        "heir",
+        "consol"
+      ],
+      "nearest_scores": [
+        0.19220763444900513,
+        0.19057026505470276,
+        0.16520532965660095,
+        0.16475342214107513,
+        0.16446714103221893
+      ]
+    },
+    {
+      "class_name": "ice_cream",
+      "context_token_index": 9,
+      "nearest_tokens": [
+        "fei",
+        "discla",
+        "jaw",
+        "seiz",
+        "vandy"
+      ],
+      "nearest_scores": [
+        0.18663731217384338,
+        0.18625253438949585,
+        0.18464983999729156,
+        0.18367338180541992,
+        0.18265116214752197
+      ]
+    },
+    {
+      "class_name": "ice_cream",
+      "context_token_index": 10,
+      "nearest_tokens": [
+        "xu",
+        "shand",
+        "\u0e04\ufffd",
+        "\ufffd",
+        "\u0e34"
+      ],
+      "nearest_scores": [
+        0.22487418353557587,
+        0.21147069334983826,
+        0.1992080956697464,
+        0.1981356143951416,
+        0.1915866881608963
+      ]
+    },
+    {
+      "class_name": "ice_cream",
+      "context_token_index": 11,
+      "nearest_tokens": [
+        "madrid",
+        "\ufffd\ufffd",
+        "\u2026",
+        "\ufffd",
+        "survi"
+      ],
+      "nearest_scores": [
+        0.2137846052646637,
+        0.19934694468975067,
+        0.19760799407958984,
+        0.18826264142990112,
+        0.17701025307178497
+      ]
+    },
+    {
+      "class_name": "ice_cream",
+      "context_token_index": 12,
+      "nearest_tokens": [
+        "asthour",
+        "\u0e34",
+        "\ufffd",
+        "iver",
+        "\ud83c\udffe\u200d\u2642\ufe0f"
+      ],
+      "nearest_scores": [
+        0.16746819019317627,
+        0.16224439442157745,
+        0.16125482320785522,
+        0.16121383011341095,
+        0.16081388294696808
+      ]
+    },
+    {
+      "class_name": "ice_cream",
+      "context_token_index": 13,
+      "nearest_tokens": [
+        "guts",
+        "preventive",
+        "sewing",
+        "\ud83d\udca5\ud83d\udca5",
+        "faz"
+      ],
+      "nearest_scores": [
+        0.1794484704732895,
+        0.17504027485847473,
+        0.17306114733219147,
+        0.1698359251022339,
+        0.16840362548828125
+      ]
+    },
+    {
+      "class_name": "ice_cream",
+      "context_token_index": 14,
+      "nearest_tokens": [
+        "estu",
+        "rs",
+        "shuk",
+        "home",
+        "hold"
+      ],
+      "nearest_scores": [
+        0.18104153871536255,
+        0.1700727939605713,
+        0.16697877645492554,
+        0.16090010106563568,
+        0.16023944318294525
+      ]
+    },
+    {
+      "class_name": "ice_cream",
+      "context_token_index": 15,
+      "nearest_tokens": [
+        "childrens",
+        "children",
+        "\u043e\u0434",
+        "intuition",
+        "unesco"
+      ],
+      "nearest_scores": [
+        0.1862911581993103,
+        0.18051940202713013,
+        0.16909712553024292,
+        0.16840164363384247,
+        0.16623644530773163
+      ]
+    },
+    {
+      "class_name": "pizza",
+      "context_token_index": 0,
+      "nearest_tokens": [
+        "grew",
+        "buffer",
+        "\u751f",
+        "\uc6b0",
+        "cos"
+      ],
+      "nearest_scores": [
+        0.17993617057800293,
+        0.1743825376033783,
+        0.17383089661598206,
+        0.1709156036376953,
+        0.17085978388786316
+      ]
+    },
+    {
+      "class_name": "pizza",
+      "context_token_index": 1,
+      "nearest_tokens": [
+        "consent",
+        "eres",
+        "ahhh",
+        "awak",
+        "\ud83e\udd19"
+      ],
+      "nearest_scores": [
+        0.20316344499588013,
+        0.18896996974945068,
+        0.18025223910808563,
+        0.1649409830570221,
+        0.1640799343585968
+      ]
+    },
+    {
+      "class_name": "pizza",
+      "context_token_index": 2,
+      "nearest_tokens": [
+        "endof",
+        "some",
+        "noman",
+        "ead",
+        "dost"
+      ],
+      "nearest_scores": [
+        0.185725599527359,
+        0.17248713970184326,
+        0.1597699075937271,
+        0.15829405188560486,
+        0.15752840042114258
+      ]
+    },
+    {
+      "class_name": "pizza",
+      "context_token_index": 3,
+      "nearest_tokens": [
+        "shop",
+        "ise",
+        "etz",
+        "war",
+        "boar"
+      ],
+      "nearest_scores": [
+        0.20800359547138214,
+        0.18588890135288239,
+        0.1742606908082962,
+        0.17382940649986267,
+        0.16635781526565552
+      ]
+    },
+    {
+      "class_name": "pizza",
+      "context_token_index": 4,
+      "nearest_tokens": [
+        "dispatch",
+        "despic",
+        "groupe",
+        "grabbing",
+        "optimis"
+      ],
+      "nearest_scores": [
+        0.1961406171321869,
+        0.19191919267177582,
+        0.1714572161436081,
+        0.17051249742507935,
+        0.17038407921791077
+      ]
+    },
+    {
+      "class_name": "pizza",
+      "context_token_index": 5,
+      "nearest_tokens": [
+        "antarctic",
+        "chardon",
+        "gripping",
+        "stans",
+        "islamist"
+      ],
+      "nearest_scores": [
+        0.18627727031707764,
+        0.18138915300369263,
+        0.18119391798973083,
+        0.18085511028766632,
+        0.1803445816040039
+      ]
+    },
+    {
+      "class_name": "pizza",
+      "context_token_index": 6,
+      "nearest_tokens": [
+        "analyses",
+        "destiny",
+        "librarian",
+        "kwang",
+        "inglis"
+      ],
+      "nearest_scores": [
+        0.1826467365026474,
+        0.17814525961875916,
+        0.1731824278831482,
+        0.17293637990951538,
+        0.17239882051944733
+      ]
+    },
+    {
+      "class_name": "pizza",
+      "context_token_index": 7,
+      "nearest_tokens": [
+        "sox",
+        "philia",
+        "huck",
+        "foot",
+        "scot"
+      ],
+      "nearest_scores": [
+        0.17718908190727234,
+        0.17239700257778168,
+        0.17218908667564392,
+        0.1709921807050705,
+        0.16971755027770996
+      ]
+    },
+    {
+      "class_name": "pizza",
+      "context_token_index": 8,
+      "nearest_tokens": [
+        "yp",
+        "zzzz",
+        "erson",
+        "heir",
+        "consol"
+      ],
+      "nearest_scores": [
+        0.19220763444900513,
+        0.19057026505470276,
+        0.16520532965660095,
+        0.16475342214107513,
+        0.16446714103221893
+      ]
+    },
+    {
+      "class_name": "pizza",
+      "context_token_index": 9,
+      "nearest_tokens": [
+        "fei",
+        "discla",
+        "jaw",
+        "seiz",
+        "vandy"
+      ],
+      "nearest_scores": [
+        0.18663731217384338,
+        0.18625253438949585,
+        0.18464983999729156,
+        0.18367338180541992,
+        0.18265116214752197
+      ]
+    },
+    {
+      "class_name": "pizza",
+      "context_token_index": 10,
+      "nearest_tokens": [
+        "xu",
+        "shand",
+        "\u0e04\ufffd",
+        "\ufffd",
+        "\u0e34"
+      ],
+      "nearest_scores": [
+        0.22487418353557587,
+        0.21147069334983826,
+        0.1992080956697464,
+        0.1981356143951416,
+        0.1915866881608963
+      ]
+    },
+    {
+      "class_name": "pizza",
+      "context_token_index": 11,
+      "nearest_tokens": [
+        "madrid",
+        "\ufffd\ufffd",
+        "\u2026",
+        "\ufffd",
+        "survi"
+      ],
+      "nearest_scores": [
+        0.2137846052646637,
+        0.19934694468975067,
+        0.19760799407958984,
+        0.18826264142990112,
+        0.17701025307178497
+      ]
+    },
+    {
+      "class_name": "pizza",
+      "context_token_index": 12,
+      "nearest_tokens": [
+        "asthour",
+        "\u0e34",
+        "\ufffd",
+        "iver",
+        "\ud83c\udffe\u200d\u2642\ufe0f"
+      ],
+      "nearest_scores": [
+        0.16746819019317627,
+        0.16224439442157745,
+        0.16125482320785522,
+        0.16121383011341095,
+        0.16081388294696808
+      ]
+    },
+    {
+      "class_name": "pizza",
+      "context_token_index": 13,
+      "nearest_tokens": [
+        "guts",
+        "preventive",
+        "sewing",
+        "\ud83d\udca5\ud83d\udca5",
+        "faz"
+      ],
+      "nearest_scores": [
+        0.1794484704732895,
+        0.17504027485847473,
+        0.17306114733219147,
+        0.1698359251022339,
+        0.16840362548828125
+      ]
+    },
+    {
+      "class_name": "pizza",
+      "context_token_index": 14,
+      "nearest_tokens": [
+        "estu",
+        "rs",
+        "shuk",
+        "home",
+        "hold"
+      ],
+      "nearest_scores": [
+        0.18104153871536255,
+        0.1700727939605713,
+        0.16697877645492554,
+        0.16090010106563568,
+        0.16023944318294525
+      ]
+    },
+    {
+      "class_name": "pizza",
+      "context_token_index": 15,
+      "nearest_tokens": [
+        "childrens",
+        "children",
+        "\u043e\u0434",
+        "intuition",
+        "unesco"
+      ],
+      "nearest_scores": [
+        0.1862911581993103,
+        0.18051940202713013,
+        0.16909712553024292,
+        0.16840164363384247,
+        0.16623644530773163
+      ]
+    }
+  ]
+}
