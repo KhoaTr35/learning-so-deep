@@ -20,10 +20,7 @@
         box-shadow: var(--a1-shadow);
         overflow: hidden;
       }
-      .figure-block img {
-        width: 100%;
-        display: block;
-      }
+      .figure-block img { width: 100%; display: block; }
       .figure-caption {
         padding: 12px 18px;
         font-size: 0.88rem;
@@ -39,11 +36,7 @@
         border-radius: 5px;
         color: var(--a1-accent);
       }
-      .pipeline-steps {
-        display: grid;
-        gap: 10px;
-        margin: 16px 0;
-      }
+      .pipeline-steps { display: grid; gap: 10px; margin: 16px 0; }
       .pipeline-step {
         display: flex;
         align-items: flex-start;
@@ -67,7 +60,7 @@
         justify-content: center;
       }
       .step-body h4 { margin: 0 0 4px; font-size: 0.97rem; }
-      .step-body p { margin: 0; font-size: 0.9rem; color: var(--a1-muted); }
+      .step-body p  { margin: 0; font-size: 0.9rem; color: var(--a1-muted); }
     </style>
   </head>
   <body class="assignment-page">
@@ -86,7 +79,7 @@
       <header class="hero assignment-hero inner-hero">
         <p class="eyebrow">Assignment 1 / Text / Methodology</p>
         <h1>Methodology</h1>
-        <p class="lead">Training pipeline, optimisation settings, regularisation choices, and reproducibility controls for all three models.</p>
+        <p class="lead">Training pipeline, optimisation settings, regularisation choices, and reproducibility controls for the BERT, BiLSTM, and Ensemble models.</p>
         <p class="crumbs"><a href="../../assignment-1/">Assignment 1</a> / <a href="./">Text</a> / Methodology</p>
       </header>
 
@@ -98,56 +91,56 @@
             <div class="step-num">1</div>
             <div class="step-body">
               <h4>Data Loading &amp; Caching</h4>
-              <p>20 Newsgroups fetched from Hugging Face (<code>SetFit/20_newsgroups</code>) and cached as local CSV. Falls back to sklearn if the hub is unreachable.</p>
+              <p>20 Newsgroups fetched from Hugging Face (<code>SetFit/20_newsgroups</code>) and cached as local CSV. Falls back to sklearn if the hub is unreachable. 218 / 162 empty train/test texts are passed as empty strings.</p>
             </div>
           </div>
           <div class="pipeline-step">
             <div class="step-num">2</div>
             <div class="step-body">
-              <h4>Text Preprocessing</h4>
-              <p>Lowercase → strip email/news headers (regex) → remove URLs and email addresses → keep <code>[a-z0-9'\s]</code> only → normalise whitespace.</p>
+              <h4>BERT Tokenization (shared)</h4>
+              <p><code>bert-base-uncased</code> AutoTokenizer — WordPiece, max_length=256, padding="max_length", truncation=True, return_tensors="pt". Both the BERT and BiLSTM models consume the same <code>input_ids</code> and <code>attention_mask</code>.</p>
             </div>
           </div>
           <div class="pipeline-step">
             <div class="step-num">3</div>
             <div class="step-body">
-              <h4>Vocabulary Construction</h4>
-              <p>Count all tokens in training split; keep those appearing ≥ 2 times → 45,115 tokens. Add <code>&lt;PAD&gt;</code> (idx 0), <code>&lt;UNK&gt;</code> (idx 1), <code>&lt;CLS&gt;</code> (idx 2).</p>
+              <h4>DataLoaders</h4>
+              <p>Batch size 16 (GPU, AMP on). <code>num_workers=0</code> on Windows to avoid multiprocessing pickling errors. <code>pin_memory=True</code> on CUDA. Fixed generator seed (42) for shuffled training batches.</p>
             </div>
           </div>
           <div class="pipeline-step">
             <div class="step-num">4</div>
             <div class="step-body">
-              <h4>Sequence Encoding</h4>
-              <p>Prepend <code>&lt;CLS&gt;</code> token, tokenise on whitespace, truncate / pad to 192 tokens. Both Transformer and RNN consume the same encoded sequences.</p>
+              <h4>Fine-tune BERT</h4>
+              <p>All 109.5 M parameters updated. AdamW with separate weight-decay groups (bias/LayerNorm excluded). Linear warmup (10%) + linear decay. Gradient accumulation 2 steps → effective batch 32. AMP FP16 enabled. Best checkpoint saved on test accuracy, patience=3.</p>
             </div>
           </div>
           <div class="pipeline-step">
             <div class="step-num">5</div>
             <div class="step-body">
-              <h4>DataLoaders</h4>
-              <p>Batch size 64 (GPU) / 32 (CPU). 2 persistent workers, pin_memory enabled on CUDA. Fixed generator seed (42) for shuffled training batches.</p>
+              <h4>Train BiLSTM (frozen BERT embeddings)</h4>
+              <p>BERT moved to CPU to free VRAM; BiLSTM loaded to GPU. Only LSTM + classifier parameters are updated (7.4 M). AMP disabled (FP32) for LayerNorm numerical stability. Early stopping patience=4.</p>
             </div>
           </div>
           <div class="pipeline-step">
             <div class="step-num">6</div>
             <div class="step-body">
-              <h4>Training — individual models</h4>
-              <p>AdamW + cosine-decay LR with linear warmup. <code>CrossEntropyLoss</code> with optional label smoothing. Gradient clipping at 1.0. Best checkpoint saved on test accuracy.</p>
+              <h4>Pre-compute Logits for Ensemble</h4>
+              <p>Best BERT checkpoint loaded to GPU; BiLSTM on CPU. BERT logits collected for all train/test samples; then swapped (BiLSTM to GPU, BERT to CPU) for BiLSTM logits. All logits cached on CPU.</p>
             </div>
           </div>
           <div class="pipeline-step">
             <div class="step-num">7</div>
             <div class="step-body">
               <h4>Ensemble Meta-learning</h4>
-              <p>Load best individual checkpoints, freeze both backbones, train a small MLP meta-learner on concatenated logits. Only 7,340 parameters are updated in this stage.</p>
+              <p>Concatenated logits (shape B×40) fed to a 3-layer meta-MLP. Only 7,340 parameters updated. Batch size 256, 15 epochs. No GPU needed — backbones are frozen and logits are cached. Each epoch finishes in &lt; 1 s.</p>
             </div>
           </div>
           <div class="pipeline-step">
             <div class="step-num">8</div>
             <div class="step-body">
               <h4>Evaluation &amp; Logging</h4>
-              <p>Accuracy, macro precision/recall/F1, per-class F1, confusion matrix, macro one-vs-rest ROC AUC. All runs tracked with Weights &amp; Biases.</p>
+              <p>Accuracy, macro precision/recall/F1, per-class F1, confusion matrix, macro one-vs-rest ROC AUC. All runs optionally tracked with Weights &amp; Biases.</p>
             </div>
           </div>
         </div>
@@ -160,72 +153,23 @@
           <thead>
             <tr>
               <th>Hyperparameter</th>
-              <th>Transformer</th>
-              <th>BiGRU</th>
-              <th>Ensemble (meta-MLP)</th>
+              <th>BERT</th>
+              <th>BiLSTM</th>
+              <th>Ensemble meta-MLP</th>
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>Epochs</td>
-              <td>15</td>
-              <td>12</td>
-              <td>8</td>
-            </tr>
-            <tr>
-              <td>Learning rate</td>
-              <td>2 × 10⁻⁴</td>
-              <td>1 × 10⁻³</td>
-              <td>5 × 10⁻⁴</td>
-            </tr>
-            <tr>
-              <td>Weight decay</td>
-              <td>1 × 10⁻²</td>
-              <td>1 × 10⁻²</td>
-              <td>1 × 10⁻³</td>
-            </tr>
-            <tr>
-              <td>Warmup ratio</td>
-              <td>8%</td>
-              <td>5%</td>
-              <td>10%</td>
-            </tr>
-            <tr>
-              <td>LR schedule</td>
-              <td>Cosine decay</td>
-              <td>Cosine decay</td>
-              <td>Cosine decay</td>
-            </tr>
-            <tr>
-              <td>Batch size</td>
-              <td>64</td>
-              <td>64</td>
-              <td>64</td>
-            </tr>
-            <tr>
-              <td>Optimizer</td>
-              <td>AdamW</td>
-              <td>AdamW</td>
-              <td>AdamW</td>
-            </tr>
-            <tr>
-              <td>Gradient clip</td>
-              <td>1.0</td>
-              <td>1.0</td>
-              <td>1.0</td>
-            </tr>
-            <tr>
-              <td>Label smoothing</td>
-              <td>0.1</td>
-              <td>—</td>
-              <td>0.05</td>
-            </tr>
-            <tr>
-              <td>Early stopping patience</td>
-              <td>4 epochs</td>
-              <td>3 epochs</td>
-              <td>—</td>
-            </tr>
+            <tr><td>Epochs</td><td>3</td><td>6</td><td>15</td></tr>
+            <tr><td>Learning rate</td><td>2 × 10⁻⁵</td><td>1 × 10⁻³</td><td>5 × 10⁻⁴</td></tr>
+            <tr><td>Weight decay</td><td>1 × 10⁻²</td><td>1 × 10⁻²</td><td>1 × 10⁻³</td></tr>
+            <tr><td>Warmup ratio</td><td>10%</td><td>5%</td><td>10%</td></tr>
+            <tr><td>LR schedule</td><td>Linear decay</td><td>Linear decay</td><td>Linear decay</td></tr>
+            <tr><td>Batch size</td><td>16 (eff. 32 w/ grad_accum=2)</td><td>16</td><td>256</td></tr>
+            <tr><td>Optimizer</td><td>AdamW</td><td>AdamW</td><td>AdamW</td></tr>
+            <tr><td>Gradient clip</td><td>1.0</td><td>1.0</td><td>—</td></tr>
+            <tr><td>Label smoothing</td><td>0.1</td><td>—</td><td>0.05</td></tr>
+            <tr><td>Mixed precision</td><td>AMP FP16 ✓</td><td>FP32 (stability)</td><td>FP32</td></tr>
+            <tr><td>Early stopping patience</td><td>3 epochs</td><td>4 epochs</td><td>—</td></tr>
           </tbody>
         </table>
       </section>
@@ -236,12 +180,12 @@
         <div class="figure-block">
           <img
             src="artifacts/learning_curves.png"
-            alt="Loss and accuracy curves for Transformer, BiGRU, and Ensemble across training epochs"
+            alt="Loss and accuracy curves for BERT, BiLSTM, and Ensemble across training epochs"
             loading="lazy"
           />
           <p class="figure-caption">
             <strong>Figure 2 — Learning curves.</strong>
-            Solid = test, dashed = train. BiGRU converges faster and scores higher than the Transformer within the same epoch budget. The Ensemble adds a marginal gain on top of BiGRU.
+            Solid = test, dashed = train. BERT converges fastest (3 epochs) and reaches the highest test accuracy. BiLSTM improves steadily over 6 epochs. Ensemble epochs are nearly instant (cached logits).
           </p>
         </div>
       </section>
@@ -251,21 +195,21 @@
         <article class="report-card">
           <h3>Regularisation Strategy</h3>
           <ul>
-            <li><strong>Dropout (0.3):</strong> applied after embedding and inside attention/GRU layers to prevent co-adaptation.</li>
-            <li><strong>Weight decay (1e-2):</strong> L2 penalty via AdamW keeps weight magnitudes in check.</li>
-            <li><strong>Label smoothing (0.1 for Transformer):</strong> prevents overconfidence on noisy newsgroup headers.</li>
-            <li><strong>Gradient clip (max_norm=1.0):</strong> stabilises training, especially for the deep Transformer stack.</li>
-            <li><strong>Early stopping:</strong> saves the best checkpoint and halts if no improvement for 3–4 epochs.</li>
+            <li><strong>Dropout (0.3):</strong> applied in BiLSTM embedding, between LSTM layers, and in both classifiers.</li>
+            <li><strong>Weight decay (1e-2):</strong> L2 penalty via AdamW; for BERT, bias and LayerNorm params are excluded (weight_decay=0.0 group).</li>
+            <li><strong>Label smoothing (0.1 for BERT, 0.05 for Ensemble):</strong> prevents overconfidence; not used for BiLSTM (standard CE).</li>
+            <li><strong>Gradient clip (max_norm=1.0):</strong> applied before every optimizer step for both BERT and BiLSTM.</li>
+            <li><strong>Early stopping:</strong> patience 3 (BERT) and 4 (BiLSTM) — best checkpoint persisted to disk.</li>
           </ul>
         </article>
         <article class="report-card">
           <h3>Reproducibility Controls</h3>
           <ul>
             <li>Global seed 42 applied to <code>random</code>, <code>numpy</code>, and <code>torch</code>.</li>
-            <li><code>DataLoader</code> uses a fixed <code>torch.Generator</code> with <code>worker_init_fn</code> to seed each worker.</li>
-            <li>GPU sanity check before training; falls back to CPU if CUDA is unstable.</li>
-            <li>AMP disabled by default for P100 compatibility; model checkpoints save best weights only.</li>
-            <li>All runs tracked in Weights &amp; Biases with config snapshot for full reproducibility.</li>
+            <li><code>torch.cuda.manual_seed_all(42)</code> for GPU op determinism.</li>
+            <li><code>DataLoader</code> uses a fixed <code>torch.Generator</code> with <code>worker_init_fn</code> seeding each worker.</li>
+            <li><code>num_workers=0</code> on Windows — avoids process-fork pickling issues in Jupyter.</li>
+            <li>GPU sanity check at startup; AMP GradScaler uses the new <code>torch.amp</code> (not deprecated <code>torch.cuda.amp</code>) API.</li>
           </ul>
         </article>
       </section>
