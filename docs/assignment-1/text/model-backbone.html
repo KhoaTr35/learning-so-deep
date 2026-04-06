@@ -1,248 +1,737 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Assignment 1 Text Model Backbone | Learning So Deep</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Newsreader:opsz,wght@6..72,500;6..72,700&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="../../styles.css" />
-    <style>
-      code {
-        font-family: ui-monospace, "SF Mono", monospace;
-        font-size: 0.88em;
-        background: rgba(35,63,93,0.08);
-        padding: 2px 5px;
-        border-radius: 5px;
-        color: var(--a1-accent);
-      }
-      .arch-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 16px;
-        margin: 18px 0;
-      }
-      .arch-card {
-        border: 1px solid var(--a1-line);
-        border-radius: 20px;
-        background: var(--a1-paper);
-        box-shadow: var(--a1-shadow);
-        overflow: hidden;
-      }
-      .arch-card-head {
-        padding: 16px 18px 12px;
-        border-bottom: 1px solid var(--a1-line);
-      }
-      .arch-card-head h3 { margin: 0 0 4px; font-size: 1.1rem; }
-      .arch-card-head .badge {
-        display: inline-block;
-        font-size: 0.74rem;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 0.07em;
-        padding: 3px 9px;
-        border-radius: 999px;
-      }
-      .badge-tf  { background: rgba(0,113,227,0.1);    color: var(--a1-accent); }
-      .badge-rnn { background: rgba(74,143,100,0.12);  color: #2e6b47; }
-      .badge-ens { background: rgba(120,60,140,0.10);  color: #6b2e8a; }
-      .arch-card-body { padding: 14px 18px; }
-      .arch-card-body ul { margin: 0; padding-left: 18px; display: grid; gap: 5px; }
-      .arch-card-body li { font-size: 0.92rem; color: var(--a1-muted); }
-      .arch-card-body li strong { color: var(--a1-ink); }
-      .param-badge {
-        margin-top: 10px;
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        font-size: 0.82rem;
-        font-weight: 700;
-        border: 1px solid var(--a1-line);
-        background: rgba(255,255,255,0.7);
-        padding: 5px 10px;
-        border-radius: 999px;
-      }
-      .param-badge::before { content: "⚙"; font-size: 0.9em; }
-      @media (max-width: 760px) { .arch-grid { grid-template-columns: 1fr; } }
-    </style>
-  </head>
-  <body class="assignment-page">
-    <div class="shell nav">
-      <div class="nav-inner">
-        <a class="brand" href="../../index.html">Learning So Deep</a>
-        <div class="nav-links">
-          <a class="nav-link" href="../../assignment-1/" aria-current="page">Assignment 1</a>
-          <a class="nav-link" href="../../assignment-2/">Assignment 2</a>
-          <a class="nav-link" href="../../assignment-3/">Assignment 3</a>
-        </div>
-      </div>
-    </div>
-
-    <main class="shell assignment-layout">
-      <header class="hero assignment-hero inner-hero">
-        <p class="eyebrow">Assignment 1 / Text / Model Backbone</p>
-        <h1>Model Backbone</h1>
-        <p class="lead">Three models built on pre-trained BERT — a fully fine-tuned BERT classifier, a BiLSTM with frozen BERT embeddings, and a learned ensemble meta-learner.</p>
-        <p class="crumbs"><a href="../../assignment-1/">Assignment 1</a> / <a href="./">Text</a> / Model Backbone</p>
-      </header>
-
-      <!-- Model cards -->
-      <section class="section">
-        <h2>Architecture Overview</h2>
-        <div class="arch-grid">
-
-          <!-- BERT Classifier -->
-          <div class="arch-card">
-            <div class="arch-card-head">
-              <span class="badge badge-tf">Advanced</span>
-              <h3>BERT Classifier</h3>
-            </div>
-            <div class="arch-card-body">
-              <ul>
-                <li><strong>Backbone:</strong> <code>bert-base-uncased</code> — 12-layer Transformer, d_model=768, 12 heads</li>
-                <li><strong>Loading:</strong> <code>AutoModelForSequenceClassification.from_pretrained()</code> — full fine-tuning</li>
-                <li><strong>Classifier head:</strong> BERT pooler output → Dropout(0.3) → Linear(768→20)</li>
-                <li><strong>Tokenization:</strong> WordPiece, max_length=256, [CLS]/[SEP]/[PAD] tokens</li>
-                <li><strong>All 109.5 M parameters</strong> are updated during fine-tuning (no freezing)</li>
-                <li><strong>AMP (FP16):</strong> enabled with <code>torch.amp.GradScaler</code> for RTX GPU training</li>
-                <li><strong>Gradient accumulation:</strong> 2 steps → effective batch = 32</li>
-              </ul>
-              <div class="param-badge">109,497,620 parameters (fully trainable)</div>
-            </div>
-          </div>
-
-          <!-- BiLSTM Classifier -->
-          <div class="arch-card">
-            <div class="arch-card-head">
-              <span class="badge badge-rnn">Baseline</span>
-              <h3>BiLSTM + Frozen BERT Embeddings</h3>
-            </div>
-            <div class="arch-card-body">
-              <ul>
-                <li><strong>Embedding:</strong> full BERT embedding module (<code>bert.embeddings</code>) — 768-dim, completely frozen</li>
-                <li><strong>Frozen params:</strong> 23,837,184 (word + position + token-type embeddings + LayerNorm)</li>
-                <li><strong>Recurrent layer:</strong> 2-layer bidirectional <code>nn.LSTM</code>, hidden=384 → 768-dim output</li>
-                <li><strong>Variable-length input:</strong> <code>pack_padded_sequence</code> respects attention mask</li>
-                <li><strong>Attention pooling:</strong> learned scalar attention over LSTM timesteps → softmax-weighted sum</li>
-                <li><strong>Classifier:</strong> LayerNorm → Linear(768→384) → GELU → Dropout(0.3) → Linear(384→20)</li>
-                <li><strong>AMP off</strong> — BERT LayerNorm uses eps=1e-12 (too small for FP16); trained in FP32</li>
-              </ul>
-              <div class="param-badge">7,395,477 trainable · 23,837,184 frozen</div>
-            </div>
-          </div>
-
-        </div>
-
-        <!-- Ensemble card (full width) -->
-        <div class="arch-card" style="margin-top: 4px;">
-          <div class="arch-card-head">
-            <span class="badge badge-ens">Ensemble</span>
-            <h3>LearnedEnsemble (meta-MLP)</h3>
-          </div>
-          <div class="arch-card-body">
-            <ul>
-              <li><strong>Backbones:</strong> frozen BERT classifier + frozen BiLSTM — logits pre-computed, no gradient flows into them</li>
-              <li><strong>Meta-input:</strong> concatenated softmax logits from both models → shape (B, 40)</li>
-              <li><strong>Meta-MLP:</strong> Linear(40→80) → GELU → Dropout(0.15) → Linear(80→40) → GELU → Dropout(0.10) → Linear(40→20)</li>
-              <li><strong>Training on cached logits:</strong> both backbone logits pre-computed on GPU and stored on CPU — each ensemble epoch takes &lt; 1 s</li>
-              <li><strong>Trainable params:</strong> 7,340 (meta-MLP only) — checkpoint is &lt; 100 KB</li>
-            </ul>
-            <div class="param-badge">7,340 trainable (meta only)</div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Comparison table -->
-      <section class="section scope-panel">
-        <h2>Architecture Comparison</h2>
-        <table>
-          <thead>
-            <tr>
-              <th>Property</th>
-              <th>BERT Classifier</th>
-              <th>BiLSTM</th>
-              <th>LearnedEnsemble</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Total parameters</td>
-              <td>109,497,620</td>
-              <td>31,232,661</td>
-              <td>140,730,281</td>
-            </tr>
-            <tr>
-              <td>Trainable params (own stage)</td>
-              <td>109,497,620</td>
-              <td>7,395,477</td>
-              <td>7,340</td>
-            </tr>
-            <tr>
-              <td>Pre-trained backbone</td>
-              <td>bert-base-uncased (full)</td>
-              <td>bert-base-uncased (embeddings only, frozen)</td>
-              <td>—</td>
-            </tr>
-            <tr>
-              <td>Sequence modelling</td>
-              <td>12-layer self-attention (parallel)</td>
-              <td>2-layer BiLSTM (sequential)</td>
-              <td>—</td>
-            </tr>
-            <tr>
-              <td>Pooling strategy</td>
-              <td>BERT [CLS] pooler output</td>
-              <td>Learned attention-weighted sum</td>
-              <td>Direct logit fusion</td>
-            </tr>
-            <tr>
-              <td>Mixed precision</td>
-              <td>AMP FP16 ✓</td>
-              <td>FP32 (LayerNorm eps stability)</td>
-              <td>FP32</td>
-            </tr>
-            <tr>
-              <td>Training speed (per epoch)</td>
-              <td>~160 s (RTX 3060 6 GB)</td>
-              <td>~74 s (RTX 3060 6 GB)</td>
-              <td>&lt; 1 s (cached logits)</td>
-            </tr>
-            <tr>
-              <td>Best test accuracy</td>
-              <td>70.23%</td>
-              <td>68.00%</td>
-              <td>69.48%</td>
-            </tr>
-          </tbody>
-        </table>
-      </section>
-
-      <!-- Design rationale -->
-      <section class="section report-grid">
-        <article class="report-card">
-          <h3>Why These Architectures?</h3>
-          <ul>
-            <li><strong>Fine-tuned BERT</strong> is the natural "advanced" choice — pre-trained contextual representations and a shared tokenizer give a massive head-start over random initialisation.</li>
-            <li><strong>BiLSTM with frozen BERT embeddings</strong> is the "baseline" — it reuses high-quality 768-dim token representations without the cost of fine-tuning the full Transformer stack; only the LSTM and classifier are learned.</li>
-            <li><strong>Ensemble meta-MLP</strong> tests whether logit-level complementarity between BERT's attention-based and the BiLSTM's sequential view can be exploited with minimal extra compute.</li>
-          </ul>
-        </article>
-        <article class="report-card">
-          <h3>Key Engineering Decisions</h3>
-          <ul>
-            <li><strong>AMP disabled for BiLSTM</strong> — BERT's embedding LayerNorm uses eps=1e-12, which underflows FP16 (~6e-8), producing NaN gradients. Training in FP32 is safe and fast enough within 6 GB VRAM.</li>
-            <li><strong>Gradient accumulation (2 steps) for BERT</strong> keeps effective batch at 32 while fitting the 16-sample per-step budget within VRAM.</li>
-            <li><strong>Pre-computed logits for ensemble</strong> — both backbones are moved to GPU one at a time (BERT then BiLSTM) to collect logits, then moved back to CPU. The meta-MLP trains on CPU-cached tensors — no VRAM needed for ensemble training.</li>
-            <li><strong>Separate weight-decay groups</strong> for BERT — bias/LayerNorm params are excluded from L2 penalty (standard BERT fine-tuning practice).</li>
-          </ul>
-        </article>
-      </section>
-
-      <p class="footer"><a href="./">Back to Text Track</a></p>
-    </main>
-  </body>
-</html>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Assignment 1 Text Model Backbone | Learning So Deep</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Newsreader:opsz,wght@6..72,500;6..72,700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../../styles.css" />
+    <style>
+      :root {
+        --mb-bg: #f6f8fc;
+        --mb-paper: rgba(255, 255, 255, 0.9);
+        --mb-paper-strong: #ffffff;
+        --mb-line: rgba(21, 35, 56, 0.1);
+        --mb-line-strong: rgba(21, 35, 56, 0.16);
+        --mb-ink: #162033;
+        --mb-muted: #5f6c80;
+        --mb-accent: #3558e6;
+        --mb-accent-soft: rgba(53, 88, 230, 0.1);
+        --mb-green: #2e8b57;
+        --mb-green-soft: rgba(46, 139, 87, 0.1);
+        --mb-purple: #7a42c2;
+        --mb-purple-soft: rgba(122, 66, 194, 0.1);
+        --mb-gold: #a56a00;
+        --mb-gold-soft: rgba(165, 106, 0, 0.1);
+        --mb-shadow: 0 18px 50px rgba(20, 32, 56, 0.08);
+        --mb-radius-xl: 28px;
+        --mb-radius-lg: 22px;
+        --mb-radius-md: 16px;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body.assignment-page {
+        background:
+          radial-gradient(circle at top left, rgba(53, 88, 230, 0.08), transparent 26%),
+          radial-gradient(circle at top right, rgba(122, 66, 194, 0.08), transparent 24%),
+          var(--mb-bg);
+        color: var(--mb-ink);
+      }
+
+      code {
+        font-family: ui-monospace, "SF Mono", monospace;
+        font-size: 0.88em;
+        background: rgba(53, 88, 230, 0.08);
+        color: var(--mb-accent);
+        padding: 2px 6px;
+        border-radius: 6px;
+      }
+
+      .model-page {
+        display: grid;
+        gap: 22px;
+      }
+
+      .hero-rich {
+        position: relative;
+        overflow: hidden;
+        border: 1px solid var(--mb-line);
+        border-radius: 30px;
+        background:
+          linear-gradient(135deg, rgba(255, 255, 255, 0.96), rgba(246, 248, 252, 0.94));
+        box-shadow: var(--mb-shadow);
+        padding: 28px 30px 26px;
+      }
+
+      .hero-rich::after {
+        content: "";
+        position: absolute;
+        inset: auto -80px -80px auto;
+        width: 260px;
+        height: 260px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(53, 88, 230, 0.12), transparent 65%);
+        pointer-events: none;
+      }
+
+      .eyebrow-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        align-items: center;
+        margin-bottom: 10px;
+      }
+
+      .eyebrow-chip,
+      .mini-chip,
+      .stat-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        border-radius: 999px;
+        padding: 7px 12px;
+        font-size: 0.78rem;
+        font-weight: 800;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        border: 1px solid var(--mb-line);
+        background: rgba(255, 255, 255, 0.8);
+      }
+
+      .eyebrow-chip {
+        color: var(--mb-accent);
+        background: var(--mb-accent-soft);
+      }
+
+      .hero-rich h1 {
+        margin: 0 0 10px;
+        font-size: clamp(2rem, 4vw, 3.2rem);
+        line-height: 1.04;
+      }
+
+      .hero-rich .lead {
+        max-width: 900px;
+        font-size: 1.04rem;
+        color: var(--mb-muted);
+        margin: 0;
+      }
+
+      .hero-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 16px;
+      }
+
+      .stat-chip strong {
+        color: var(--mb-ink);
+      }
+
+      .section-card {
+        border: 1px solid var(--mb-line);
+        border-radius: var(--mb-radius-xl);
+        background: var(--mb-paper);
+        box-shadow: var(--mb-shadow);
+        overflow: hidden;
+      }
+
+      .section-head {
+        padding: 20px 22px 0;
+      }
+
+      .section-head h2 {
+        margin: 0;
+        font-size: 1.5rem;
+      }
+
+      .section-head p {
+        margin: 8px 0 0;
+        color: var(--mb-muted);
+      }
+
+      .visual-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 18px;
+        padding: 20px 22px 22px;
+      }
+
+      .visual-panel {
+        border: 1px solid var(--mb-line);
+        border-radius: var(--mb-radius-lg);
+        overflow: hidden;
+        background: var(--mb-paper-strong);
+      }
+
+      .visual-panel-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+        padding: 16px 18px 12px;
+        border-bottom: 1px solid var(--mb-line);
+      }
+
+      .visual-panel-head h3 {
+        margin: 0;
+        font-size: 1.05rem;
+      }
+
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.74rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        padding: 6px 10px;
+        border-radius: 999px;
+        white-space: nowrap;
+      }
+
+      .badge-bert {
+        background: var(--mb-accent-soft);
+        color: var(--mb-accent);
+      }
+
+      .badge-bilstm {
+        background: var(--mb-green-soft);
+        color: var(--mb-green);
+      }
+
+      .badge-ensemble {
+        background: var(--mb-purple-soft);
+        color: var(--mb-purple);
+      }
+
+      .badge-table {
+        background: var(--mb-gold-soft);
+        color: var(--mb-gold);
+      }
+
+      .visual-frame {
+        padding: 14px;
+        background:
+          linear-gradient(180deg, rgba(246, 248, 252, 0.9), rgba(255, 255, 255, 1));
+      }
+
+      .visual-frame img {
+        display: block;
+        width: 100%;
+        height: auto;
+        border-radius: 16px;
+        border: 1px solid var(--mb-line);
+        background: #fff;
+      }
+
+      .visual-caption {
+        padding: 0 18px 18px;
+        color: var(--mb-muted);
+        font-size: 0.94rem;
+        line-height: 1.55;
+      }
+
+      .model-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 18px;
+        padding: 0 22px 22px;
+      }
+
+      .model-card {
+        border: 1px solid var(--mb-line);
+        border-radius: var(--mb-radius-lg);
+        background: var(--mb-paper-strong);
+        overflow: hidden;
+      }
+
+      .model-card.full {
+        grid-column: 1 / -1;
+      }
+
+      .model-card-head {
+        padding: 18px 18px 14px;
+        border-bottom: 1px solid var(--mb-line);
+        background: linear-gradient(180deg, rgba(246, 248, 252, 0.85), rgba(255, 255, 255, 1));
+      }
+
+      .model-card-head h3 {
+        margin: 10px 0 6px;
+        font-size: 1.18rem;
+      }
+
+      .model-card-head p {
+        margin: 0;
+        color: var(--mb-muted);
+        line-height: 1.55;
+      }
+
+      .model-card-body {
+        padding: 16px 18px 18px;
+      }
+
+      .feature-list {
+        margin: 0;
+        padding-left: 18px;
+        display: grid;
+        gap: 8px;
+      }
+
+      .feature-list li {
+        color: var(--mb-muted);
+        line-height: 1.55;
+      }
+
+      .feature-list strong {
+        color: var(--mb-ink);
+      }
+
+      .pill-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 14px;
+      }
+
+      .mini-chip {
+        font-size: 0.76rem;
+        font-weight: 700;
+        letter-spacing: 0.01em;
+        text-transform: none;
+        color: var(--mb-ink);
+      }
+
+      .highlight-box {
+        margin-top: 16px;
+        border: 1px dashed var(--mb-line-strong);
+        border-radius: 14px;
+        padding: 12px 13px;
+        background: rgba(246, 248, 252, 0.75);
+        color: var(--mb-muted);
+        line-height: 1.55;
+      }
+
+      .comparison-wrap {
+        padding: 0 22px 22px;
+      }
+
+      .table-shell {
+        overflow-x: auto;
+        border: 1px solid var(--mb-line);
+        border-radius: 18px;
+        background: var(--mb-paper-strong);
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 860px;
+      }
+
+      th,
+      td {
+        padding: 14px 16px;
+        text-align: left;
+        vertical-align: top;
+        border-bottom: 1px solid var(--mb-line);
+      }
+
+      thead th {
+        font-size: 0.86rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--mb-muted);
+        background: rgba(246, 248, 252, 0.9);
+      }
+
+      tbody tr:last-child td {
+        border-bottom: none;
+      }
+
+      tbody td:first-child {
+        font-weight: 700;
+        color: var(--mb-ink);
+        width: 24%;
+      }
+
+      .insight-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 18px;
+        padding: 0 22px 22px;
+      }
+
+      .insight-card {
+        border: 1px solid var(--mb-line);
+        border-radius: var(--mb-radius-lg);
+        background: var(--mb-paper-strong);
+        padding: 18px;
+      }
+
+      .insight-card h3 {
+        margin: 0 0 12px;
+        font-size: 1.08rem;
+      }
+
+      .insight-card ul {
+        margin: 0;
+        padding-left: 18px;
+        display: grid;
+        gap: 8px;
+      }
+
+      .insight-card li {
+        color: var(--mb-muted);
+        line-height: 1.55;
+      }
+
+      .insight-card strong {
+        color: var(--mb-ink);
+      }
+
+      .footer-link {
+        padding: 0 2px 10px;
+        color: var(--mb-muted);
+      }
+
+      .footer-link a {
+        font-weight: 700;
+      }
+
+      @media (max-width: 980px) {
+        .visual-grid,
+        .model-grid,
+        .insight-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 680px) {
+        .hero-rich {
+          padding: 22px 18px 20px;
+          border-radius: 24px;
+        }
+
+        .section-head,
+        .visual-grid,
+        .model-grid,
+        .comparison-wrap,
+        .insight-grid {
+          padding-left: 16px;
+          padding-right: 16px;
+        }
+
+        .section-head {
+          padding-top: 18px;
+        }
+
+        .visual-panel-head,
+        .model-card-head,
+        .model-card-body,
+        .insight-card {
+          padding-left: 14px;
+          padding-right: 14px;
+        }
+      }
+    </style>
+  </head>
+  <body class="assignment-page">
+    <div class="shell nav">
+      <div class="nav-inner">
+        <a class="brand" href="../../index.html">Learning So Deep</a>
+        <div class="nav-links">
+          <a class="nav-link" href="../../assignment-1/" aria-current="page">Assignment 1</a>
+          <a class="nav-link" href="../../assignment-2/">Assignment 2</a>
+          <a class="nav-link" href="../../assignment-3/">Assignment 3</a>
+        </div>
+      </div>
+    </div>
+
+    <main class="shell assignment-layout model-page">
+      <header class="hero-rich">
+        <div class="eyebrow-row">
+          <span class="eyebrow-chip">Assignment 1 / Text / Model Backbone</span>
+          <span class="mini-chip">20-class text classification</span>
+          <span class="mini-chip">Shared BERT tokenization</span>
+        </div>
+
+        <h1>Model Backbone</h1>
+        <p class="lead">
+          This page summarizes the three model configurations used in the text track: a fully
+          fine-tuned BERT classifier, a BiLSTM built on frozen BERT embeddings, and a lightweight
+          learned ensemble that combines the strengths of both branches.
+        </p>
+
+        <div class="hero-meta">
+          <span class="stat-chip"><strong>BERT:</strong> 109.5M fully trainable</span>
+          <span class="stat-chip"><strong>BiLSTM:</strong> 7.4M trainable + frozen embeddings</span>
+          <span class="stat-chip"><strong>Ensemble:</strong> 7,340 trainable parameters</span>
+        </div>
+
+        <p class="crumbs" style="margin-top: 16px;">
+          <a href="../../assignment-1/">Assignment 1</a> / <a href="./">Text</a> / Model Backbone
+        </p>
+      </header>
+
+      <section class="section-card">
+        <div class="section-head">
+          <h2>Backbone Visualizations</h2>
+          <p>
+            The diagrams below illustrate the two main feature extractors used in the text pipeline.
+            The BERT branch relies on stacked Transformer encoder layers, while the second branch
+            feeds frozen BERT embeddings into a trainable two-layer BiLSTM with attention pooling.
+          </p>
+        </div>
+
+        <div class="visual-grid">
+          <article class="visual-panel">
+            <div class="visual-panel-head">
+              <h3>BERT Backbone Architecture</h3>
+              <span class="badge badge-bert">Transformer</span>
+            </div>
+            <div class="visual-frame">
+              <img src="./artifacts/bert_backbone.png" alt="Diagram of the BERT backbone architecture" />
+            </div>
+            <div class="visual-caption">
+              The BERT classifier uses <code>bert-base-uncased</code> with WordPiece tokenization,
+              input embeddings, and 12 stacked Transformer encoder layers. The pooled
+              <code>[CLS]</code> representation is passed to a task-specific classifier head.
+            </div>
+          </article>
+
+          <article class="visual-panel">
+            <div class="visual-panel-head">
+              <h3>BiLSTM + Frozen BERT Embeddings</h3>
+              <span class="badge badge-bilstm">Sequential</span>
+            </div>
+            <div class="visual-frame">
+              <img src="./artifacts/BiLSTM_backbone.png" alt="Diagram of the BiLSTM with frozen BERT embeddings" />
+            </div>
+            <div class="visual-caption">
+              This branch freezes the BERT embedding module, sends the 768-dimensional token features
+              through a two-layer bidirectional LSTM, applies learned attention pooling over time,
+              and finishes with a compact classifier head.
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="section-card">
+        <div class="section-head">
+          <h2>Architecture Overview</h2>
+          <p>
+            Each model plays a different role in the experiment: a strong fine-tuned Transformer,
+            a lighter sequential baseline, and a small meta-learner for logit fusion.
+          </p>
+        </div>
+
+        <div class="model-grid">
+          <article class="model-card">
+            <div class="model-card-head">
+              <span class="badge badge-bert">Advanced</span>
+              <h3>BERT Classifier</h3>
+              <p>
+                A standard fine-tuning setup built on the full <code>bert-base-uncased</code>
+                backbone, optimized end-to-end for 20-way text classification.
+              </p>
+            </div>
+            <div class="model-card-body">
+              <ul class="feature-list">
+                <li><strong>Backbone:</strong> 12-layer Transformer encoder, hidden size 768, 12 attention heads.</li>
+                <li><strong>Loading:</strong> <code>AutoModelForSequenceClassification.from_pretrained()</code>.</li>
+                <li><strong>Classifier head:</strong> pooled <code>[CLS]</code> output → Dropout(0.3) → Linear(768→20).</li>
+                <li><strong>Tokenization:</strong> WordPiece with max length 256 and <code>[CLS]</code>, <code>[SEP]</code>, <code>[PAD]</code>.</li>
+                <li><strong>Training policy:</strong> all 109,497,620 parameters are updated during fine-tuning.</li>
+                <li><strong>Mixed precision:</strong> AMP FP16 enabled with <code>torch.amp.GradScaler</code>.</li>
+                <li><strong>Memory control:</strong> gradient accumulation of 2 steps keeps the effective batch size at 32.</li>
+              </ul>
+
+              <div class="pill-row">
+                <span class="mini-chip">109,497,620 trainable</span>
+                <span class="mini-chip">AMP FP16</span>
+                <span class="mini-chip">Best accuracy: 70.23%</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="model-card">
+            <div class="model-card-head">
+              <span class="badge badge-bilstm">Baseline</span>
+              <h3>BiLSTM + Frozen BERT Embeddings</h3>
+              <p>
+                A hybrid baseline that reuses BERT’s high-quality token embeddings but replaces the
+                Transformer stack with a trainable recurrent backbone and attention pooling.
+              </p>
+            </div>
+            <div class="model-card-body">
+              <ul class="feature-list">
+                <li><strong>Embedding stage:</strong> frozen <code>bert.embeddings</code> module with 768-dimensional output.</li>
+                <li><strong>Frozen parameters:</strong> 23,837,184 from word, position, token-type embeddings, and LayerNorm.</li>
+                <li><strong>Recurrent encoder:</strong> 2-layer bidirectional <code>nn.LSTM</code> with hidden size 384 per direction.</li>
+                <li><strong>Sequence handling:</strong> <code>pack_padded_sequence</code> respects the attention mask and valid lengths.</li>
+                <li><strong>Pooling:</strong> learned scalar attention over timesteps followed by softmax-weighted summation.</li>
+                <li><strong>Classifier:</strong> LayerNorm → Linear(768→384) → GELU → Dropout(0.3) → Linear(384→20).</li>
+                <li><strong>Precision choice:</strong> trained in FP32 for numerical stability.</li>
+              </ul>
+
+              <div class="pill-row">
+                <span class="mini-chip">7,395,477 trainable</span>
+                <span class="mini-chip">23,837,184 frozen</span>
+                <span class="mini-chip">Best accuracy: 68.00%</span>
+              </div>
+
+              <div class="highlight-box">
+                AMP is intentionally disabled here because BERT embedding LayerNorm uses
+                <code>eps = 1e-12</code>, which is unsafe in FP16 and can lead to NaN gradients.
+              </div>
+            </div>
+          </article>
+
+          <article class="model-card full">
+            <div class="model-card-head">
+              <span class="badge badge-ensemble">Ensemble</span>
+              <h3>LearnedEnsemble (Meta-MLP)</h3>
+              <p>
+                A small fusion network trained on cached logits from the two backbone models. It
+                does not fine-tune either backbone and only learns how to combine their outputs.
+              </p>
+            </div>
+            <div class="model-card-body">
+              <ul class="feature-list">
+                <li><strong>Inputs:</strong> frozen logits from the BERT classifier and the BiLSTM branch.</li>
+                <li><strong>Meta representation:</strong> concatenated post-softmax logits with shape <code>(B, 40)</code>.</li>
+                <li><strong>Meta-MLP:</strong> Linear(40→80) → GELU → Dropout(0.15) → Linear(80→40) → GELU → Dropout(0.10) → Linear(40→20).</li>
+                <li><strong>Training strategy:</strong> backbone predictions are pre-computed once and cached on CPU.</li>
+                <li><strong>Compute cost:</strong> ensemble training is extremely light because only the small MLP is updated.</li>
+                <li><strong>Checkpoint size:</strong> under 100 KB due to the tiny number of learned parameters.</li>
+              </ul>
+
+              <div class="pill-row">
+                <span class="mini-chip">7,340 trainable</span>
+                <span class="mini-chip">CPU-cached logits</span>
+                <span class="mini-chip">Best accuracy: 69.48%</span>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="section-card">
+        <div class="section-head">
+          <h2>Architecture Comparison</h2>
+          <p>
+            The table below highlights the trade-off between capacity, training cost, and inference
+            behavior across the three model configurations.
+          </p>
+        </div>
+
+        <div class="comparison-wrap">
+          <div class="table-shell">
+            <table>
+              <thead>
+                <tr>
+                  <th>Property</th>
+                  <th>BERT Classifier</th>
+                  <th>BiLSTM</th>
+                  <th>LearnedEnsemble</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Total parameters</td>
+                  <td>109,497,620</td>
+                  <td>31,232,661</td>
+                  <td>140,730,281</td>
+                </tr>
+                <tr>
+                  <td>Trainable parameters in its own stage</td>
+                  <td>109,497,620</td>
+                  <td>7,395,477</td>
+                  <td>7,340</td>
+                </tr>
+                <tr>
+                  <td>Pre-trained backbone</td>
+                  <td><code>bert-base-uncased</code> (full model)</td>
+                  <td><code>bert-base-uncased</code> embeddings only, frozen</td>
+                  <td>None</td>
+                </tr>
+                <tr>
+                  <td>Sequence modelling</td>
+                  <td>12-layer self-attention, fully parallel</td>
+                  <td>2-layer bidirectional LSTM, sequential</td>
+                  <td>Not applicable</td>
+                </tr>
+                <tr>
+                  <td>Pooling strategy</td>
+                  <td>BERT pooled <code>[CLS]</code> output</td>
+                  <td>Learned attention-weighted sum</td>
+                  <td>Direct logit fusion</td>
+                </tr>
+                <tr>
+                  <td>Mixed precision</td>
+                  <td>AMP FP16 enabled</td>
+                  <td>FP32 only</td>
+                  <td>FP32</td>
+                </tr>
+                <tr>
+                  <td>Training speed per epoch</td>
+                  <td>~160 s on RTX 3060 6 GB</td>
+                  <td>~74 s on RTX 3060 6 GB</td>
+                  <td>&lt; 1 s on cached logits</td>
+                </tr>
+                <tr>
+                  <td>Best test accuracy</td>
+                  <td>70.23%</td>
+                  <td>68.00%</td>
+                  <td>69.48%</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section class="section-card">
+        <div class="section-head">
+          <h2>Design Rationale</h2>
+          <p>
+            The three architectures were chosen to compare different ways of exploiting pre-trained
+            language features under realistic hardware constraints.
+          </p>
+        </div>
+
+        <div class="insight-grid">
+          <article class="insight-card">
+            <h3>Why these architectures?</h3>
+            <ul>
+              <li><strong>Fine-tuned BERT</strong> serves as the strongest reference model because it directly adapts contextual Transformer features to the downstream task.</li>
+              <li><strong>BiLSTM with frozen BERT embeddings</strong> tests whether strong token-level representations alone are enough when paired with a lighter sequential encoder.</li>
+              <li><strong>The ensemble meta-MLP</strong> checks whether the attention-based view of BERT and the sequential bias of BiLSTM provide complementary decision signals.</li>
+            </ul>
+          </article>
+
+          <article class="insight-card">
+            <h3>Key engineering decisions</h3>
+            <ul>
+              <li><strong>AMP is used only for BERT</strong> because the full model remains stable in mixed precision and benefits from reduced memory usage.</li>
+              <li><strong>BiLSTM stays in FP32</strong> to avoid underflow issues introduced by the frozen BERT embedding LayerNorm configuration.</li>
+              <li><strong>Gradient accumulation</strong> allows BERT fine-tuning under a limited VRAM budget while keeping an effective batch size of 32.</li>
+              <li><strong>Cached-logit ensemble training</strong> removes unnecessary GPU overhead and makes the fusion stage extremely efficient.</li>
+            </ul>
+          </article>
+        </div>
+      </section>
+
+      <p class="footer-link"><a href="./">Back to Text Track</a></p>
+    </main>
+  </body>
+</html>
