@@ -28,53 +28,258 @@
       <header class="hero assignment-hero inner-hero">
         <p class="eyebrow">Assignment 1 / Image / Dataset EDA</p>
         <h1>Dataset EDA</h1>
-        <p class="lead">Explore distribution shape, label balance, and sample quality before training.</p>
+        <p class="lead">Explore dataset distribution, class balance, and sample quality before training.</p>
         <p class="crumbs"><a href="../../assignment-1/">Assignment 1</a> / <a href="./">Image</a> / Dataset EDA</p>
       </header>
 
       <section class="section scope-panel">
-        <h2>Section Checklist</h2>
+        <h2>1. Dataset Overview</h2>
+        <p>This section outlines the fundamental attributes of the image dataset used for model training.</p>
         <table>
           <thead>
             <tr>
-              <th>Item</th>
-              <th>Expectation</th>
+              <th>Attribute</th>
+              <th>Details</th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td>Goal</td>
-              <td>Explain what this section proves for the Image track.</td>
+              <td>Dataset Name</td>
+              <td>
+                <strong>Caltech-256</strong> 
+                (<a href="https://www.kaggle.com/datasets/jessicali9530/caltech256?select=256_ObjectCategories" target="_blank" rel="noopener noreferrer">Kaggle Reference</a>)
+              </td>
             </tr>
             <tr>
-              <td>Evidence</td>
-              <td>Provide tables, plots, or concise bullet findings that support claims.</td>
+              <td>Total Images</td>
+              <td>30,607 images</td>
             </tr>
             <tr>
-              <td>Decision</td>
-              <td>State what this section implies for the next experiment step.</td>
+              <td>Number of Classes</td>
+              <td>257 classes (256 object categories + 1 clutter class)</td>
+            </tr>
+            <tr>
+              <td>Original Image Size</td>
+              <td>Variable (various resolutions)</td>
+            </tr>
+            <tr>
+              <td>Train/Val/Test Split</td>
+              <td>[70% / 15% / 15%]</td>
             </tr>
           </tbody>
         </table>
       </section>
 
       <section class="section report-grid">
-        <article class="report-card">
-          <h3>Primary Findings</h3>
-          <ul>
-            <li>Top signal to watch for this section.</li>
-            <li>Main comparison point across baseline and advanced setting.</li>
-            <li>Potential risk or blind spot requiring follow-up.</li>
-          </ul>
+        <article class="report-card" style="grid-column: 1 / -1;">
+          <h3>2. Comprehensive Data Analysis</h3>
+          <p>An in-depth analysis of the Caltech-256 dataset reveals significant challenges related to class imbalance, dimensional variance, and intra-class diversity. Understanding these characteristics is crucial for designing a robust training pipeline.</p>
+          
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-top: 2rem;">
+            
+            <div>
+                <h4 style="font-size: 1.1rem; border-bottom: 1px solid #eee; padding-bottom: 0.5rem;">Class Distribution (Imbalance)</h4>
+                <div style="background: #fff; padding: 0.5rem; border-radius: 8px; margin-top: 1rem;">
+                    <img src="assets/class_distribution.png" alt="Top 5 Largest and Smallest Classes" style="max-width: 100%; height: auto; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                </div>
+                <ul style="margin-top: 1rem; font-size: 0.95rem; color: #444;">
+                    <li><strong>Observation:</strong> The dataset exhibits severe class imbalance. The largest class (`257.clutter`) has over 800 images, while the smallest classes (e.g., `top-hat`, `sunflower`) have fewer than 100 images.</li>
+                    <li><strong>Implication:</strong> This long-tail distribution necessitates strategies like class weighting, oversampling, or specific loss functions (e.g., Focal Loss) to prevent the model from ignoring minority classes.</li>
+                </ul>
+            </div>
+
+            <div>
+                <h4 style="font-size: 1.1rem; border-bottom: 1px solid #eee; padding-bottom: 0.5rem;">Dimensional Variance</h4>
+                <div style="background: #fff; padding: 0.5rem; border-radius: 8px; margin-top: 1rem;">
+                    <img src="assets/size_distribution.png" alt="Image Size Distribution" style="max-width: 100%; height: auto; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                </div>
+                <ul style="margin-top: 1rem; font-size: 0.95rem; color: #444;">
+                    <li><strong>Observation:</strong> Image dimensions vary drastically, with widths and heights ranging from under 100 pixels to nearly 8000 pixels.</li>
+                    <li><strong>Implication:</strong> Standardizing the input size (e.g., resizing to 224x224) is mandatory, but aggressive resizing might distort features or cause information loss, highlighting the need for careful augmentation strategies (e.g., RandomResizedCrop).</li>
+                </ul>
+            </div>
+
+            <div>
+                <h4 style="font-size: 1.1rem; border-bottom: 1px solid #eee; padding-bottom: 0.5rem;">Aspect Ratio & Color Mode</h4>
+                <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+                    <div style="flex: 1; background: #fff; padding: 0.5rem; border-radius: 8px;">
+                        <img src="assets/aspect_ratio.png" alt="Aspect Ratio Distribution" style="max-width: 100%; height: auto; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                    </div>
+                    <div style="flex: 1; background: #fff; padding: 0.5rem; border-radius: 8px;">
+                        <img src="assets/color_mode.png" alt="Color Mode Distribution" style="max-width: 100%; height: auto; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                    </div>
+                </div>
+                <ul style="margin-top: 1rem; font-size: 0.95rem; color: #444;">
+                    <li><strong>Observation:</strong> Most images are landscape or portrait, avoiding perfect squares (Ratio = 1.0). While 98.6% of images are RGB, 1.4% are Grayscale.</li>
+                    <li><strong>Implication:</strong> Grayscale images must be converted to 3 channels before being fed into standard architectures like ResNet or ViT to ensure tensor compatibility.</li>
+                </ul>
+            </div>
+
+            <div>
+                <h4 style="font-size: 1.1rem; border-bottom: 1px solid #eee; padding-bottom: 0.5rem;">Intra-class Diversity (Average Images)</h4>
+                <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+                    <div style="flex: 1; background: #fff; padding: 0.5rem; border-radius: 8px; text-align: center;">
+                        <img src="assets/avg_motorbike.png" alt="Average Image - Motorbikes" style="max-width: 100%; height: auto; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                    </div>
+                    <div style="flex: 1; background: #fff; padding: 0.5rem; border-radius: 8px; text-align: center;">
+                        <img src="assets/avg_frog.png" alt="Average Image - Frog" style="max-width: 100%; height: auto; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                    </div>
+                </div>
+                <ul style="margin-top: 1rem; font-size: 0.95rem; color: #444;">
+                    <li><strong>Observation:</strong> The "Motorbikes" average image retains a distinct shape, indicating consistent object placement. However, the "Frog" average image is a blurry, amorphous blob, suggesting high variance in pose, background, and scale.</li>
+                    <li><strong>Implication:</strong> This proves the dataset's high difficulty. Models must learn complex spatial hierarchies rather than relying on simple shape templates, making advanced architectures like Vision Transformers highly relevant.</li>
+                </ul>
+            </div>
+            
+          </div>
         </article>
-        <article class="report-card">
-          <h3>Actionable Next Step</h3>
-          <ul>
-            <li>One concrete improvement to test next.</li>
-            <li>Expected impact and acceptance threshold.</li>
-            <li>How results will be validated for reproducibility.</li>
-          </ul>
+
+        <article class="report-card" style="grid-column: 1 / -1;">
+          <h3>3. Preprocessing & Augmentation</h3>
+          <p>Following the EDA findings, a robust preprocessing and augmentation pipeline was implemented using PyTorch's <code>torchvision.transforms</code> to handle dimensional variance, color mode inconsistencies, and class imbalance.</p>
+          
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-top: 1rem;">
+            
+            <div>
+              <h4 style="font-size: 1.1rem; border-bottom: 1px solid #eee; padding-bottom: 0.5rem;">Base Preprocessing (All Splits)</h4>
+              <ul style="margin-top: 1rem; font-size: 0.95rem; color: #444; line-height: 1.6;">
+                <li><strong>RGB Conversion:</strong> Explicitly applied <code>x.convert('RGB')</code> to safely handle the 1.4% grayscale images, preventing tensor shape mismatch errors during training.</li>
+                <li><strong>Base Resize:</strong> All images are initially resized to <code>256x256</code> pixels to establish a uniform baseline before cropping.</li>
+                <li><strong>Normalization:</strong> Standardized using ImageNet statistics (Mean: <code>[0.485, 0.456, 0.406]</code>, Std: <code>[0.229, 0.224, 0.225]</code>) to strictly align with the pre-trained weights of ResNet50 and Vision Transformer.</li>
+              </ul>
+            </div>
+
+            <div>
+              <h4 style="font-size: 1.1rem; border-bottom: 1px solid #eee; padding-bottom: 0.5rem;">Training Augmentation</h4>
+              <p style="font-size: 0.9rem; color: #666; margin-top: 0.5rem;">Applied heavily to combat overfitting on minority classes.</p>
+              <ul style="margin-top: 0.5rem; font-size: 0.95rem; color: #444; line-height: 1.6;">
+                <li><strong>Random Resized Crop:</strong> Cropped to the final <code>224x224</code> resolution (with scale 0.8 - 1.0) to introduce scale and translation invariance.</li>
+                <li><strong>Horizontal Flip:</strong> Applied randomly to double the effective spatial orientations.</li>
+                <li><strong>RandAugment:</strong> Implemented an automated augmentation strategy (<code>num_ops=2, magnitude=9</code>) to inject complex visual variance and improve model robustness.</li>
+              </ul>
+            </div>
+
+            <div>
+              <h4 style="font-size: 1.1rem; border-bottom: 1px solid #eee; padding-bottom: 0.5rem;">Validation / Test Pipeline</h4>
+              <ul style="margin-top: 1rem; font-size: 0.95rem; color: #444; line-height: 1.6;">
+                <li><strong>Center Crop:</strong> Deterministically cropped to <code>224x224</code> from the 256x256 base image to evaluate the core object without introducing random noise.</li>
+              </ul>
+              
+              <h4 style="font-size: 1.1rem; border-bottom: 1px solid #eee; padding-bottom: 0.5rem; margin-top: 1.5rem;">Dataset Splits & Loading</h4>
+              <ul style="margin-top: 1rem; font-size: 0.95rem; color: #444; line-height: 1.6;">
+                <li><strong>Split Ratio:</strong> 70% Train, 15% Validation, 15% Test.</li>
+                <li><strong>Reproducibility:</strong> Controlled via PyTorch Generator with a fixed <code>manual_seed(42)</code>.</li>
+                <li><strong>DataLoader:</strong> Configured with <code>batch_size=64</code>, <code>num_workers=2</code>, and <code>pin_memory=True</code> to optimize GPU data transfer latency.</li>
+              </ul>
+            </div>
+
+          </div>
         </article>
+      </section>
+
+      <section class="section scope-panel">
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding-bottom: 0.5rem;">
+            <h2>4. Raw Data Samples</h2>
+            <button id="generateBtn" style="background: #2ea44f; color: white; border: none; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; font-weight: 600; font-family: inherit;">
+                🎲 Generate Random Batch
+            </button>
+        </div>
+        
+        <p style="margin-top: 1rem;">Click the button above to dynamically load a random batch of original training samples.</p>
+        
+        <div id="imageGrid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1.5rem;">
+            </div>
+
+         <ul style="margin-top: 1.5rem; font-size: 0.95rem; color: #444; line-height: 1.6;">
+            <li><strong>Visual Diversity:</strong> Observe the drastic variance in subject matter and backgrounds across different samples.</li>
+            <li><strong>Dimensional Inconsistency:</strong> Notice the varying aspect ratios. This raw visualization directly justifies the necessity of our robust <code>Resize &rarr; Crop</code> pipeline to standardize tensor inputs.</li>
+         </ul>
+
+         <script>
+            // BƯỚC 1: Thay thế mảng này bằng tên các file ảnh thực tế bạn đã xuất ra
+            const sampleImages = [
+            "026_cake_sample_0.jpg",
+    "003_backpack_sample_1.jpg",
+    "126_ladder_sample_2.jpg",
+    "032_cartman_sample_3.jpg",
+    "055_dice_sample_4.jpg",
+    "079_frisbee_sample_5.jpg",
+    "243_welding-mask_sample_6.jpg",
+    "021_breadmaker_sample_7.jpg",
+    "117_ipod_sample_8.jpg",
+    "006_basketball-hoop_sample_9.jpg",
+    "145_motorbikes-101_sample_10.jpg",
+    "209_sword_sample_11.jpg",
+    "063_electric-guitar-101_sample_12.jpg",
+    "222_tombstone_sample_13.jpg",
+    "184_sheet-music_sample_14.jpg",
+    "006_basketball-hoop_sample_15.jpg",
+    "167_pyramid_sample_16.jpg",
+    "171_refrigerator_sample_17.jpg",
+    "183_sextant_sample_18.jpg",
+    "026_cake_sample_19.jpg",
+    "218_tennis-racket_sample_20.jpg",
+    "158_penguin_sample_21.jpg",
+    "057_dolphin-101_sample_22.jpg",
+    "049_cormorant_sample_23.jpg",
+    "052_crab-101_sample_24.jpg",
+    "206_sushi_sample_25.jpg",
+    "007_bat_sample_26.jpg",
+    "188_smokestack_sample_27.jpg",
+    "041_coffee-mug_sample_28.jpg",
+    "122_kayak_sample_29.jpg",
+    "143_minaret_sample_30.jpg",
+    "233_tuning-fork_sample_31.jpg",
+    "132_light-house_sample_32.jpg",
+    "193_soccer-ball_sample_33.jpg",
+    "211_tambourine_sample_34.jpg",
+    "064_elephant-101_sample_35.jpg",
+    "163_playing-card_sample_36.jpg",
+    "132_light-house_sample_37.jpg",
+    "024_butterfly_sample_38.jpg",
+    "221_tomato_sample_39.jpg",
+    "232_t-shirt_sample_40.jpg",
+    "182_self-propelled-lawn-mower_sample_41.jpg",
+    "037_chess-board_sample_42.jpg",
+    "257_clutter_sample_43.jpg",
+    "138_mattress_sample_44.jpg",
+    "127_laptop-101_sample_45.jpg",
+    "251_airplanes-101_sample_46.jpg",
+    "098_harp_sample_47.jpg",
+    "146_mountain-bike_sample_48.jpg",
+    "046_computer-monitor_sample_49.jpg",
+];
+
+            const grid = document.getElementById('imageGrid');
+            const btn = document.getElementById('generateBtn');
+
+            function loadRandomImages() {
+                // Xóa ảnh cũ
+                grid.innerHTML = '';
+                
+                // Random lấy 8 ảnh (có thể trùng lặp nhẹ hoặc bạn viết thêm logic để không trùng)
+                let shuffled = [...sampleImages].sort(() => 0.5 - Math.random());
+                let selected = shuffled.slice(0, 8);
+
+                selected.forEach(img => {
+                    let div = document.createElement('div');
+                    div.style = "background: #fff; padding: 0.5rem; text-align: center; border-radius: 8px; border: 1px dashed #ccc; box-shadow: 0 2px 4px rgba(0,0,0,0.05); transition: transform 0.2s;";
+                    div.onmouseover = function() { this.style.transform = "scale(1.05)"; }
+                    div.onmouseout = function() { this.style.transform = "scale(1)"; }
+                    
+                    // Nhớ trỏ đúng đường dẫn thư mục chứa ảnh
+                    div.innerHTML = `<img src="assets/samples/${img}" alt="Random Sample" style="max-width: 100%; height: 150px; object-fit: contain; border-radius: 4px;">
+                                     <p style="font-size: 0.8rem; color: #666; margin-top: 0.5rem; word-break: break-all;">${img}</p>`;
+                    grid.appendChild(div);
+                });
+            }
+
+            // Load lần đầu tiên khi vừa vào web
+            loadRandomImages();
+
+            // Gắn sự kiện click cho nút bấm
+            btn.addEventListener('click', loadRandomImages);
+         </script>
       </section>
 
       <p class="footer"><a href="./">Back to Image Track</a></p>

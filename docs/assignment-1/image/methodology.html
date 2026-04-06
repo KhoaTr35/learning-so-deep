@@ -33,46 +33,67 @@
       </header>
 
       <section class="section scope-panel">
-        <h2>Section Checklist</h2>
-        <table>
-          <thead>
-            <tr>
-              <th>Item</th>
-              <th>Expectation</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Goal</td>
-              <td>Explain what this section proves for the Image track.</td>
-            </tr>
-            <tr>
-              <td>Evidence</td>
-              <td>Provide tables, plots, or concise bullet findings that support claims.</td>
-            </tr>
-            <tr>
-              <td>Decision</td>
-              <td>State what this section implies for the next experiment step.</td>
-            </tr>
-          </tbody>
-        </table>
+        <h2>1. Optimization Strategy</h2>
+        <p>A standardized optimization setup was employed to ensure a fair and consistent evaluation between the baseline (ResNet50) and advanced (ViT) architectures.</p>
+        
+        <div style="overflow-x: auto; margin-top: 1.5rem;">
+            <table style="width: 100%; border-collapse: collapse; text-align: left;">
+            <thead>
+                <tr style="background-color: #f8f9fa; border-bottom: 2px solid #333;">
+                <th style="padding: 1rem;">Hyperparameter</th>
+                <th style="padding: 1rem;">Value / Selection</th>
+                <th style="padding: 1rem;">Justification</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr style="border-bottom: 1px solid #eee;">
+                <td style="padding: 1rem; font-weight: 600;">Loss Function</td>
+                <td style="padding: 1rem;">Cross-Entropy Loss</td>
+                <td style="padding: 1rem;">Standard objective function for multi-class classification (257 classes).</td>
+                </tr>
+                <tr style="border-bottom: 1px solid #eee;">
+                <td style="padding: 1rem; font-weight: 600;">Optimizer</td>
+                <td style="padding: 1rem;">AdamW</td>
+                <td style="padding: 1rem;">Combines adaptive learning rates with decoupled weight decay, proving highly effective for training Vision Transformers while remaining stable for ResNet.</td>
+                </tr>
+                <tr style="border-bottom: 1px solid #eee;">
+                <td style="padding: 1rem; font-weight: 600;">Learning Rate</td>
+                <td style="padding: 1rem;">[1e-4]</td>
+                <td style="padding: 1rem;">Kept relatively small to preserve pre-trained weights during fine-tuning.</td>
+                </tr>
+                <tr style="border-bottom: 1px solid #eee;">
+                <td style="padding: 1rem; font-weight: 600;">Batch Size</td>
+                <td style="padding: 1rem;">64</td>
+                <td style="padding: 1rem;">Balances GPU memory constraints on Colab while providing stable gradient estimates.</td>
+                </tr>
+                <tr>
+                <td style="padding: 1rem; font-weight: 600;">Epochs</td>
+                <td style="padding: 1rem;">[10]</td>
+                <td style="padding: 1rem;">Sufficient for model convergence, monitored via early stopping to prevent overfitting.</td>
+                </tr>
+            </tbody>
+            </table>
+        </div>
       </section>
 
       <section class="section report-grid">
         <article class="report-card">
-          <h3>Primary Findings</h3>
-          <ul>
-            <li>Top signal to watch for this section.</li>
-            <li>Main comparison point across baseline and advanced setting.</li>
-            <li>Potential risk or blind spot requiring follow-up.</li>
+          <h3>2. Transfer Learning Protocol</h3>
+          <p style="margin-top: 0.5rem; color: #444;">Due to the size of Caltech-256 (only ~30k images) and the massive parameter count of the architectures, training from scratch is not viable. We utilized a Transfer Learning approach:</p>
+          <ul style="margin-top: 1rem; font-size: 0.95rem; color: #444; line-height: 1.6; padding-left: 1.2rem;">
+            <li><strong>Pre-trained Weights:</strong> Both models were initialized with ImageNet-1K pre-trained weights to leverage robust, generalized visual feature extractors.</li>
+            <li><strong>Classifier Replacement:</strong> The final Fully Connected (FC) layer of ResNet50 and the linear classification head of ViT were replaced with an uninitialized linear layer matching our target distribution (<code>out_features = 257</code>).</li>
+            <li><strong>Fine-tuning:</strong> All network layers were kept unfrozen and updated during training, allowing both the backbone and the new classifier to adapt to the specific nuances of Caltech-256.</li>
           </ul>
         </article>
+
         <article class="report-card">
-          <h3>Actionable Next Step</h3>
-          <ul>
-            <li>One concrete improvement to test next.</li>
-            <li>Expected impact and acceptance threshold.</li>
-            <li>How results will be validated for reproducibility.</li>
+          <h3>3. Experiment Tracking & Reproducibility</h3>
+          <p style="margin-top: 0.5rem; color: #444;">To ensure scientific rigor and transparent model evaluation, the following controls were implemented:</p>
+          <ul style="margin-top: 1rem; font-size: 0.95rem; color: #444; line-height: 1.6; padding-left: 1.2rem;">
+            <li><strong>Seed Initialization:</strong> Random states were fixed (e.g., <code>torch.manual_seed(42)</code>) across PyTorch, NumPy, and DataLoader to guarantee dataset splits and parameter initializations are exactly reproducible.</li>
+            <li><strong>Hardware Environment:</strong> Experiments were accelerated using Google Colab GPUs to handle the computational intensity of Vision Transformers.</li>
+            <li><strong>Telemetry via Weights & Biases (W&B):</strong> Real-time logging of training/validation loss, accuracy, and system metrics was centralized on the Wandb cloud platform. This ensures no data is lost upon terminal shutdown and allows for granular comparative analysis across different runs.</li>
           </ul>
         </article>
       </section>
