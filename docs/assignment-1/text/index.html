@@ -28,7 +28,7 @@
       <header class="hero assignment-hero inner-hero">
         <p class="eyebrow">Assignment 1 / Text Track</p>
         <h1>Text Classification</h1>
-        <p class="lead">Analyze sequence and contextual language behavior across baseline and advanced models.</p>
+        <p class="lead">20 Newsgroups — baseline BiGRU vs. advanced Transformer Encoder, topped with a learned ensemble meta-learner.</p>
         <p class="crumbs"><a href="../../assignment-1/">Assignment 1</a> / Text</p>
       </header>
 
@@ -43,12 +43,28 @@
           </thead>
           <tbody>
             <tr>
+              <td>Dataset</td>
+              <td>20 Newsgroups — 11,314 train / 7,532 test / 20 classes</td>
+            </tr>
+            <tr>
               <td>Baseline</td>
-              <td>LSTM</td>
+              <td>BiGRU (2-layer bidirectional GRU + attention pooling) — 9.85 M params</td>
             </tr>
             <tr>
               <td>Advanced</td>
-              <td>Transformer Encoder</td>
+              <td>Transformer Encoder (6 layers, 8 heads, d_model=256, Pre-LN) — 16.4 M params</td>
+            </tr>
+            <tr>
+              <td>Ensemble</td>
+              <td>Learned meta-MLP over frozen backbones' logits — 7,340 trainable params</td>
+            </tr>
+            <tr>
+              <td>Best accuracy</td>
+              <td>59.27% (Ensemble) on 7,532 test samples</td>
+            </tr>
+            <tr>
+              <td>Experiment tracking</td>
+              <td>Weights &amp; Biases — 3 runs logged (Transformer, BiGRU, Ensemble)</td>
             </tr>
             <tr>
               <td>Deliverable</td>
@@ -61,31 +77,31 @@
       <section class="section stage-router" aria-label="Text track page navigation">
         <div class="track-router-head">
           <h2>Track Pages</h2>
-          <p>Open each section to complete the full report for Text track.</p>
+          <p>Open each section to see the full report for the Text track.</p>
         </div>
         <div class="stage-grid">
           <article class="stage-card">
             <p class="track-chip">Section</p>
             <h3>Dataset EDA</h3>
-            <p>Data source, split profile, class imbalance, and representative samples.</p>
+            <p>20-class distribution, word-count profiles, vocabulary analysis, and preprocessing decisions for 20 Newsgroups.</p>
             <a class="track-link" href="./dataset-eda.html">Open Dataset EDA</a>
           </article>
           <article class="stage-card">
             <p class="track-chip">Section</p>
             <h3>Model Backbone</h3>
-            <p>Architecture blocks, baseline-advanced comparison, and complexity notes.</p>
+            <p>Full architecture specs for TransformerClassifier, BiGRU, and the learned ensemble meta-MLP — with parameter counts and design rationale.</p>
             <a class="track-link" href="./model-backbone.html">Open Model Backbone</a>
           </article>
           <article class="stage-card">
             <p class="track-chip">Section</p>
             <h3>Methodology</h3>
-            <p>Training strategy, optimization settings, and ablation plan.</p>
+            <p>End-to-end pipeline, hyperparameter tables, regularisation strategy, and learning curves for all three models.</p>
             <a class="track-link" href="./methodology.html">Open Methodology</a>
           </article>
           <article class="stage-card">
             <p class="track-chip">Section</p>
             <h3>Evaluation Results</h3>
-            <p>Primary metrics, confusion patterns, and error analysis highlights.</p>
+            <p>Test accuracy, macro F1, per-class F1 bars, confusion matrices, and ROC AUC — with error-analysis highlights.</p>
             <a class="track-link" href="./evaluation-results.html">Open Evaluation Results</a>
           </article>
         </div>

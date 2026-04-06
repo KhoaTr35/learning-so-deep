@@ -11,6 +11,76 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="../../styles.css" />
+    <style>
+      .figure-block {
+        margin: 20px 0;
+        border: 1px solid var(--a1-line);
+        border-radius: 20px;
+        background: var(--a1-paper);
+        box-shadow: var(--a1-shadow);
+        overflow: hidden;
+      }
+      .figure-block img {
+        width: 100%;
+        display: block;
+      }
+      .figure-caption {
+        padding: 12px 18px;
+        font-size: 0.88rem;
+        color: var(--a1-muted);
+        border-top: 1px solid var(--a1-line);
+      }
+      .figure-caption strong { color: var(--a1-ink); }
+      .metric-strip {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0,1fr));
+        gap: 12px;
+        margin: 18px 0;
+      }
+      .metric-card {
+        border: 1px solid var(--a1-line);
+        border-radius: 20px;
+        background: var(--a1-paper);
+        box-shadow: var(--a1-shadow);
+        padding: 18px;
+      }
+      .metric-card .model-label {
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.09em;
+        color: rgba(31,32,34,0.5);
+        margin: 0 0 4px;
+      }
+      .metric-card h3 {
+        font-family: "Newsreader", Georgia, serif;
+        font-size: 2.4rem;
+        font-weight: 700;
+        letter-spacing: -0.04em;
+        margin: 0 0 12px;
+      }
+      .metric-card .metric-row {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.87rem;
+        padding: 4px 0;
+        border-bottom: 1px solid var(--a1-line);
+        color: var(--a1-muted);
+      }
+      .metric-card .metric-row:last-child { border-bottom: none; }
+      .metric-card .metric-row strong { color: var(--a1-ink); }
+      .winner { outline: 2px solid var(--a1-accent); }
+      code {
+        font-family: ui-monospace,"SF Mono",monospace;
+        font-size: 0.85em;
+        background: rgba(35,63,93,0.08);
+        padding: 1px 5px;
+        border-radius: 4px;
+        color: var(--a1-accent);
+      }
+      @media (max-width: 760px) {
+        .metric-strip { grid-template-columns: 1fr; }
+      }
+    </style>
   </head>
   <body class="assignment-page">
     <div class="shell nav">
@@ -28,51 +98,154 @@
       <header class="hero assignment-hero inner-hero">
         <p class="eyebrow">Assignment 1 / Text / Evaluation Results</p>
         <h1>Evaluation Results</h1>
-        <p class="lead">Summarize quantitative outcomes and turn metrics into concrete decisions.</p>
+        <p class="lead">Quantitative outcomes for all three models on the 20 Newsgroups test set — accuracy, macro F1, ROC AUC, confusion patterns, and per-class analysis.</p>
         <p class="crumbs"><a href="../../assignment-1/">Assignment 1</a> / <a href="./">Text</a> / Evaluation Results</p>
       </header>
 
+      <!-- Summary metric cards -->
+      <section class="section">
+        <h2>Summary Metrics</h2>
+        <div class="metric-strip">
+
+          <div class="metric-card">
+            <p class="model-label">Transformer</p>
+            <h3>50.86%</h3>
+            <div class="metric-row"><span>Macro Precision</span><strong>48.7%</strong></div>
+            <div class="metric-row"><span>Macro Recall</span><strong>49.1%</strong></div>
+            <div class="metric-row"><span>Macro F1</span><strong>48.5%</strong></div>
+            <div class="metric-row"><span>Macro ROC AUC</span><strong>0.9140</strong></div>
+            <div class="metric-row"><span>Parameters</span><strong>16.4 M</strong></div>
+          </div>
+
+          <div class="metric-card winner">
+            <p class="model-label">BiGRU ← best accuracy</p>
+            <h3>59.11%</h3>
+            <div class="metric-row"><span>Macro Precision</span><strong>59.1%</strong></div>
+            <div class="metric-row"><span>Macro Recall</span><strong>57.8%</strong></div>
+            <div class="metric-row"><span>Macro F1</span><strong>58.0%</strong></div>
+            <div class="metric-row"><span>Macro ROC AUC</span><strong>0.9362</strong></div>
+            <div class="metric-row"><span>Parameters</span><strong>9.85 M</strong></div>
+          </div>
+
+          <div class="metric-card">
+            <p class="model-label">Ensemble</p>
+            <h3>59.27%</h3>
+            <div class="metric-row"><span>Macro Precision</span><strong>59.3%</strong></div>
+            <div class="metric-row"><span>Macro Recall</span><strong>58.3%</strong></div>
+            <div class="metric-row"><span>Macro F1</span><strong>58.5%</strong></div>
+            <div class="metric-row"><span>Macro ROC AUC</span><strong>0.9320</strong></div>
+            <div class="metric-row"><span>Trainable params</span><strong>7,340</strong></div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- Per-class F1 chart -->
+      <section class="section">
+        <h2>Per-class F1 Comparison</h2>
+        <div class="figure-block">
+          <img
+            src="../../../assignments/assignment1/text/artifacts/f1_comparison.png"
+            alt="Grouped bar chart — per-class F1-score for Transformer, BiGRU, and Ensemble"
+            loading="lazy"
+          />
+          <p class="figure-caption">
+            <strong>Figure 3 — Per-class F1.</strong>
+            Easiest: <em>rec.sport.hockey</em>, <em>misc.forsale</em>. Hardest: <em>talk.religion.misc</em> (TF F1=0.07) and <em>talk.politics.misc</em>. BiGRU leads in 16 of 20 classes.
+          </p>
+        </div>
+      </section>
+
+      <!-- Confusion matrices -->
+      <section class="section">
+        <h2>Confusion Matrices</h2>
+        <div class="figure-block">
+          <img
+            src="../../../assignments/assignment1/text/artifacts/confusion_matrices.png"
+            alt="Three side-by-side confusion matrices for Transformer, BiGRU, and Ensemble"
+            loading="lazy"
+          />
+          <p class="figure-caption">
+            <strong>Figure 4 — Confusion matrices.</strong>
+            Transformer shows scattered off-diagonal errors; BiGRU has sharper diagonals. Top confusion pairs: <em>alt.atheism</em> ↔ <em>talk.religion.misc</em> and <em>sci.electronics</em> ↔ <em>comp.sys.*</em>.
+          </p>
+        </div>
+      </section>
+
+      <!-- ROC AUC -->
+      <section class="section">
+        <h2>Macro ROC AUC</h2>
+        <div class="figure-block">
+          <img
+            src="../../../assignments/assignment1/text/artifacts/roc_auc_comparison.png"
+            alt="Bar chart of macro one-vs-rest ROC AUC for all three models"
+            loading="lazy"
+          />
+          <p class="figure-caption">
+            <strong>Figure 5 — Macro ROC AUC.</strong>
+            All models exceed 0.91 AUC. BiGRU leads (0.9362); the Ensemble dips slightly (0.9320) due to meta-MLP recalibration; Transformer trails (0.9140), suggesting underfitting.
+          </p>
+        </div>
+      </section>
+
+      <!-- Detailed metrics table -->
       <section class="section scope-panel">
-        <h2>Section Checklist</h2>
+        <h2>Detailed Per-class F1 (Test Set)</h2>
         <table>
           <thead>
             <tr>
-              <th>Item</th>
-              <th>Expectation</th>
+              <th>Class</th>
+              <th>Transformer F1</th>
+              <th>BiGRU F1</th>
+              <th>Ensemble F1</th>
+              <th>Support</th>
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>Goal</td>
-              <td>Explain what this section proves for the Text track.</td>
-            </tr>
-            <tr>
-              <td>Evidence</td>
-              <td>Provide tables, plots, or concise bullet findings that support claims.</td>
-            </tr>
-            <tr>
-              <td>Decision</td>
-              <td>State what this section implies for the next experiment step.</td>
-            </tr>
+            <tr><td>alt.atheism</td><td>0.25</td><td>0.38</td><td>0.35</td><td>319</td></tr>
+            <tr><td>comp.graphics</td><td>0.52</td><td>0.59</td><td>0.58</td><td>389</td></tr>
+            <tr><td>comp.os.ms-windows.misc</td><td>0.52</td><td>0.56</td><td>0.57</td><td>394</td></tr>
+            <tr><td>comp.sys.ibm.pc.hardware</td><td>0.51</td><td>0.54</td><td>0.56</td><td>392</td></tr>
+            <tr><td>comp.sys.mac.hardware</td><td>0.52</td><td>0.61</td><td>0.62</td><td>385</td></tr>
+            <tr><td>comp.windows.x</td><td>0.63</td><td>0.71</td><td>0.72</td><td>395</td></tr>
+            <tr><td>misc.forsale</td><td>0.70</td><td>0.72</td><td>0.73</td><td>390</td></tr>
+            <tr><td>rec.autos</td><td>0.45</td><td>0.52</td><td>0.53</td><td>396</td></tr>
+            <tr><td>rec.motorcycles</td><td>0.57</td><td>0.61</td><td>0.61</td><td>398</td></tr>
+            <tr><td>rec.sport.baseball</td><td>0.51</td><td>0.72</td><td>0.71</td><td>397</td></tr>
+            <tr><td>rec.sport.hockey</td><td>0.65</td><td>0.79</td><td>0.81</td><td>399</td></tr>
+            <tr><td>sci.crypt</td><td>0.59</td><td>0.70</td><td>0.71</td><td>396</td></tr>
+            <tr><td>sci.electronics</td><td>0.34</td><td>0.48</td><td>0.48</td><td>393</td></tr>
+            <tr><td>sci.med</td><td>0.54</td><td>0.65</td><td>0.63</td><td>396</td></tr>
+            <tr><td>sci.space</td><td>0.47</td><td>0.65</td><td>0.63</td><td>394</td></tr>
+            <tr><td>soc.religion.christian</td><td>0.55</td><td>0.59</td><td>0.58</td><td>398</td></tr>
+            <tr><td>talk.politics.guns</td><td>0.46</td><td>0.52</td><td>0.53</td><td>364</td></tr>
+            <tr><td>talk.politics.mideast</td><td>0.62</td><td>0.67</td><td>0.67</td><td>376</td></tr>
+            <tr><td>talk.politics.misc</td><td>0.22</td><td>0.38</td><td>0.38</td><td>310</td></tr>
+            <tr><td>talk.religion.misc</td><td>0.07</td><td>0.25</td><td>0.26</td><td>251</td></tr>
+            <tr><td><strong>Macro avg</strong></td><td><strong>0.49</strong></td><td><strong>0.58</strong></td><td><strong>0.59</strong></td><td><strong>7,532</strong></td></tr>
           </tbody>
         </table>
       </section>
 
+      <!-- Analysis cards -->
       <section class="section report-grid">
         <article class="report-card">
-          <h3>Primary Findings</h3>
+          <h3>Key Findings</h3>
           <ul>
-            <li>Top signal to watch for this section.</li>
-            <li>Main comparison point across baseline and advanced setting.</li>
-            <li>Potential risk or blind spot requiring follow-up.</li>
+            <li><strong>BiGRU outperforms Transformer</strong> by +8.25% accuracy despite having 40% fewer parameters — faster convergence wins within the given epoch budget.</li>
+            <li><strong>Ensemble delivers marginal gain</strong> (+0.16% over BiGRU) with only 7,340 new parameters, showing that logit-level fusion can recover some Transformer diversity.</li>
+            <li><strong>Hardest classes:</strong> <em>talk.religion.misc</em> (TF F1=0.07) and <em>talk.politics.misc</em> — heavily overlapping vocabulary with adjacent topics causes systematic confusion.</li>
+            <li><strong>All models score AUC &gt; 0.91</strong> — calibrated probability estimates are robust even where hard-label accuracy is low.</li>
+            <li>The Transformer's slow convergence under <code>label_smoothing=0.1</code> and 6 deep layers suggests it needs either more epochs or a pre-trained initialisation.</li>
           </ul>
         </article>
         <article class="report-card">
-          <h3>Actionable Next Step</h3>
+          <h3>Next Experiment Steps</h3>
           <ul>
-            <li>One concrete improvement to test next.</li>
-            <li>Expected impact and acceptance threshold.</li>
-            <li>How results will be validated for reproducibility.</li>
+            <li>Pre-train embeddings on the full corpus (e.g., Word2Vec or GloVe) before fine-tuning the Transformer — this should close the gap with BiGRU.</li>
+            <li>Extend Transformer training to 25+ epochs or reduce dropout to 0.2 to surface its true capacity advantage.</li>
+            <li>Apply class-weighted loss for <em>talk.religion.misc</em> and <em>talk.politics.misc</em> to address the long tail of confusable low-recall classes.</li>
+            <li>Test temperature scaling on ensemble probability outputs to improve ROC AUC calibration.</li>
           </ul>
         </article>
       </section>

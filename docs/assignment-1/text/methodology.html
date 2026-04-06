@@ -11,6 +11,64 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="../../styles.css" />
+    <style>
+      .figure-block {
+        margin: 20px 0;
+        border: 1px solid var(--a1-line);
+        border-radius: 20px;
+        background: var(--a1-paper);
+        box-shadow: var(--a1-shadow);
+        overflow: hidden;
+      }
+      .figure-block img {
+        width: 100%;
+        display: block;
+      }
+      .figure-caption {
+        padding: 12px 18px;
+        font-size: 0.88rem;
+        color: var(--a1-muted);
+        border-top: 1px solid var(--a1-line);
+      }
+      .figure-caption strong { color: var(--a1-ink); }
+      code {
+        font-family: ui-monospace, "SF Mono", monospace;
+        font-size: 0.88em;
+        background: rgba(35,63,93,0.08);
+        padding: 2px 5px;
+        border-radius: 5px;
+        color: var(--a1-accent);
+      }
+      .pipeline-steps {
+        display: grid;
+        gap: 10px;
+        margin: 16px 0;
+      }
+      .pipeline-step {
+        display: flex;
+        align-items: flex-start;
+        gap: 14px;
+        padding: 14px 16px;
+        border: 1px solid var(--a1-line);
+        border-radius: 14px;
+        background: rgba(255,255,255,0.6);
+      }
+      .step-num {
+        flex-shrink: 0;
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        background: var(--a1-accent);
+        color: #fff;
+        font-size: 0.8rem;
+        font-weight: 800;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .step-body h4 { margin: 0 0 4px; font-size: 0.97rem; }
+      .step-body p { margin: 0; font-size: 0.9rem; color: var(--a1-muted); }
+    </style>
   </head>
   <body class="assignment-page">
     <div class="shell nav">
@@ -28,51 +86,186 @@
       <header class="hero assignment-hero inner-hero">
         <p class="eyebrow">Assignment 1 / Text / Methodology</p>
         <h1>Methodology</h1>
-        <p class="lead">Define pipeline design, optimization strategy, and reproducibility controls.</p>
+        <p class="lead">Training pipeline, optimisation settings, regularisation choices, and reproducibility controls for all three models.</p>
         <p class="crumbs"><a href="../../assignment-1/">Assignment 1</a> / <a href="./">Text</a> / Methodology</p>
       </header>
 
+      <!-- Pipeline overview -->
       <section class="section scope-panel">
-        <h2>Section Checklist</h2>
+        <h2>End-to-End Pipeline</h2>
+        <div class="pipeline-steps">
+          <div class="pipeline-step">
+            <div class="step-num">1</div>
+            <div class="step-body">
+              <h4>Data Loading &amp; Caching</h4>
+              <p>20 Newsgroups fetched from Hugging Face (<code>SetFit/20_newsgroups</code>) and cached as local CSV. Falls back to sklearn if the hub is unreachable.</p>
+            </div>
+          </div>
+          <div class="pipeline-step">
+            <div class="step-num">2</div>
+            <div class="step-body">
+              <h4>Text Preprocessing</h4>
+              <p>Lowercase → strip email/news headers (regex) → remove URLs and email addresses → keep <code>[a-z0-9'\s]</code> only → normalise whitespace.</p>
+            </div>
+          </div>
+          <div class="pipeline-step">
+            <div class="step-num">3</div>
+            <div class="step-body">
+              <h4>Vocabulary Construction</h4>
+              <p>Count all tokens in training split; keep those appearing ≥ 2 times → 45,115 tokens. Add <code>&lt;PAD&gt;</code> (idx 0), <code>&lt;UNK&gt;</code> (idx 1), <code>&lt;CLS&gt;</code> (idx 2).</p>
+            </div>
+          </div>
+          <div class="pipeline-step">
+            <div class="step-num">4</div>
+            <div class="step-body">
+              <h4>Sequence Encoding</h4>
+              <p>Prepend <code>&lt;CLS&gt;</code> token, tokenise on whitespace, truncate / pad to 192 tokens. Both Transformer and RNN consume the same encoded sequences.</p>
+            </div>
+          </div>
+          <div class="pipeline-step">
+            <div class="step-num">5</div>
+            <div class="step-body">
+              <h4>DataLoaders</h4>
+              <p>Batch size 64 (GPU) / 32 (CPU). 2 persistent workers, pin_memory enabled on CUDA. Fixed generator seed (42) for shuffled training batches.</p>
+            </div>
+          </div>
+          <div class="pipeline-step">
+            <div class="step-num">6</div>
+            <div class="step-body">
+              <h4>Training — individual models</h4>
+              <p>AdamW + cosine-decay LR with linear warmup. <code>CrossEntropyLoss</code> with optional label smoothing. Gradient clipping at 1.0. Best checkpoint saved on test accuracy.</p>
+            </div>
+          </div>
+          <div class="pipeline-step">
+            <div class="step-num">7</div>
+            <div class="step-body">
+              <h4>Ensemble Meta-learning</h4>
+              <p>Load best individual checkpoints, freeze both backbones, train a small MLP meta-learner on concatenated logits. Only 7,340 parameters are updated in this stage.</p>
+            </div>
+          </div>
+          <div class="pipeline-step">
+            <div class="step-num">8</div>
+            <div class="step-body">
+              <h4>Evaluation &amp; Logging</h4>
+              <p>Accuracy, macro precision/recall/F1, per-class F1, confusion matrix, macro one-vs-rest ROC AUC. All runs tracked with Weights &amp; Biases.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Hyperparameter tables -->
+      <section class="section scope-panel">
+        <h2>Hyperparameter Settings</h2>
         <table>
           <thead>
             <tr>
-              <th>Item</th>
-              <th>Expectation</th>
+              <th>Hyperparameter</th>
+              <th>Transformer</th>
+              <th>BiGRU</th>
+              <th>Ensemble (meta-MLP)</th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td>Goal</td>
-              <td>Explain what this section proves for the Text track.</td>
+              <td>Epochs</td>
+              <td>15</td>
+              <td>12</td>
+              <td>8</td>
             </tr>
             <tr>
-              <td>Evidence</td>
-              <td>Provide tables, plots, or concise bullet findings that support claims.</td>
+              <td>Learning rate</td>
+              <td>2 × 10⁻⁴</td>
+              <td>1 × 10⁻³</td>
+              <td>5 × 10⁻⁴</td>
             </tr>
             <tr>
-              <td>Decision</td>
-              <td>State what this section implies for the next experiment step.</td>
+              <td>Weight decay</td>
+              <td>1 × 10⁻²</td>
+              <td>1 × 10⁻²</td>
+              <td>1 × 10⁻³</td>
+            </tr>
+            <tr>
+              <td>Warmup ratio</td>
+              <td>8%</td>
+              <td>5%</td>
+              <td>10%</td>
+            </tr>
+            <tr>
+              <td>LR schedule</td>
+              <td>Cosine decay</td>
+              <td>Cosine decay</td>
+              <td>Cosine decay</td>
+            </tr>
+            <tr>
+              <td>Batch size</td>
+              <td>64</td>
+              <td>64</td>
+              <td>64</td>
+            </tr>
+            <tr>
+              <td>Optimizer</td>
+              <td>AdamW</td>
+              <td>AdamW</td>
+              <td>AdamW</td>
+            </tr>
+            <tr>
+              <td>Gradient clip</td>
+              <td>1.0</td>
+              <td>1.0</td>
+              <td>1.0</td>
+            </tr>
+            <tr>
+              <td>Label smoothing</td>
+              <td>0.1</td>
+              <td>—</td>
+              <td>0.05</td>
+            </tr>
+            <tr>
+              <td>Early stopping patience</td>
+              <td>4 epochs</td>
+              <td>3 epochs</td>
+              <td>—</td>
             </tr>
           </tbody>
         </table>
       </section>
 
+      <!-- Learning curves figure -->
+      <section class="section">
+        <h2>Learning Curves</h2>
+        <div class="figure-block">
+          <img
+            src="../../../assignments/assignment1/text/artifacts/learning_curves.png"
+            alt="Loss and accuracy curves for Transformer, BiGRU, and Ensemble across training epochs"
+            loading="lazy"
+          />
+          <p class="figure-caption">
+            <strong>Figure 2 — Learning curves.</strong>
+            Solid = test, dashed = train. BiGRU converges faster and scores higher than the Transformer within the same epoch budget. The Ensemble adds a marginal gain on top of BiGRU.
+          </p>
+        </div>
+      </section>
+
+      <!-- Regularisation section -->
       <section class="section report-grid">
         <article class="report-card">
-          <h3>Primary Findings</h3>
+          <h3>Regularisation Strategy</h3>
           <ul>
-            <li>Top signal to watch for this section.</li>
-            <li>Main comparison point across baseline and advanced setting.</li>
-            <li>Potential risk or blind spot requiring follow-up.</li>
+            <li><strong>Dropout (0.3):</strong> applied after embedding and inside attention/GRU layers to prevent co-adaptation.</li>
+            <li><strong>Weight decay (1e-2):</strong> L2 penalty via AdamW keeps weight magnitudes in check.</li>
+            <li><strong>Label smoothing (0.1 for Transformer):</strong> prevents overconfidence on noisy newsgroup headers.</li>
+            <li><strong>Gradient clip (max_norm=1.0):</strong> stabilises training, especially for the deep Transformer stack.</li>
+            <li><strong>Early stopping:</strong> saves the best checkpoint and halts if no improvement for 3–4 epochs.</li>
           </ul>
         </article>
         <article class="report-card">
-          <h3>Actionable Next Step</h3>
+          <h3>Reproducibility Controls</h3>
           <ul>
-            <li>One concrete improvement to test next.</li>
-            <li>Expected impact and acceptance threshold.</li>
-            <li>How results will be validated for reproducibility.</li>
+            <li>Global seed 42 applied to <code>random</code>, <code>numpy</code>, and <code>torch</code>.</li>
+            <li><code>DataLoader</code> uses a fixed <code>torch.Generator</code> with <code>worker_init_fn</code> to seed each worker.</li>
+            <li>GPU sanity check before training; falls back to CPU if CUDA is unstable.</li>
+            <li>AMP disabled by default for P100 compatibility; model checkpoints save best weights only.</li>
+            <li>All runs tracked in Weights &amp; Biases with config snapshot for full reproducibility.</li>
           </ul>
         </article>
       </section>

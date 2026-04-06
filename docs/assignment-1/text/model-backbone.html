@@ -11,6 +11,69 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="../../styles.css" />
+    <style>
+      code {
+        font-family: ui-monospace, "SF Mono", monospace;
+        font-size: 0.88em;
+        background: rgba(35,63,93,0.08);
+        padding: 2px 5px;
+        border-radius: 5px;
+        color: var(--a1-accent);
+      }
+      .arch-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+        margin: 18px 0;
+      }
+      .arch-card {
+        border: 1px solid var(--a1-line);
+        border-radius: 20px;
+        background: var(--a1-paper);
+        box-shadow: var(--a1-shadow);
+        overflow: hidden;
+      }
+      .arch-card-head {
+        padding: 16px 18px 12px;
+        border-bottom: 1px solid var(--a1-line);
+      }
+      .arch-card-head h3 { margin: 0 0 4px; font-size: 1.1rem; }
+      .arch-card-head .badge {
+        display: inline-block;
+        font-size: 0.74rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.07em;
+        padding: 3px 9px;
+        border-radius: 999px;
+      }
+      .badge-tf { background: rgba(0,113,227,0.1); color: var(--a1-accent); }
+      .badge-rnn { background: rgba(74,143,100,0.12); color: #2e6b47; }
+      .badge-ens { background: rgba(120,60,140,0.10); color: #6b2e8a; }
+      .arch-card-body { padding: 14px 18px; }
+      .arch-card-body ul { margin: 0; padding-left: 18px; display: grid; gap: 5px; }
+      .arch-card-body li { font-size: 0.92rem; color: var(--a1-muted); }
+      .arch-card-body li strong { color: var(--a1-ink); }
+      .param-badge {
+        margin-top: 10px;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 0.82rem;
+        font-weight: 700;
+        border: 1px solid var(--a1-line);
+        background: rgba(255,255,255,0.7);
+        padding: 5px 10px;
+        border-radius: 999px;
+      }
+      .param-badge::before {
+        content: "⚙";
+        font-size: 0.9em;
+      }
+      @media (max-width: 760px) {
+        .arch-grid { grid-template-columns: 1fr; }
+      }
+    </style>
   </head>
   <body class="assignment-page">
     <div class="shell nav">
@@ -28,51 +91,160 @@
       <header class="hero assignment-hero inner-hero">
         <p class="eyebrow">Assignment 1 / Text / Model Backbone</p>
         <h1>Model Backbone</h1>
-        <p class="lead">Document architecture choices and explain why the selected backbone is suitable.</p>
+        <p class="lead">Architecture design for three models — a deep Transformer encoder, a bidirectional GRU with attention, and a learned ensemble meta-learner.</p>
         <p class="crumbs"><a href="../../assignment-1/">Assignment 1</a> / <a href="./">Text</a> / Model Backbone</p>
       </header>
 
+      <!-- Model cards -->
+      <section class="section">
+        <h2>Architecture Overview</h2>
+        <div class="arch-grid">
+
+          <!-- TransformerClassifier -->
+          <div class="arch-card">
+            <div class="arch-card-head">
+              <span class="badge badge-tf">Advanced</span>
+              <h3>TransformerClassifier</h3>
+            </div>
+            <div class="arch-card-body">
+              <ul>
+                <li><strong>Embedding:</strong> <code>nn.Embedding(45115, 256)</code> with pad masking</li>
+                <li><strong>Positional encoding:</strong> Sinusoidal (pre-computed, no learned params)</li>
+                <li><strong>Encoder stack:</strong> 6 × <code>TransformerEncoderLayer</code>, Pre-LN, GELU activation</li>
+                <li><strong>d_model:</strong> 256 &nbsp;|&nbsp; <strong>Heads:</strong> 8 &nbsp;|&nbsp; <strong>d_ff:</strong> 1024</li>
+                <li><strong>Pooling:</strong> CLS token repr + masked mean-pool → concat (512-dim)</li>
+                <li><strong>Classifier:</strong> LayerNorm → Linear(512→256) → GELU → Dropout(0.3) → Linear(256→20)</li>
+                <li><strong>Dropout:</strong> 0.3 (embedding + encoder layers)</li>
+                <li><strong>Final norm:</strong> extra <code>nn.LayerNorm</code> after encoder stack</li>
+              </ul>
+              <div class="param-badge">16,426,004 parameters</div>
+            </div>
+          </div>
+
+          <!-- RNNClassifier -->
+          <div class="arch-card">
+            <div class="arch-card-head">
+              <span class="badge badge-rnn">Baseline</span>
+              <h3>BiGRU (RNNClassifier)</h3>
+            </div>
+            <div class="arch-card-body">
+              <ul>
+                <li><strong>Embedding:</strong> <code>nn.Embedding(45115, 192)</code> with pad masking</li>
+                <li><strong>Recurrent layer:</strong> 2-layer bidirectional <code>nn.GRU</code></li>
+                <li><strong>hidden_size:</strong> 192 &nbsp;|&nbsp; <strong>Directions:</strong> 2 → 384-dim output</li>
+                <li><strong>Pack/pad:</strong> <code>pack_padded_sequence</code> for variable-length inputs</li>
+                <li><strong>Attention:</strong> learned scalar attention over GRU output tokens</li>
+                <li><strong>Pooling:</strong> softmax-weighted sum of all timestep representations</li>
+                <li><strong>Classifier:</strong> LayerNorm → Linear(384→192) → GELU → Dropout(0.3) → Linear(192→20)</li>
+                <li><strong>Dropout:</strong> 0.3 (embedding + between GRU layers)</li>
+              </ul>
+              <div class="param-badge">9,851,541 parameters</div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Ensemble card (full width) -->
+        <div class="arch-card" style="margin-top: 4px;">
+          <div class="arch-card-head">
+            <span class="badge badge-ens">Ensemble</span>
+            <h3>LearnedEnsemble</h3>
+          </div>
+          <div class="arch-card-body">
+            <ul>
+              <li><strong>Backbones:</strong> frozen TransformerClassifier + frozen BiGRU (no gradient flows into them)</li>
+              <li><strong>Meta-input:</strong> concatenated logits from both models → shape (B, 40)</li>
+              <li><strong>Meta-MLP:</strong> Linear(40→80) → GELU → Dropout(0.15) → Linear(80→40) → GELU → Dropout(0.10) → Linear(40→20)</li>
+              <li><strong>Trainable params:</strong> 7,340 (meta-MLP only) — checkpoint is &lt; 100 KB</li>
+              <li><strong>Total params:</strong> 26,284,885 (including frozen backbones)</li>
+            </ul>
+            <div class="param-badge">7,340 trainable (meta only)</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Comparison table -->
       <section class="section scope-panel">
-        <h2>Section Checklist</h2>
+        <h2>Architecture Comparison</h2>
         <table>
           <thead>
             <tr>
-              <th>Item</th>
-              <th>Expectation</th>
+              <th>Property</th>
+              <th>TransformerClassifier</th>
+              <th>BiGRU</th>
+              <th>LearnedEnsemble</th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td>Goal</td>
-              <td>Explain what this section proves for the Text track.</td>
+              <td>Total parameters</td>
+              <td>16,426,004</td>
+              <td>9,851,541</td>
+              <td>26,284,885</td>
             </tr>
             <tr>
-              <td>Evidence</td>
-              <td>Provide tables, plots, or concise bullet findings that support claims.</td>
+              <td>Trainable params (own stage)</td>
+              <td>16,426,004</td>
+              <td>9,851,541</td>
+              <td>7,340</td>
             </tr>
             <tr>
-              <td>Decision</td>
-              <td>State what this section implies for the next experiment step.</td>
+              <td>Sequence modelling</td>
+              <td>Self-attention (parallel)</td>
+              <td>Recurrent (sequential)</td>
+              <td>—</td>
+            </tr>
+            <tr>
+              <td>Positional awareness</td>
+              <td>Sinusoidal PE</td>
+              <td>Implicit (GRU order)</td>
+              <td>—</td>
+            </tr>
+            <tr>
+              <td>Pooling strategy</td>
+              <td>CLS + masked mean-pool (concat)</td>
+              <td>Learned attention-weighted sum</td>
+              <td>Direct logit fusion</td>
+            </tr>
+            <tr>
+              <td>Long-range dependencies</td>
+              <td>Full O(L²) attention</td>
+              <td>Limited by GRU memory</td>
+              <td>Inherited from backbones</td>
+            </tr>
+            <tr>
+              <td>Training speed (per epoch)</td>
+              <td>~43 s (GPU P100)</td>
+              <td>~11 s (GPU P100)</td>
+              <td>~22 s (GPU P100)</td>
+            </tr>
+            <tr>
+              <td>Best test accuracy</td>
+              <td>50.86%</td>
+              <td>59.11%</td>
+              <td>59.27%</td>
             </tr>
           </tbody>
         </table>
       </section>
 
+      <!-- Design rationale -->
       <section class="section report-grid">
         <article class="report-card">
-          <h3>Primary Findings</h3>
+          <h3>Why These Architectures?</h3>
           <ul>
-            <li>Top signal to watch for this section.</li>
-            <li>Main comparison point across baseline and advanced setting.</li>
-            <li>Potential risk or blind spot requiring follow-up.</li>
+            <li><strong>Transformer</strong> provides the global context capture expected from the "advanced" setting; CLS + mean pooling gives a richer representation than CLS alone.</li>
+            <li><strong>BiGRU</strong> is chosen as baseline over simple LSTM because bidirectionality gives better context from both directions, and attention pooling avoids the GRU's vanishing-gradient pooling problem.</li>
+            <li><strong>Ensemble</strong> tests whether complementary error patterns in the two backbones can be exploited with a tiny trainable head, avoiding expensive full re-training.</li>
           </ul>
         </article>
         <article class="report-card">
-          <h3>Actionable Next Step</h3>
+          <h3>Key Design Decisions</h3>
           <ul>
-            <li>One concrete improvement to test next.</li>
-            <li>Expected impact and acceptance threshold.</li>
-            <li>How results will be validated for reproducibility.</li>
+            <li><strong>Pre-LN encoder layers</strong> (norm_first=True) stabilise Transformer training without an aggressive learning-rate schedule.</li>
+            <li><strong>pack_padded_sequence</strong> ensures the GRU never attends to padding positions, improving gradient quality for variable-length inputs.</li>
+            <li><strong>Frozen backbones in meta-stage</strong> prevent catastrophic forgetting of individual model strengths during ensemble fine-tuning.</li>
+            <li><strong>GELU activations</strong> used consistently across all classifiers for smoother gradient flow than ReLU.</li>
           </ul>
         </article>
       </section>

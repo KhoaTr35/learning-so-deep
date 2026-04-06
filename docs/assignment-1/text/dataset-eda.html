@@ -11,6 +11,65 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="../../styles.css" />
+    <style>
+      .figure-block {
+        margin: 20px 0;
+        border: 1px solid var(--a1-line);
+        border-radius: 20px;
+        background: var(--a1-paper);
+        box-shadow: var(--a1-shadow);
+        overflow: hidden;
+      }
+      .figure-block img {
+        width: 100%;
+        display: block;
+      }
+      .figure-caption {
+        padding: 12px 18px;
+        font-size: 0.88rem;
+        color: var(--a1-muted);
+        border-top: 1px solid var(--a1-line);
+      }
+      .figure-caption strong {
+        color: var(--a1-ink);
+      }
+      .stat-strip {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 12px;
+        margin: 18px 0;
+      }
+      .stat-tile {
+        background: var(--a1-paper);
+        border: 1px solid var(--a1-line);
+        border-radius: 18px;
+        padding: 16px 18px;
+        box-shadow: var(--a1-shadow);
+      }
+      .stat-tile .label {
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.09em;
+        color: rgba(31,32,34,0.55);
+        margin: 0 0 4px;
+      }
+      .stat-tile .value {
+        font-size: 1.55rem;
+        font-weight: 800;
+        letter-spacing: -0.03em;
+        color: var(--a1-ink);
+        margin: 0;
+        font-family: "Newsreader", Georgia, serif;
+      }
+      .stat-tile .sub {
+        font-size: 0.82rem;
+        color: var(--a1-muted);
+        margin: 4px 0 0;
+      }
+      @media (max-width: 760px) {
+        .stat-strip { grid-template-columns: repeat(2, 1fr); }
+      }
+    </style>
   </head>
   <body class="assignment-page">
     <div class="shell nav">
@@ -28,53 +87,153 @@
       <header class="hero assignment-hero inner-hero">
         <p class="eyebrow">Assignment 1 / Text / Dataset EDA</p>
         <h1>Dataset EDA</h1>
-        <p class="lead">Explore distribution shape, label balance, and sample quality before training.</p>
+        <p class="lead">Exploring 20 Newsgroups — distribution shape, label balance, length statistics, and vocabulary profile before any model is trained.</p>
         <p class="crumbs"><a href="../../assignment-1/">Assignment 1</a> / <a href="./">Text</a> / Dataset EDA</p>
       </header>
 
+      <!-- Key statistics strip -->
+      <section class="section">
+        <h2>Dataset at a Glance</h2>
+        <div class="stat-strip">
+          <div class="stat-tile">
+            <p class="label">Training samples</p>
+            <p class="value">11,314</p>
+            <p class="sub">From Hugging Face hub</p>
+          </div>
+          <div class="stat-tile">
+            <p class="label">Test samples</p>
+            <p class="value">7,532</p>
+            <p class="sub">Standard sklearn split</p>
+          </div>
+          <div class="stat-tile">
+            <p class="label">Number of classes</p>
+            <p class="value">20</p>
+            <p class="sub">Newsgroup topics</p>
+          </div>
+          <div class="stat-tile">
+            <p class="label">Vocabulary size</p>
+            <p class="value">45,115</p>
+            <p class="sub">min-freq ≥ 2 after cleaning</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Dataset overview table -->
       <section class="section scope-panel">
-        <h2>Section Checklist</h2>
+        <h2>Data Source &amp; Split Profile</h2>
         <table>
           <thead>
             <tr>
-              <th>Item</th>
-              <th>Expectation</th>
+              <th>Property</th>
+              <th>Value</th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td>Goal</td>
-              <td>Explain what this section proves for the Text track.</td>
+              <td>Dataset</td>
+              <td>20 Newsgroups (SetFit/20_newsgroups on Hugging Face)</td>
             </tr>
             <tr>
-              <td>Evidence</td>
-              <td>Provide tables, plots, or concise bullet findings that support claims.</td>
+              <td>Train split</td>
+              <td>11,314 documents — 0 missing</td>
             </tr>
             <tr>
-              <td>Decision</td>
-              <td>State what this section implies for the next experiment step.</td>
+              <td>Test split</td>
+              <td>7,532 documents — 0 missing</td>
+            </tr>
+            <tr>
+              <td>Classes</td>
+              <td>20 newsgroup topics (alt.atheism → talk.religion.misc)</td>
+            </tr>
+            <tr>
+              <td>Max sequence length</td>
+              <td>192 tokens (post-preprocessing)</td>
+            </tr>
+            <tr>
+              <td>Special tokens</td>
+              <td>&lt;PAD&gt;, &lt;UNK&gt;, &lt;CLS&gt;</td>
+            </tr>
+            <tr>
+              <td>Vocabulary (min-freq=2)</td>
+              <td>45,115 unique tokens after header removal and lowercasing</td>
             </tr>
           </tbody>
         </table>
       </section>
 
+      <!-- EDA figure -->
+      <section class="section">
+        <h2>Exploratory Analysis</h2>
+        <div class="figure-block">
+          <img
+            src="../../../assignments/assignment1/text/artifacts/eda_plots.png"
+            alt="Six-panel EDA visualization for 20 Newsgroups dataset"
+            loading="lazy"
+          />
+          <p class="figure-caption">
+            <strong>Figure 1 — EDA overview.</strong>
+            Classes are near-balanced (≈480–600 samples each). Word-count median ≈110, P95≈712 — a 192-token cap covers most samples. <em>talk.*</em> posts are shorter than <em>comp.*</em> / <em>sci.*</em>.
+          </p>
+        </div>
+      </section>
+
+      <!-- Findings + next step cards -->
       <section class="section report-grid">
         <article class="report-card">
           <h3>Primary Findings</h3>
           <ul>
-            <li>Top signal to watch for this section.</li>
-            <li>Main comparison point across baseline and advanced setting.</li>
-            <li>Potential risk or blind spot requiring follow-up.</li>
+            <li><strong>Near-balanced classes:</strong> each topic holds ≈480–600 training samples, so no over-sampling was needed.</li>
+            <li><strong>Heavy length tail:</strong> P95 word count reaches 712 words, but the median is only ≈110 — a fixed cap of 192 tokens covers the majority while staying GPU-safe.</li>
+            <li><strong>Header noise:</strong> email metadata (From:, Subject:, Lines:) inflates token counts and shifts vocabulary; regex removal was applied before vocabulary construction.</li>
+            <li><strong>URL / email leakage:</strong> raw corpus contains many email addresses and URLs that would act as spurious class signals without preprocessing.</li>
           </ul>
         </article>
         <article class="report-card">
-          <h3>Actionable Next Step</h3>
+          <h3>Preprocessing Decisions</h3>
           <ul>
-            <li>One concrete improvement to test next.</li>
-            <li>Expected impact and acceptance threshold.</li>
-            <li>How results will be validated for reproducibility.</li>
+            <li>Lowercase + strip email headers with multi-pattern regex.</li>
+            <li>Remove URLs (<code>http*</code>) and email addresses (<code>*@*</code>).</li>
+            <li>Keep only <code>[a-z0-9'\s]</code> — punctuation is dropped.</li>
+            <li>Min-frequency threshold of 2 for vocabulary inclusion (removes rare typos / usernames).</li>
+            <li>CLS token prepended to every sequence for Transformer classification.</li>
           </ul>
         </article>
+      </section>
+
+      <!-- Class list table -->
+      <section class="section scope-panel">
+        <h2>The 20 Newsgroup Categories</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Category</th>
+              <th>Domain</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>0</td><td>alt.atheism</td><td>Religion / Debate</td></tr>
+            <tr><td>1</td><td>comp.graphics</td><td>Computing</td></tr>
+            <tr><td>2</td><td>comp.os.ms-windows.misc</td><td>Computing</td></tr>
+            <tr><td>3</td><td>comp.sys.ibm.pc.hardware</td><td>Computing</td></tr>
+            <tr><td>4</td><td>comp.sys.mac.hardware</td><td>Computing</td></tr>
+            <tr><td>5</td><td>comp.windows.x</td><td>Computing</td></tr>
+            <tr><td>6</td><td>misc.forsale</td><td>Miscellaneous</td></tr>
+            <tr><td>7</td><td>rec.autos</td><td>Recreation</td></tr>
+            <tr><td>8</td><td>rec.motorcycles</td><td>Recreation</td></tr>
+            <tr><td>9</td><td>rec.sport.baseball</td><td>Recreation</td></tr>
+            <tr><td>10</td><td>rec.sport.hockey</td><td>Recreation</td></tr>
+            <tr><td>11</td><td>sci.crypt</td><td>Science</td></tr>
+            <tr><td>12</td><td>sci.electronics</td><td>Science</td></tr>
+            <tr><td>13</td><td>sci.med</td><td>Science</td></tr>
+            <tr><td>14</td><td>sci.space</td><td>Science</td></tr>
+            <tr><td>15</td><td>soc.religion.christian</td><td>Society / Religion</td></tr>
+            <tr><td>16</td><td>talk.politics.guns</td><td>Politics</td></tr>
+            <tr><td>17</td><td>talk.politics.mideast</td><td>Politics</td></tr>
+            <tr><td>18</td><td>talk.politics.misc</td><td>Politics</td></tr>
+            <tr><td>19</td><td>talk.religion.misc</td><td>Religion / Debate</td></tr>
+          </tbody>
+        </table>
       </section>
 
       <p class="footer"><a href="./">Back to Text Track</a></p>
