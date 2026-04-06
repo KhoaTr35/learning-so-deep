@@ -77,26 +77,22 @@
           <p>Analyzing the learning curves reveals a distinct advantage for the Convolutional architecture over the Transformer on this specific dataset size.</p>
           
           <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem; margin-top: 1.5rem;">
-            
             <div style="background: #fff; padding: 1rem; border-radius: 8px; border: 1px solid #eee; text-align: center;">
                 <img src="assets/train_loss.png" alt="W&B Train Loss" style="max-width: 100%; height: auto; border-radius: 4px;">
             </div>
-
             <div style="background: #fff; padding: 1rem; border-radius: 8px; border: 1px solid #eee; text-align: center;">
                 <img src="assets/val_loss.png" alt="W&B Val Loss" style="max-width: 100%; height: auto; border-radius: 4px;">
             </div>
-
             <div style="background: #fff; padding: 1rem; border-radius: 8px; border: 1px solid #eee; text-align: center;">
                 <img src="assets/val_acc.png" alt="W&B Validation Accuracy" style="max-width: 100%; height: auto; border-radius: 4px;">
             </div>
-
             <div style="background: #fff; padding: 1rem; border-radius: 8px; border: 1px solid #eee; text-align: center;">
                 <img src="assets/val_f1.png" alt="W&B Validation F1" style="max-width: 100%; height: auto; border-radius: 4px;">
             </div>
           </div>
 
           <ul style="margin-top: 1.5rem; font-size: 0.95rem; color: #444; line-height: 1.6;">
-            <li><strong>Convergence Speed & Stability:</strong> The orange line (ResNet50) consistently outperforms the blue line (ViT) across all metrics. ResNet50 converges to a lower loss and higher accuracy optimum around step 4.</li>
+            <li><strong>Convergence Speed & Stability:</strong> The orange line (ResNet50) consistently outperforms the blue line (ViT) across all metrics. ResNet50 converges to a lower loss and higher accuracy optimum.</li>
             <li><strong>The "Data Hunger" Phenomenon:</strong> These charts perfectly validate our hypothesis stated in the Methodology section. Despite having over 3x the parameters (86M vs 25M), ViT struggles to generalize as effectively as ResNet50. The lack of CNN inductive biases (translation invariance) means ViT requires significantly more data than the ~30,000 images provided by Caltech-256 to fully map global context representations.</li>
           </ul>
         </article>
@@ -104,7 +100,7 @@
 
       <section class="section scope-panel">
         <h2>3. Error Analysis & Confusion Patterns</h2>
-        <p>A deep dive into the specific classes that caused the most misclassifications for both models.</p>
+        <p>A deep dive into the specific classes that caused the most misclassifications, extracted directly from our test predictions.</p>
 
         <div style="display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 1.5rem;">
             <div style="flex: 1; min-width: 300px; background: #fff; padding: 0.5rem; text-align: center; border-radius: 8px; border: 1px solid #ccc;">
@@ -117,17 +113,45 @@
             </div>
         </div>
 
-        <ul style="margin-top: 1.5rem; font-size: 0.95rem; color: #444; line-height: 1.6;">
-            <li><strong>The "Clutter" Effect:</strong> In both matrices, there is a distinct horizontal banding pattern at the very bottom. This represents the <code>257.clutter</code> class. Because this class consists of random background noise and unstructured objects, both models frequently misclassified a wide variety of normal objects as "clutter."</li>
-            <li><strong>Top Confusion Pairs:</strong> <i>(Lưu ý: Thay thế đoạn này bằng kết quả thực tế từ script Python `print_top_confusions` mà bạn vừa chạy trên Colab)</i>. Models frequently confused visually similar structural classes (e.g., distinguishing between specific types of dogs or cars).</li>
+        <h4 style="margin-top: 2.5rem; font-size: 1.1rem; border-bottom: 1px solid #eee; padding-bottom: 0.5rem;">Top 5 Misclassification Pairs</h4>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin-top: 1.5rem;">
+            
+            <div style="background: #fffaf0; padding: 1.5rem; border-radius: 8px; border-left: 4px solid #f59e0b;">
+                <h5 style="color: #b45309; margin-bottom: 1rem; font-size: 1.05rem;">ResNet50 (CNN) Errors</h5>
+                <ul style="font-size: 0.9rem; color: #444; line-height: 1.8;">
+                    <li><code>sneaker</code> &rarr; <code>tennis-shoes</code> (11 times)</li>
+                    <li><code>fighter-jet</code> &rarr; <code>airplanes-101</code> (6 times)</li>
+                    <li><code>baseball-bat</code> &rarr; <code>tweezer</code> (4 times)</li>
+                    <li><code>t-shirt</code> &rarr; <code>people</code> (4 times)</li>
+                    <li><code>theodolite</code> &rarr; <code>microscope</code> (3 times)</li>
+                </ul>
+            </div>
+
+            <div style="background: #f0f9ff; padding: 1.5rem; border-radius: 8px; border-left: 4px solid #38bdf8;">
+                <h5 style="color: #0369a1; margin-bottom: 1rem; font-size: 1.05rem;">ViT-Base/16 (Transformer) Errors</h5>
+                <ul style="font-size: 0.9rem; color: #444; line-height: 1.8;">
+                    <li><code>sneaker</code> &rarr; <code>tennis-shoes</code> (7 times)</li>
+                    <li><code>microscope</code> &rarr; <code>lathe</code> (5 times)</li>
+                    <li><code>tennis-shoes</code> &rarr; <code>sneaker</code> (5 times)</li>
+                    <li><code>tuning-fork</code> &rarr; <code>tweezer</code> (5 times)</li>
+                    <li><code>teapot</code> &rarr; <code>ewer-101</code> (4 times)</li>
+                </ul>
+            </div>
+        </div>
+
+        <h4 style="margin-top: 2.5rem; font-size: 1.1rem; border-bottom: 1px solid #eee; padding-bottom: 0.5rem;">Key Insights from Error Data</h4>
+        <ul style="margin-top: 1rem; font-size: 0.95rem; color: #444; line-height: 1.6;">
+            <li><strong>Semantic & Visual Overlap:</strong> The most frequent error across both models was confusing <code>sneaker</code> with <code>tennis-shoes</code>. This indicates a dataset limitation rather than a model failure, as the visual features defining these two classes are nearly identical. Similar logic applies to ResNet confusing <code>fighter-jet</code> with general <code>airplanes</code>.</li>
+            <li><strong>Contextual Bias in CNNs:</strong> ResNet50 misclassifying a <code>t-shirt</code> as <code>people</code> reveals a classic CNN flaw. Because t-shirts are typically worn by humans in the dataset, the CNN learned the surrounding context (faces, arms) rather than isolating the object itself.</li>
+            <li><strong>Shape Distraction in ViT:</strong> Vision Transformers process images globally. This caused ViT to confuse objects with similar overall silhouettes and metallic textures, such as mistaking a <code>tuning-fork</code> for a <code>tweezer</code>, or a <code>microscope</code> for a <code>lathe</code>.</li>
         </ul>
       </section>
 
       <section class="section report-grid" style="margin-top: 2rem;">
-        <article class="report-card" style="grid-column: 1 / -1; background-color: #fffbeb; border-color: #f59e0b;">
-          <h3 style="color: #b45309;">Final Verdict: The Triumph of Inductive Bias</h3>
-          <p style="margin-top: 0.5rem; color: #92400e; line-height: 1.6;">
-            Contrary to the general trend where Transformers dominate deep learning tasks, our empirical tracking proves that <strong>ResNet50 is the superior architecture for the Caltech-256 dataset.</strong> It achieved higher accuracy (~88.5%), lower loss, and faster inference times. This serves as a powerful reminder that for medium-sized datasets, the built-in spatial assumptions (inductive biases) of Convolutional Neural Networks are incredibly effective, making ResNet50 our final selected backbone for this Image classification task.
+        <article class="report-card" style="grid-column: 1 / -1; background-color: #f0fdf4; border-color: #2ea44f;">
+          <h3 style="color: #166534;">Final Verdict: The Triumph of Inductive Bias</h3>
+          <p style="margin-top: 0.5rem; color: #15803d; line-height: 1.6;">
+            Contrary to the general trend where Transformers dominate deep learning tasks, our empirical tracking proves that <strong>ResNet50 is the superior architecture for the Caltech-256 dataset.</strong> It achieved higher accuracy (~88.5%), lower loss, and exhibited more predictable contextual errors compared to ViT. This serves as a powerful reminder that for medium-sized datasets, the built-in spatial assumptions (inductive biases) of Convolutional Neural Networks remain incredibly robust and sample-efficient.
           </p>
         </article>
       </section>
