@@ -11,6 +11,64 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="../../styles.css" />
+    
+    <style>
+      /* CSS riêng cho phần Interactive Pipeline */
+      .pipeline-container {
+          display: flex;
+          flex-wrap: wrap;
+          align-items: center;
+          justify-content: center;
+          gap: 10px;
+          margin: 2rem 0;
+      }
+      .flow-box {
+          background: #fff;
+          border: 2px solid #e2e8f0;
+          border-radius: 8px;
+          padding: 1rem;
+          text-align: center;
+          min-width: 120px;
+          box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+          font-size: 0.9rem;
+          font-weight: 600;
+          color: #333;
+      }
+      .flow-box.active-model {
+          border-color: #2ea44f;
+          background: #f0fdf4;
+      }
+      .arrow {
+          font-size: 1.5rem;
+          color: #94a3b8;
+          font-weight: bold;
+      }
+      .model-details {
+          background: #f8fafc;
+          border-left: 4px solid #2ea44f;
+          padding: 1rem;
+          border-radius: 4px;
+          margin-top: 1rem;
+          font-size: 0.9rem;
+          color: #475569;
+          min-height: 120px;
+      }
+      .toggle-btn {
+          padding: 0.5rem 1.5rem;
+          margin: 0 0.5rem;
+          border: 1px solid #ccc;
+          background: #fff;
+          border-radius: 20px;
+          cursor: pointer;
+          font-weight: 600;
+          transition: all 0.2s;
+      }
+      .toggle-btn.active {
+          background: #2ea44f;
+          color: white;
+          border-color: #2ea44f;
+      }
+    </style>
   </head>
   <body class="assignment-page">
     <div class="shell nav">
@@ -27,57 +85,162 @@
     <main class="shell assignment-layout">
       <header class="hero assignment-hero inner-hero">
         <p class="eyebrow">Assignment 1 / Image / Model Backbone</p>
-        <h1>Model Backbone</h1>
-        <p class="lead">Document architecture choices and explain why the selected backbone is suitable.</p>
+        <h1>Model Architecture</h1>
+        <p class="lead">Interactive exploration of the end-to-end training pipeline and backbone architectures.</p>
         <p class="crumbs"><a href="../../assignment-1/">Assignment 1</a> / <a href="./">Image</a> / Model Backbone</p>
       </header>
 
       <section class="section scope-panel">
-        <h2>Section Checklist</h2>
-        <table>
-          <thead>
-            <tr>
-              <th>Item</th>
-              <th>Expectation</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Goal</td>
-              <td>Explain what this section proves for the Image track.</td>
-            </tr>
-            <tr>
-              <td>Evidence</td>
-              <td>Provide tables, plots, or concise bullet findings that support claims.</td>
-            </tr>
-            <tr>
-              <td>Decision</td>
-              <td>State what this section implies for the next experiment step.</td>
-            </tr>
-          </tbody>
-        </table>
+        <div style="text-align: center; margin-bottom: 2rem;">
+            <button class="toggle-btn active" id="btn-resnet" onclick="switchModel('resnet')">CNN: ResNet50</button>
+            <button class="toggle-btn" id="btn-vit" onclick="switchModel('vit')">Transformer: ViT-B/16</button>
+        </div>
+
+        <h2>1. End-to-End Pipeline</h2>
+        
+        <div class="pipeline-container">
+            <div class="flow-box">Raw Data<br><span style="font-size:0.7rem; color:#666;">(Images)</span></div>
+            <div class="arrow">&rarr;</div>
+            <div class="flow-box">Preprocessing<br><span style="font-size:0.7rem; color:#666;">(Resize 256 &rarr; Crop 224)</span></div>
+            <div class="arrow">&rarr;</div>
+            <div class="flow-box active-model" id="model-box">
+                Model Backbone<br><span id="model-name" style="color: #2ea44f;">ResNet50</span>
+            </div>
+            <div class="arrow">&rarr;</div>
+            <div class="flow-box">Classifier Head<br><span style="font-size:0.7rem; color:#666;">(Linear Layer)</span></div>
+            <div class="arrow">&rarr;</div>
+            <div class="flow-box">Output<br><span style="font-size:0.7rem; color:#666;">(257 Class Logits)</span></div>
+        </div>
+
+        <div class="model-details" id="model-desc">
+            <strong>ResNet50 Internal Flow:</strong><br>
+            <ul style="margin-top: 0.5rem; padding-left: 1.5rem;">
+                <li><strong>Conv1 & MaxPool:</strong> Initial spatial downsampling (7x7 convolution).</li>
+                <li><strong>Layers 1 to 4:</strong> Stacked Bottleneck blocks with Residual Connections (Skip Connections) to solve the vanishing gradient problem.</li>
+                <li><strong>Global Average Pooling (GAP):</strong> Flattens the 7x7 spatial feature map into a 2048-dimensional feature vector.</li>
+            </ul>
+        </div>
       </section>
 
       <section class="section report-grid">
-        <article class="report-card">
-          <h3>Primary Findings</h3>
-          <ul>
-            <li>Top signal to watch for this section.</li>
-            <li>Main comparison point across baseline and advanced setting.</li>
-            <li>Potential risk or blind spot requiring follow-up.</li>
-          </ul>
+        <article class="report-card" style="grid-column: 1 / -1;">
+          <h3>2. Technical Specifications</h3>
+          <div style="overflow-x: auto; margin-top: 1rem;">
+            <table style="width: 100%; border-collapse: collapse; text-align: left;">
+              <thead>
+                  <tr style="background-color: #f8f9fa; border-bottom: 2px solid #333;">
+                  <th style="padding: 1rem;">Specification</th>
+                  <th style="padding: 1rem;">Details</th>
+                  </tr>
+              </thead>
+              <tbody id="specs-body">
+                  </tbody>
+            </table>
+          </div>
         </article>
-        <article class="report-card">
-          <h3>Actionable Next Step</h3>
-          <ul>
-            <li>One concrete improvement to test next.</li>
-            <li>Expected impact and acceptance threshold.</li>
-            <li>How results will be validated for reproducibility.</li>
-          </ul>
+      </section>
+
+      <section class="section report-grid">
+        <article class="report-card" style="grid-column: 1 / -1;">
+          <h3>3. Learning Mechanism: Local Features vs. Global Context</h3>
+          <p>A fundamental difference exists in how these two architectures process spatial information and build representations from raw pixels.</p>
+          
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-top: 1.5rem;">
+            
+            <div style="background: #f0f4ff; padding: 1.5rem; border-radius: 8px; border-top: 4px solid #3b82f6;">
+                <h4 style="font-size: 1.1rem; margin-bottom: 1rem; color: #1e40af;">Convolutional Neural Network (CNN)</h4>
+                <ul style="font-size: 0.95rem; color: #444; line-height: 1.6; padding-left: 1.2rem;">
+                    <li><strong>Local Receptive Fields:</strong> Employs sliding convolutional filters (e.g., 3x3) to capture local spatial correlations such as edges, corners, and textures.</li>
+                    <li><strong>Hierarchical Abstraction:</strong> Progressively builds representations. Early layers "see" local patterns, while deeper layers combine them into full semantic objects through pooling.</li>
+                    <li><strong>High Inductive Bias:</strong> Inherently assumes that pixels close to each other are related (spatial locality) and that objects can appear anywhere in the image (translation invariance). This makes CNNs highly sample-efficient on smaller datasets.</li>
+                </ul>
+            </div>
+
+            <div style="background: #f5f3ff; padding: 1.5rem; border-radius: 8px; border-top: 4px solid #8b5cf6;">
+                <h4 style="font-size: 1.1rem; margin-bottom: 1rem; color: #5b21b6;">Vision Transformer (ViT)</h4>
+                <ul style="font-size: 0.95rem; color: #444; line-height: 1.6; padding-left: 1.2rem;">
+                    <li><strong>Global Self-Attention:</strong> Treats the image as a sequence of flattened 16x16 patches. Every patch calculates its relationship (attention score) with every other patch from the very first layer.</li>
+                    <li><strong>Contextual Understanding:</strong> Capable of capturing long-range dependencies and global context immediately, rather than waiting for deep layers to pool features together.</li>
+                    <li><strong>Low Inductive Bias:</strong> Has no built-in assumption about translation invariance or spatial locality. It must learn these spatial properties entirely from data, making it inherently "data-hungry" and heavily reliant on large-scale pre-training.</li>
+                </ul>
+            </div>
+
+          </div>
         </article>
       </section>
 
       <p class="footer"><a href="./">Back to Image Track</a></p>
     </main>
+
+    <script>
+        const resnetData = {
+            name: "ResNet50",
+            desc: `<strong>ResNet50 Internal Flow (CNN):</strong><br>
+                   <ul style="margin-top: 0.5rem; padding-left: 1.5rem;">
+                       <li><strong>Conv1 & MaxPool:</strong> Initial spatial downsampling (7x7 convolution).</li>
+                       <li><strong>Layers 1 to 4:</strong> Stacked Bottleneck blocks with Residual Connections to solve the vanishing gradient problem.</li>
+                       <li><strong>Global Average Pooling (GAP):</strong> Flattens the 7x7 spatial feature map into a 2048-dimensional vector, ready for the Classifier Head.</li>
+                   </ul>`,
+            specs: [
+                ["Architecture Paradigm", "Convolutional Neural Network (Local Receptive Fields)"],
+                ["Total Parameters", "~25.6 Million"],
+                ["Computational Cost (FLOPs)", "~4.1 GFLOPs"],
+                ["Inductive Bias", "High (Translation invariance & local feature extraction)"],
+                ["Pre-trained Weights", "ImageNet-1K (IMAGENET1K_V2)"]
+            ]
+        };
+
+        const vitData = {
+            name: "ViT-B/16",
+            desc: `<strong>Vision Transformer Internal Flow (Attention):</strong><br>
+                   <ul style="margin-top: 0.5rem; padding-left: 1.5rem;">
+                       <li><strong>Patch Extraction:</strong> Splits the 224x224 image into 16x16 flattened patches.</li>
+                       <li><strong>Linear Projection & Positional Encoding:</strong> Maps patches to vectors and adds position info so the model knows where each patch belongs.</li>
+                       <li><strong>Transformer Encoder (x12):</strong> Multi-Head Self-Attention layers that learn global relationships across all patches simultaneously.</li>
+                       <li><strong>CLS Token:</strong> A special token prepended to the sequence that aggregates the final global image representation for the Classifier Head.</li>
+                   </ul>`,
+            specs: [
+                ["Architecture Paradigm", "Transformer (Global Self-Attention)"],
+                ["Total Parameters", "~86.6 Million (Over 3x larger than ResNet50)"],
+                ["Computational Cost (FLOPs)", "~17.6 GFLOPs"],
+                ["Inductive Bias", "Low (Data-hungry, treats images as sequence of tokens)"],
+                ["Pre-trained Weights", "ImageNet-1K (IMAGENET1K_V1)"]
+            ]
+        };
+
+        function renderSpecs(dataArray) {
+            const tbody = document.getElementById('specs-body');
+            tbody.innerHTML = '';
+            dataArray.forEach(row => {
+                tbody.innerHTML += `
+                    <tr style="border-bottom: 1px solid #eee;">
+                        <td style="padding: 1rem; font-weight: 600;">${row[0]}</td>
+                        <td style="padding: 1rem;">${row[1]}</td>
+                    </tr>
+                `;
+            });
+        }
+
+        function switchModel(modelType) {
+            // Đổi màu nút
+            document.getElementById('btn-resnet').classList.remove('active');
+            document.getElementById('btn-vit').classList.remove('active');
+            document.getElementById('btn-' + modelType).classList.add('active');
+
+            const data = modelType === 'resnet' ? resnetData : vitData;
+
+            // Cập nhật tên trong sơ đồ
+            document.getElementById('model-name').innerText = data.name;
+            
+            // Cập nhật mô tả nội bộ
+            document.getElementById('model-desc').innerHTML = data.desc;
+
+            // Cập nhật bảng Specs
+            renderSpecs(data.specs);
+        }
+
+        // Render mặc định ban đầu là ResNet
+        switchModel('resnet');
+    </script>
   </body>
 </html>
