@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import json
+import math
+import re
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Dict, List, Sequence, Tuple
@@ -13,9 +15,11 @@ from PIL import Image
 try:
     import torch
     from torch import nn
+    import torch.nn.functional as F
 except ModuleNotFoundError:
     torch = None
     nn = None
+    F = None
 
 from transformers import AutoProcessor, CLIPModel
 
@@ -33,6 +37,7 @@ TEXT_ROOT = ASSIGNMENT_ROOT / "text"
 MULTIMODAL_ROOT = ASSIGNMENT_ROOT / "multimodal"
 
 IMAGE_RUNS_ROOT = ASSIGNMENT_ROOT / "run" / "runs_caltech256"
+TEXT_RUNS_ROOT = ASSIGNMENT_ROOT / "run" / "runs_20NewsGroup"
 PRIMARY_RUNS_ROOT = ASSIGNMENT_ROOT / "run" / "runs_food101_clip"
 FALLBACK_RUNS_ROOT = MULTIMODAL_ROOT / "artifacts" / "runs_food101_clip"
 DEFAULT_PROMPT_TEMPLATES = ("a photo of {}.",)
@@ -71,6 +76,26 @@ def _display_image_if_exists(path: Path, caption: str, use_container_width: bool
     image = _load_image(path)
     if image is not None:
         st.image(image, caption=caption, use_container_width=use_container_width)
+
+
+def _is_lfs_pointer(path: Path) -> bool:
+    if not path.exists() or path.stat().st_size > 1024:
+        return False
+    try:
+        head = path.read_text(encoding="utf-8")
+    except UnicodeDecodeError:
+        return False
+    return head.startswith("version https://git-lfs.github.com/spec/v1")
+
+
+def _format_file_size(num_bytes: int) -> str:
+    size = float(num_bytes)
+    for unit in ["B", "KB", "MB", "GB", "TB"]:
+        if size < 1024.0 or unit == "TB":
+            if unit == "B":
+                return f"{int(size)} {unit}"
+            return f"{size:.1f} {unit}"
+        size /= 1024.0
 
 
 def _image_transform():
@@ -513,7 +538,7 @@ def _render_image_tab() -> None:
 
 def _render_text_tab() -> None:
     st.subheader("Text Classification")
-    st.caption("Text experiment artifacts packaged with the repository.")
+    st.caption("20 Newsgroups experiment assets and checkpoint status from the shared run folder.")
 
     plots = [
         ("EDA plots", TEXT_ROOT / "artifacts" / "eda_plots.png"),
@@ -528,10 +553,52 @@ def _render_text_tab() -> None:
         with left if index % 2 == 0 else right:
             _display_image_if_exists(path, caption)
 
-    st.info(
-        "The repository includes report-ready plots for the text track, but no serialized text model "
-        "checkpoint is currently packaged for cloud inference."
-    )
+    st.markdown("### Run Folder")
+    st.caption(f"Using text run root: `{TEXT_RUNS_ROOT}`")
+
+    checkpoints = [
+        ("Transformer", TEXT_RUNS_ROOT / "transformer_gpu_safe.pt"),
+        ("RNN (Bi-GRU)", TEXT_RUNS_ROOT / "rnn_gpu_safe.pt"),
+        ("Ensemble", TEXT_RUNS_ROOT / "ensemble.pt"),
+    ]
+
+    status_cols = st.columns(3)
+    lfs_missing = False
+    missing = False
+    for index, (label, path) in enumerate(checkpoints):
+        with status_cols[index]:
+            st.markdown(f"**{label}**")
+            if not path.exists():
+                missing = True
+                st.error("Missing checkpoint")
+                continue
+            if _is_lfs_pointer(path):
+                lfs_missing = True
+                pointer_text = path.read_text(encoding="utf-8").splitlines()
+                size_line = next((line for line in pointer_text if line.startswith("size ")), "")
+                size_value = size_line.split(" ", maxsplit=1)[1] if size_line else "unknown"
+                st.warning("Git LFS pointer only")
+                st.caption(f"Expected object size: {size_value} bytes")
+            else:
+                st.success("Checkpoint available")
+                st.caption(f"Local size: {_format_file_size(path.stat().st_size)}")
+
+    if lfs_missing:
+        st.info(
+            "The app now reads text checkpoints from `assignments/assignment1/run/runs_20NewsGroup`, "
+            "but the current files are Git LFS pointers, not actual model binaries. Pull the LFS objects "
+            "before enabling live text inference."
+        )
+    elif missing:
+        st.info(
+            "The text tab is configured to use `assignments/assignment1/run/runs_20NewsGroup`, "
+            "but one or more expected checkpoint files are missing."
+        )
+    else:
+        st.success(
+            "Text checkpoints are present in `assignments/assignment1/run/runs_20NewsGroup`. "
+            "The unified app is now pointed at that run folder."
+        )
 
 
 def _render_multimodal_results(run: RunInfo, shots: int) -> None:
