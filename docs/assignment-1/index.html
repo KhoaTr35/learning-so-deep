@@ -26,171 +26,175 @@
 
     <main class="shell assignment-layout">
       <header class="hero assignment-hero">
-        <p class="eyebrow">Assignment 1</p>
-        <h1>Classification</h1>
-        <p class="lead">
-          Report basic classification results between baseline and advanced methods across three tracks: image, text, and multimodal. Deep dive into error analysis and suggest next steps for improvement.
-        </p>
-        <div class="hero-notes">
-          <p><span>Text Classification</span>RNN vs Transformer</p>
-          <p><span>Image Classification</span>CNN vs Vision Transformer</p>
-          <p><span>Multimodal Classification</span>Zero-shot vs Few-shot</p>
+        <div class="a1-hero-grid">
+          <div class="a1-hero-copy">
+            <p class="eyebrow">Assignment 1</p>
+            <h1>Three classification tracks, one workspace.</h1>
+            <p class="lead">
+              Assignment 1 compares baseline and advanced methods across image, text, and
+              multimodal settings, with emphasis on dataset understanding, model design,
+              and evaluation quality.
+            </p>
+            <div class="hero-notes">
+              <p><span>Image</span>ResNet50 vs ViT on Caltech-256</p>
+              <p><span>Text</span>LSTM vs Transformer encoder</p>
+              <p><span>Multimodal</span>Zero-shot CLIP vs few-shot adaptation</p>
+            </div>
+          </div>
+
+          <aside class="a1-hero-panel">
+            <p class="a1-panel-kicker">At a Glance</p>
+            <div class="a1-mini-metrics">
+              <article>
+                <strong>3</strong>
+                <span>Tracks</span>
+              </article>
+              <article>
+                <strong>2</strong>
+                <span>Model tiers</span>
+              </article>
+              <article>
+                <strong>1</strong>
+                <span>Unified report flow</span>
+              </article>
+            </div>
+            <p class="a1-panel-copy">
+              Use the links below to jump into the presentation, product demo, and deployed
+              Streamlit application.
+            </p>
+          </aside>
         </div>
       </header>
 
+      <section class="section a1-link-hub" aria-label="Assignment 1 external links">
+        <div class="a1-link-head">
+          <h2>Presentation and Demo Links</h2>
+          <p>Replace the placeholder URLs below with your final public links.</p>
+        </div>
+        <div class="a1-link-grid">
+          <article class="a1-link-card">
+            <p class="track-chip">Video</p>
+            <h3>YouTube Presentation</h3>
+            <p>Full walkthrough of the assignment structure, decisions, and results.</p>
+            <a class="track-link" href="https://example.com/assignment1-presentation" target="_blank" rel="noreferrer">
+              Open Presentation
+            </a>
+            <span class="a1-link-note">Update this URL before publishing.</span>
+          </article>
+          <article class="a1-link-card">
+            <p class="track-chip">Video</p>
+            <h3>YouTube Demo</h3>
+            <p>Recorded demo of the application and experiment outputs in action.</p>
+            <a class="track-link" href="https://example.com/assignment1-demo" target="_blank" rel="noreferrer">
+              Open Demo
+            </a>
+            <span class="a1-link-note">Update this URL before publishing.</span>
+          </article>
+          <article class="a1-link-card a1-link-card-featured">
+            <p class="track-chip">App</p>
+            <h3>Streamlit Application</h3>
+            <p>Unified Assignment 1 app with image, text, and multimodal experiment views.</p>
+            <a class="track-link" href="https://example.com/assignment1-streamlit" target="_blank" rel="noreferrer">
+              Open Streamlit App
+            </a>
+            <span class="a1-link-note">Update this URL before publishing.</span>
+          </article>
+        </div>
+      </section>
+
       <section class="section track-router" aria-label="Assignment 1 track navigation">
         <div class="track-router-head">
-          <h2>Choose Track</h2>
-          <p>Open one track and continue to dataset EDA, backbone, methodology, and evaluation pages.</p>
+          <h2>Track Pages</h2>
+          <p>Open a track to review dataset EDA, model backbone, methodology, and evaluation pages.</p>
         </div>
         <div class="track-grid">
           <article class="track-card">
-            <p class="track-chip">Track</p>
-            <h3>Text</h3>
-            <p>LSTM baseline versus Transformer encoder with class-level recall focus.</p>
-            <a class="track-link" href="./text/">Open Text Pages</a>
-          </article>
-          <article class="track-card">
-            <p class="track-chip">Track</p>
-            <h3>Image</h3>
-            <p>CNN baseline versus Vision Transformer with confusion matrix stability checks.</p>
+            <p class="track-chip">Track 01</p>
+            <h3>Image Classification</h3>
+            <p>Caltech-256 benchmark comparing ResNet50 and Vision Transformer behavior.</p>
             <a class="track-link" href="./image/">Open Image Pages</a>
           </article>
           <article class="track-card">
-            <p class="track-chip">Track</p>
-            <h3>Multimodal</h3>
-            <p>Fusion baselines versus zero/few-shot strategies with efficiency constraints.</p>
+            <p class="track-chip">Track 02</p>
+            <h3>Text Classification</h3>
+            <p>Sequence modeling study contrasting LSTM baselines with transformer encoders.</p>
+            <a class="track-link" href="./text/">Open Text Pages</a>
+          </article>
+          <article class="track-card">
+            <p class="track-chip">Track 03</p>
+            <h3>Multimodal Classification</h3>
+            <p>CLIP-based zero-shot and few-shot experiments with report-driven error analysis.</p>
             <a class="track-link" href="./multimodal/">Open Multimodal Pages</a>
           </article>
         </div>
       </section>
 
+      <section class="section a1-focus-grid">
+        <article class="a1-focus-card">
+          <p class="a1-focus-kicker">Method Frame</p>
+          <h3>Baseline vs advanced architecture comparison</h3>
+          <p>Each track compares a conventional baseline against a more expressive model family.</p>
+        </article>
+        <article class="a1-focus-card">
+          <p class="a1-focus-kicker">Evaluation Frame</p>
+          <h3>Metric quality and failure visibility</h3>
+          <p>Results are not limited to one score. The report surfaces class-level behavior and confusion structure.</p>
+        </article>
+        <article class="a1-focus-card">
+          <p class="a1-focus-kicker">Delivery Frame</p>
+          <h3>Pages, artifacts, and application demo</h3>
+          <p>The assignment combines static report pages with an interactive Streamlit experience.</p>
+        </article>
+      </section>
+
       <section class="section scope-panel">
-        <h2>Scope and Targets</h2>
+        <h2>Assignment Focus</h2>
         <table>
           <thead>
             <tr>
               <th>Track</th>
               <th>Baseline</th>
               <th>Advanced</th>
-              <th>Success Condition</th>
+              <th>Main Review Lens</th>
             </tr>
           </thead>
           <tbody>
             <tr>
               <td>Image</td>
-              <td>CNN</td>
+              <td>ResNet50</td>
               <td>Vision Transformer</td>
-              <td>+2% weighted F1 with stable confusion matrix.</td>
+              <td>Representation quality, class separation, and confusion stability.</td>
             </tr>
             <tr>
               <td>Text</td>
               <td>LSTM</td>
               <td>Transformer Encoder</td>
-              <td>Higher recall on minority classes at same latency budget.</td>
+              <td>Sequence understanding, minority-class behavior, and recall trade-offs.</td>
             </tr>
             <tr>
               <td>Multimodal</td>
-              <td>Late Fusion</td>
-              <td>Zero-shot / Few-shot</td>
-              <td>Best top-1 while keeping inference cost explainable.</td>
+              <td>Zero-shot CLIP</td>
+              <td>Few-shot adaptation</td>
+              <td>Data efficiency, prompt sensitivity, and practical inference quality.</td>
             </tr>
           </tbody>
         </table>
       </section>
 
-      <section class="section kpi-strip">
-        <article class="kpi-card">
-          <p class="kpi-label">Core Metrics</p>
-          <h3>Accuracy, Precision, Recall, F1</h3>
-          <p>Report macro and weighted variants to avoid class-imbalance blind spots.</p>
-        </article>
-        <article class="kpi-card">
-          <p class="kpi-label">Efficiency</p>
-          <h3>Latency + Model Size</h3>
-          <p>Add milliseconds/sample and parameter counts for deployment realism.</p>
-        </article>
-        <article class="kpi-card">
-          <p class="kpi-label">Reliability</p>
-          <h3>Error Pattern Stability</h3>
-          <p>Track per-class drift and confidence calibration under each setting.</p>
-        </article>
-      </section>
-
-      <section class="section report-grid">
-        <article class="report-card">
-          <h3>1. Problem Statement</h3>
-          <ul>
-            <li>Define objective, target users, and failure cost.</li>
-            <li>Set one primary metric and two guardrail metrics.</li>
-            <li>Declare compute and data constraints before training.</li>
-          </ul>
-        </article>
-        <article class="report-card">
-          <h3>2. Dataset Card</h3>
-          <ul>
-            <li>Source, licenses, split ratios, and label distribution snapshot.</li>
-            <li>Known bias and domain shift risk notes.</li>
-            <li>Preprocessing pipeline and augmentation policy.</li>
-          </ul>
-        </article>
-        <article class="report-card">
-          <h3>3. Hypothesis Matrix</h3>
-          <ul>
-            <li>H1: architecture effect</li>
-            <li>H2: optimization/setup effect</li>
-            <li>H3: data regime effect (zero/few/full shot)</li>
-          </ul>
-        </article>
-        <article class="report-card">
-          <h3>4. Experiment Registry</h3>
-          <ul>
-            <li>Run ID, model variant, seed, and hyperparameters.</li>
-            <li>Training time, checkpoint path, and commit hash.</li>
-            <li>Reason for each change against previous run.</li>
-          </ul>
-        </article>
-        <article class="report-card">
-          <h3>5. Results Dashboard</h3>
-          <ul>
-            <li>Metric table + confidence intervals where available.</li>
-            <li>Confusion matrix comparison across key settings.</li>
-            <li>Top wins, top regressions, and practical impact.</li>
-          </ul>
-        </article>
-        <article class="report-card">
-          <h3>6. Error Analysis</h3>
-          <ul>
-            <li>Hard examples grouped by failure type.</li>
-            <li>False positive vs. false negative impact analysis.</li>
-            <li>Prompt/model sensitivity with brief ablations.</li>
-          </ul>
-        </article>
-      </section>
-
       <section class="section executive">
-        <h2>Executive Summary Template</h2>
+        <h2>Navigation Guide</h2>
         <div class="summary-grid">
           <div class="summary-block">
-            <h4>What changed?</h4>
-            <p>
-              Advanced model improved weighted F1 by <strong>__%</strong> over baseline,
-              primarily on classes: <strong>__</strong>.
-            </p>
+            <h4>1. Start with the report page</h4>
+            <p>Use this page as the entry point to understand the scope and choose a track.</p>
           </div>
           <div class="summary-block">
-            <h4>Why it changed?</h4>
-            <p>
-              Improvement is most associated with <strong>architecture / prompt /
-              optimization</strong>, while main residual error is <strong>__</strong>.
-            </p>
+            <h4>2. Open the track details</h4>
+            <p>Each track page continues into EDA, backbone, methodology, and results sections.</p>
           </div>
           <div class="summary-block">
-            <h4>What is next?</h4>
-            <p>
-              Prioritize calibration, hard-sample mining, and one focused ablation:
-              <strong>__</strong>.
-            </p>
+            <h4>3. Open the app and video links</h4>
+            <p>Use the external links section for presentation, demo, and deployed application access.</p>
           </div>
         </div>
       </section>

@@ -359,6 +359,65 @@ body.assignment-page.assignment-3-page {
   padding-top: 58px;
 }
 
+.a1-hero-grid {
+  display: grid;
+  grid-template-columns: 1.25fr 0.75fr;
+  gap: 18px;
+  align-items: start;
+}
+
+.a1-hero-panel {
+  border: 1px solid var(--a1-line);
+  border-radius: 22px;
+  padding: 20px;
+  background:
+    linear-gradient(155deg, rgba(255, 255, 255, 0.92), rgba(242, 239, 232, 0.88)),
+    radial-gradient(circle at top right, rgba(35, 63, 93, 0.12), transparent 45%);
+  box-shadow: var(--a1-shadow);
+}
+
+.a1-panel-kicker,
+.a1-focus-kicker {
+  margin: 0 0 10px;
+  font-size: 0.76rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(31, 32, 34, 0.56);
+}
+
+.a1-panel-copy {
+  margin: 14px 0 0;
+  color: var(--a1-muted);
+}
+
+.a1-mini-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.a1-mini-metrics article {
+  padding: 14px 12px;
+  border-radius: 16px;
+  border: 1px solid rgba(24, 31, 38, 0.08);
+  background: rgba(255, 255, 255, 0.7);
+}
+
+.a1-mini-metrics strong {
+  display: block;
+  font-family: "Newsreader", Georgia, serif;
+  font-size: 2rem;
+  line-height: 1;
+  letter-spacing: -0.04em;
+}
+
+.a1-mini-metrics span {
+  display: block;
+  margin-top: 6px;
+  color: var(--a1-muted);
+  font-size: 0.86rem;
+}
+
 .assignment-page .eyebrow {
   color: rgba(31, 32, 34, 0.6);
   letter-spacing: 0.14em;
@@ -432,6 +491,74 @@ body.assignment-page.assignment-3-page {
   padding: 22px;
   background: linear-gradient(145deg, rgba(252, 251, 248, 0.96), rgba(245, 243, 238, 0.96));
   box-shadow: var(--a1-shadow);
+}
+
+.a1-link-hub {
+  margin-top: 12px;
+  border: 1px solid var(--a1-line);
+  border-radius: 24px;
+  padding: 22px;
+  background:
+    linear-gradient(150deg, rgba(252, 251, 248, 0.98), rgba(241, 238, 231, 0.96));
+  box-shadow: var(--a1-shadow);
+}
+
+.a1-link-head p {
+  margin: -4px 0 0;
+  color: var(--a1-muted);
+}
+
+.a1-link-grid,
+.a1-focus-grid {
+  display: grid;
+  gap: 12px;
+}
+
+.a1-link-grid {
+  margin-top: 14px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.a1-link-card,
+.a1-focus-card {
+  border: 1px solid var(--a1-line);
+  border-radius: 18px;
+  padding: 18px;
+  background: rgba(255, 255, 255, 0.76);
+  box-shadow: var(--a1-shadow);
+}
+
+.a1-link-card h3,
+.a1-focus-card h3 {
+  margin: 0 0 8px;
+  letter-spacing: -0.015em;
+}
+
+.a1-link-card p,
+.a1-focus-card p {
+  margin: 0;
+  color: var(--a1-muted);
+}
+
+.a1-link-card .track-link {
+  margin-top: 16px;
+}
+
+.a1-link-card-featured {
+  background:
+    linear-gradient(150deg, rgba(35, 63, 93, 0.08), rgba(255, 255, 255, 0.88));
+}
+
+.a1-link-note {
+  display: inline-block;
+  margin-top: 10px;
+  color: rgba(31, 32, 34, 0.52);
+  font-size: 0.84rem;
+}
+
+.a1-focus-grid {
+  margin-top: 18px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
 .track-router-head p {
@@ -1275,6 +1402,9 @@ body.assignment-page.assignment-3-page {
 }
 
 @media (max-width: 980px) {
+  .a1-hero-grid,
+  .a1-link-grid,
+  .a1-focus-grid,
   .track-grid,
   .stage-grid,
   .kpi-strip,
@@ -1303,6 +1433,10 @@ body.assignment-page.assignment-3-page {
     min-width: 0;
     display: block;
     margin-bottom: 4px;
+  }
+
+  .a1-mini-metrics {
+    grid-template-columns: 1fr;
   }
 }
 
