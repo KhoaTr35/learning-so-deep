@@ -1,0 +1,15 @@
+streamlit
+transformers
+torch
+torchvision
+Pillow
+sentencepiece
+datasets
+scikit-learn
+matplotlib
+seaborn
+numpy
+pandas
+PyYAML
+python-dotenv
+wandb

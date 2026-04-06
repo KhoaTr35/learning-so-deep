@@ -152,5 +152,5 @@ assignments/assignment1/multimodal/artifacts/embeddings_food101_clip/
 assignments/assignment1/multimodal/artifacts/runs_food101_clip/
 
 # Model checkpoints
-*.pt
-*.pth
+# *.pt
+# *.pth

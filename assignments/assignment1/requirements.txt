@@ -1,6 +1,7 @@
 streamlit
 transformers
 torch
+torchvision
 Pillow
 sentencepiece
 datasets

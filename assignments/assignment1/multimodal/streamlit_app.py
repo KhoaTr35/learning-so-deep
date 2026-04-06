@@ -5,34 +5,87 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Dict, List, Sequence, Tuple
 
+import pandas as pd
 import streamlit as st
-import torch
+import yaml
 from PIL import Image
-from torch import nn
+
+try:
+    import torch
+    from torch import nn
+except ModuleNotFoundError:
+    torch = None
+    nn = None
+
 from transformers import AutoProcessor, CLIPModel
 
 
-DEFAULT_OUTPUT_ROOT = (
-    Path(__file__).resolve().parent
-    / "notebooks"
-    / "output"
-    / "clip-vit-base-patch32"
-)
-DEFAULT_SHOT_OPTIONS = tuple(range(8, 129, 8))
+REPO_ROOT = Path(__file__).resolve().parents[3]
+ASSIGNMENT_ROOT = Path(__file__).resolve().parents[1]
+IMAGE_ROOT = ASSIGNMENT_ROOT / "image"
+TEXT_ROOT = ASSIGNMENT_ROOT / "text"
+MULTIMODAL_ROOT = ASSIGNMENT_ROOT / "multimodal"
+
+PRIMARY_RUNS_ROOT = MULTIMODAL_ROOT / "run" / "runs_food101_clip"
+FALLBACK_RUNS_ROOT = MULTIMODAL_ROOT / "artifacts" / "runs_food101_clip"
+DEFAULT_PROMPT_TEMPLATES = ("a photo of {}.",)
 
 
 @dataclass(frozen=True)
 class RunInfo:
-    shots_per_class: int
+    label: str
+    model_dir: Path
     run_dir: Path
     model_id: str
     class_names: Tuple[str, ...]
     prompt_templates: Tuple[str, ...]
-    checkpoint_path: Path
+    shots_available: Tuple[int, ...]
 
 
 def _humanize(name: str) -> str:
-    return name.replace("_", " ")
+    return name.replace("_", " ").replace("-", " ")
+
+
+def _read_json(path: Path) -> dict:
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+def _read_yaml(path: Path) -> dict:
+    return yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+
+
+def _load_image(path: Path) -> Image.Image | None:
+    if not path.exists():
+        return None
+    return Image.open(path)
+
+
+def _display_image_if_exists(path: Path, caption: str, use_container_width: bool = True) -> None:
+    image = _load_image(path)
+    if image is not None:
+        st.image(image, caption=caption, use_container_width=use_container_width)
+
+
+def _list_prediction_examples(folder: Path, limit: int = 4) -> List[Path]:
+    if not folder.exists():
+        return []
+    return sorted(
+        [path for path in folder.iterdir() if path.is_file() and path.suffix.lower() in {".png", ".jpg", ".jpeg", ".webp"}]
+    )[:limit]
+
+
+def _resolve_device_label() -> str:
+    if torch is None:
+        return "unavailable"
+    if torch.cuda.is_available():
+        return "cuda"
+    if torch.backends.mps.is_available():
+        return "mps"
+    return "cpu"
+
+
+def _resolve_device() -> torch.device:
+    return torch.device(_resolve_device_label())
 
 
 def _extract_tensor(outputs: object) -> torch.Tensor:
@@ -43,51 +96,107 @@ def _extract_tensor(outputs: object) -> torch.Tensor:
     return outputs  # type: ignore[return-value]
 
 
-def _resolve_device() -> torch.device:
-    if torch.cuda.is_available():
-        return torch.device("cuda")
-    if torch.backends.mps.is_available():
-        return torch.device("mps")
-    return torch.device("cpu")
+def _load_run_metadata(run_dir: Path, model_dir: Path) -> RunInfo | None:
+    run_config_path = run_dir / "run_config.json"
+    if not run_config_path.exists():
+        return None
 
+    run_config = _read_json(run_config_path)
+    model_id = str(run_config.get("model_id", model_dir.name.replace("_", "/")))
 
-def _discover_runs(output_root: Path) -> Dict[int, RunInfo]:
-    latest_by_shot: Dict[int, RunInfo] = {}
-    if not output_root.exists():
-        return latest_by_shot
+    config_rel = run_config.get("config_path")
+    config: dict = {}
+    if config_rel:
+        config_path = REPO_ROOT / str(config_rel)
+        if config_path.exists():
+            config = _read_yaml(config_path)
 
-    for run_dir in sorted([p for p in output_root.iterdir() if p.is_dir()]):
-        config_path = run_dir / "config.json"
-        checkpoint_path = run_dir / "few_shot_linear_probe.pt"
-        if not config_path.exists() or not checkpoint_path.exists():
+    eval_summary_path = run_dir / "evaluation" / "summary.json"
+    eval_summary = _read_json(eval_summary_path) if eval_summary_path.exists() else {}
+
+    class_names = tuple(
+        eval_summary.get("class_names")
+        or config.get("dataset", {}).get("selected_classes", [])
+    )
+    prompt_templates = tuple(
+        config.get("prompts", {}).get("templates", DEFAULT_PROMPT_TEMPLATES)
+    )
+
+    shot_dirs: List[int] = []
+    for candidate in sorted(run_dir.glob("fewshot_*")):
+        if not candidate.is_dir():
             continue
+        checkpoint_path = candidate / "linear_probe" / "linear_probe.pt"
+        if checkpoint_path.exists():
+            try:
+                shot_dirs.append(int(candidate.name.split("_", maxsplit=1)[1]))
+            except (IndexError, ValueError):
+                continue
 
-        try:
-            config = json.loads(config_path.read_text(encoding="utf-8"))
-            shots = int(config["shots_per_class"])
-            model_id = str(config["model_id"])
-            class_names = tuple(config["class_names"])
-            prompt_templates = tuple(config.get("prompt_templates", ["a photo of {}."]))
-        except Exception:
-            continue
+    if not class_names:
+        return None
 
-        run = RunInfo(
-            shots_per_class=shots,
-            run_dir=run_dir,
-            model_id=model_id,
-            class_names=class_names,
-            prompt_templates=prompt_templates,
-            checkpoint_path=checkpoint_path,
-        )
-        prev = latest_by_shot.get(shots)
-        if prev is None or run_dir.name > prev.run_dir.name:
-            latest_by_shot[shots] = run
+    return RunInfo(
+        label=f"{model_dir.name} / {run_dir.name}",
+        model_dir=model_dir,
+        run_dir=run_dir,
+        model_id=model_id,
+        class_names=class_names,
+        prompt_templates=prompt_templates,
+        shots_available=tuple(shot_dirs),
+    )
 
-    return latest_by_shot
+
+def _default_runs_root() -> Path:
+    if PRIMARY_RUNS_ROOT.exists():
+        return PRIMARY_RUNS_ROOT
+    return FALLBACK_RUNS_ROOT
+
+
+def _resolve_run_asset(run: RunInfo, relative_path: str) -> Path:
+    primary = run.run_dir / relative_path
+    if primary.exists():
+        return primary
+
+    try:
+        suffix = run.run_dir.relative_to(PRIMARY_RUNS_ROOT)
+    except ValueError:
+        return primary
+
+    fallback = FALLBACK_RUNS_ROOT / suffix / relative_path
+    if fallback.exists():
+        return fallback
+    return primary
+
+
+def _discover_runs(runs_root: Path) -> Dict[str, RunInfo]:
+    runs: Dict[str, RunInfo] = {}
+    if not runs_root.exists():
+        return runs
+
+    for model_dir in sorted([path for path in runs_root.iterdir() if path.is_dir()]):
+        for run_dir in sorted([path for path in model_dir.iterdir() if path.is_dir()], reverse=True):
+            run_info = _load_run_metadata(run_dir, model_dir)
+            if run_info is not None:
+                runs[run_info.label] = run_info
+
+    return runs
+
+
+@st.cache_data(show_spinner=False)
+def _load_csv(path_str: str) -> pd.DataFrame:
+    return pd.read_csv(path_str)
+
+
+@st.cache_data(show_spinner=False)
+def _load_json_data(path_str: str) -> dict:
+    return _read_json(Path(path_str))
 
 
 @st.cache_resource(show_spinner=False)
 def _load_clip(model_id: str, device_str: str) -> Tuple[CLIPModel, AutoProcessor]:
+    if torch is None:
+        raise ModuleNotFoundError("torch")
     device = torch.device(device_str)
     processor = AutoProcessor.from_pretrained(model_id)
     model = CLIPModel.from_pretrained(model_id).to(device)
@@ -97,12 +206,15 @@ def _load_clip(model_id: str, device_str: str) -> Tuple[CLIPModel, AutoProcessor
 
 @st.cache_resource(show_spinner=False)
 def _load_linear_probe(checkpoint_path: str, device_str: str) -> Tuple[nn.Linear, dict]:
+    if torch is None or nn is None:
+        raise ModuleNotFoundError("torch")
     device = torch.device(device_str)
     checkpoint = torch.load(checkpoint_path, map_location="cpu")
-    feature_dim = int(checkpoint.get("feature_dim") or checkpoint.get("in_features"))
-    num_classes = int(checkpoint.get("num_classes") or len(checkpoint["class_names"]))
+    state_dict = checkpoint["state_dict"]
+    weight = state_dict["weight"]
+    num_classes, feature_dim = weight.shape
     probe = nn.Linear(feature_dim, num_classes)
-    probe.load_state_dict(checkpoint["state_dict"])
+    probe.load_state_dict(state_dict)
     probe = probe.to(device)
     probe.eval()
     return probe, checkpoint
@@ -115,6 +227,8 @@ def _build_zero_shot_text_features(
     prompt_templates: Tuple[str, ...],
     device_str: str,
 ) -> torch.Tensor:
+    if torch is None:
+        raise ModuleNotFoundError("torch")
     device = torch.device(device_str)
     model, processor = _load_clip(model_id, device_str)
     text_feature_batches: List[torch.Tensor] = []
@@ -128,7 +242,7 @@ def _build_zero_shot_text_features(
                 padding=True,
                 truncation=True,
             )
-            text_inputs = {k: v.to(device) for k, v in text_inputs.items()}
+            text_inputs = {key: value.to(device) for key, value in text_inputs.items()}
             text_outputs = model.get_text_features(**text_inputs)
             text_features = _extract_tensor(text_outputs)
             text_features = text_features / text_features.norm(dim=-1, keepdim=True)
@@ -139,14 +253,18 @@ def _build_zero_shot_text_features(
     return torch.stack(text_feature_batches, dim=0).to(device)
 
 
-def _predict_few_shot(
+def _predict_linear_probe(
     image: Image.Image,
     run: RunInfo,
+    shots: int,
     top_k: int,
     device: torch.device,
 ) -> List[Tuple[str, float]]:
+    if torch is None:
+        raise ModuleNotFoundError("torch")
+    checkpoint_path = run.run_dir / f"fewshot_{shots}" / "linear_probe" / "linear_probe.pt"
     model, processor = _load_clip(run.model_id, str(device))
-    probe, checkpoint = _load_linear_probe(str(run.checkpoint_path), str(device))
+    probe, checkpoint = _load_linear_probe(str(checkpoint_path), str(device))
     class_names = tuple(checkpoint.get("class_names", run.class_names))
 
     inputs = processor(images=image, return_tensors="pt")
@@ -159,7 +277,7 @@ def _predict_few_shot(
         probs = torch.softmax(logits, dim=-1).squeeze(0)
         values, indices = torch.topk(probs, k=min(top_k, probs.numel()))
 
-    return [(_humanize(class_names[i]), float(v)) for v, i in zip(values.tolist(), indices.tolist())]
+    return [(_humanize(class_names[index]), float(value)) for value, index in zip(values.tolist(), indices.tolist())]
 
 
 def _predict_zero_shot(
@@ -168,6 +286,8 @@ def _predict_zero_shot(
     top_k: int,
     device: torch.device,
 ) -> List[Tuple[str, float]]:
+    if torch is None:
+        raise ModuleNotFoundError("torch")
     model, processor = _load_clip(run.model_id, str(device))
     text_features = _build_zero_shot_text_features(
         run.model_id,
@@ -187,98 +307,235 @@ def _predict_zero_shot(
         probs = torch.softmax(logits, dim=-1).squeeze(0)
         values, indices = torch.topk(probs, k=min(top_k, probs.numel()))
 
-    return [(_humanize(run.class_names[i]), float(v)) for v, i in zip(values.tolist(), indices.tolist())]
+    return [(_humanize(run.class_names[index]), float(value)) for value, index in zip(values.tolist(), indices.tolist())]
 
 
-def main() -> None:
-    st.set_page_config(page_title="Multimodal Classifier Demo", layout="wide")
-    st.markdown("""
-        <style>
-        .main { background-color: #F5F5F7; }
-        .stButton>button { border-radius: 20px; border: 1px solid #d1d1d6; }
-        div.stProgress > div > div > div > div { background-color: #007AFF; }
-        h1, h2, h3 { font-family: 'Inter', sans-serif; font-weight: 600; color: #1D1D1F; }
-        </style>
-    """, unsafe_allow_html=True)
+def _render_prediction_table(predictions: Sequence[Tuple[str, float]]) -> None:
+    if not predictions:
+        return
+    frame = pd.DataFrame(predictions, columns=["class_name", "probability"])
+    frame["confidence_pct"] = (frame["probability"] * 100).round(2)
+    st.dataframe(
+        frame[["class_name", "confidence_pct"]],
+        use_container_width=True,
+        hide_index=True,
+    )
 
-    st.title("Food101 CLIP + Linear Probe Demo")
 
-    st.caption("Upload an image and compare Few-shot Linear Probe vs Zero-shot CLIP.")
+def _render_overview() -> None:
+    st.subheader("Assignment 1 Workspace")
+    st.write(
+        "This single deployment bundles the three Assignment 1 tracks into one interface. "
+        "Image and text sections expose experiment artifacts already stored in the repository, "
+        "while the multimodal section uses trained checkpoints from the run directory for live inference."
+    )
 
-    with st.sidebar:
-        st.header("Settings")
-        output_root = Path(
-            st.text_input("Output root", value=str(DEFAULT_OUTPUT_ROOT))
-        ).expanduser()
-        shot_option = st.select_slider(
-            "shots_per_class",
-            options=DEFAULT_SHOT_OPTIONS,
-            value=128,
+    col1, col2, col3 = st.columns(3)
+    col1.metric("Tracks", "3")
+    col2.metric("Live Inference", "Multimodal")
+    col3.metric("Multimodal Classes", "10")
+
+    st.markdown("### What is included")
+    st.write("- Image classification experiment dashboard")
+    st.write("- Text classification experiment dashboard")
+    st.write("- Multimodal results browser and predictor from saved runs")
+
+
+def _render_image_tab() -> None:
+    st.subheader("Image Classification")
+    st.caption("Caltech-256 experiment assets packaged with the repository.")
+
+    categories_path = IMAGE_ROOT / "artifacts" / "categories.txt"
+    if categories_path.exists():
+        class_count = len(categories_path.read_text(encoding="utf-8").splitlines())
+        st.metric("Tracked categories", class_count)
+
+    comparison_path = IMAGE_ROOT / "artifacts" / "Cmp_ResNet50_ViT.png"
+    class_dist_path = IMAGE_ROOT / "artifacts" / "class_distribution.png"
+    size_dist_path = IMAGE_ROOT / "artifacts" / "size_distribution.png"
+
+    col1, col2 = st.columns(2)
+    with col1:
+        _display_image_if_exists(comparison_path, "ResNet50 vs ViT comparison")
+        _display_image_if_exists(class_dist_path, "Class distribution")
+    with col2:
+        _display_image_if_exists(size_dist_path, "Image size distribution")
+        screenshot_examples = _list_prediction_examples(IMAGE_ROOT / "artifacts", limit=3)
+        for example in screenshot_examples:
+            if example.name.startswith("Screenshot"):
+                _display_image_if_exists(example, example.name)
+
+    model_weights = sorted(IMAGE_ROOT.glob("**/*.pth"))
+    if model_weights:
+        st.success("Model weight files detected. This tab can be extended for live image inference.")
+    else:
+        st.info(
+            "No deployable `.pth` checkpoints are tracked in the repository for the image app, "
+            "so this unified endpoint currently presents experiment artifacts only."
         )
-        top_k = st.slider("Top-k predictions", min_value=1, max_value=10, value=5)
 
-    runs_by_shot = _discover_runs(output_root)
-    available = sorted(runs_by_shot.keys())
-    if not available:
-        st.error(f"No valid run folders found under: {output_root}")
+
+def _render_text_tab() -> None:
+    st.subheader("Text Classification")
+    st.caption("Text experiment artifacts packaged with the repository.")
+
+    plots = [
+        ("EDA plots", TEXT_ROOT / "artifacts" / "eda_plots.png"),
+        ("Learning curves", TEXT_ROOT / "artifacts" / "learning_curves.png"),
+        ("F1 comparison", TEXT_ROOT / "artifacts" / "f1_comparison.png"),
+        ("ROC-AUC comparison", TEXT_ROOT / "artifacts" / "roc_auc_comparison.png"),
+        ("Confusion matrices", TEXT_ROOT / "artifacts" / "confusion_matrices.png"),
+    ]
+
+    left, right = st.columns(2)
+    for index, (caption, path) in enumerate(plots):
+        with left if index % 2 == 0 else right:
+            _display_image_if_exists(path, caption)
+
+    st.info(
+        "The repository includes report-ready plots for the text track, but no serialized text model "
+        "checkpoint is currently packaged for cloud inference."
+    )
+
+
+def _render_multimodal_results(run: RunInfo, shots: int) -> None:
+    summary_path = _resolve_run_asset(run, "summary.csv")
+    metrics_path = _resolve_run_asset(run, "evaluation/metrics_summary.csv")
+    top_failures_path = _resolve_run_asset(run, "evaluation/failed_cases/top_failures.csv")
+    confusion_zero = _resolve_run_asset(run, "evaluation/confusion_matrices/zero_shot.png")
+    confusion_linear = _resolve_run_asset(run, f"evaluation/confusion_matrices/linear_probe_{shots}.png")
+    confusion_coop = _resolve_run_asset(run, f"evaluation/confusion_matrices/coop_{shots}.png")
+    comparison_bar = _resolve_run_asset(run, "evaluation/plots/comparison_bar.png")
+
+    col1, col2, col3 = st.columns(3)
+    col1.metric("Model", run.model_dir.name)
+    col2.metric("Run", run.run_dir.name)
+    col3.metric("Available shots", ", ".join(str(shot) for shot in run.shots_available))
+
+    if summary_path.exists():
+        st.markdown("### Summary Metrics")
+        summary_df = _load_csv(str(summary_path))
+        st.dataframe(summary_df, use_container_width=True, hide_index=True)
+
+    if metrics_path.exists():
+        st.markdown("### Evaluation Table")
+        metrics_df = _load_csv(str(metrics_path))
+        st.dataframe(metrics_df, use_container_width=True, hide_index=True)
+
+    st.markdown("### Evaluation Visuals")
+    vis1, vis2 = st.columns(2)
+    with vis1:
+        _display_image_if_exists(comparison_bar, "Method comparison")
+        _display_image_if_exists(confusion_zero, "Zero-shot confusion matrix")
+    with vis2:
+        _display_image_if_exists(confusion_linear, f"Linear probe confusion matrix ({shots} shots)")
+        _display_image_if_exists(confusion_coop, f"CoOp confusion matrix ({shots} shots)")
+
+    if top_failures_path.exists():
+        st.markdown("### Top Failures")
+        top_failures_df = _load_csv(str(top_failures_path))
+        st.dataframe(top_failures_df, use_container_width=True, hide_index=True)
+
+    example_paths = _list_prediction_examples(_resolve_run_asset(run, "evaluation/saliency"), limit=5)
+    if example_paths:
+        st.markdown("### Saliency Examples")
+        cols = st.columns(min(3, len(example_paths)))
+        for index, path in enumerate(example_paths):
+            with cols[index % len(cols)]:
+                _display_image_if_exists(path, path.name, use_container_width=True)
+
+
+def _render_multimodal_predictor(run: RunInfo, shots: int) -> None:
+    st.markdown("### Live Prediction")
+
+    if torch is None:
+        st.error(
+            "PyTorch is not available in this environment. Deploy this app with Python 3.12 "
+            "and ensure the repository root `requirements.txt` is installed."
+        )
         return
 
-    st.info(f"Available checkpoints: {available}")
-    if shot_option not in runs_by_shot:
-        st.warning(
-            f"No checkpoint found for shots_per_class={shot_option}. "
-            f"Please choose one of: {available}"
-        )
-        return
+    method = st.radio(
+        "Inference method",
+        options=("linear_probe", "zero_shot"),
+        horizontal=True,
+    )
+    top_k = st.slider("Top-k predictions", min_value=1, max_value=10, value=5)
+    uploaded = st.file_uploader(
+        "Upload a food image",
+        type=["jpg", "jpeg", "png", "webp"],
+        key=f"multimodal-upload-{run.run_dir.name}",
+    )
 
-    run = runs_by_shot[shot_option]
-    device = _resolve_device()
-    st.caption(f"Using run: `{run.run_dir.name}` | model: `{run.model_id}` | device: `{device}`")
-
-    uploaded = st.file_uploader("Upload an image", type=["jpg", "jpeg", "png", "webp"])
     if uploaded is None:
+        st.caption("Upload an image to run inference with the selected trained run.")
         return
 
     image = Image.open(uploaded).convert("RGB")
-    st.image(image, caption="Uploaded image", width=360)
+    st.image(image, caption="Uploaded image", use_container_width=True)
 
-    with st.spinner("Running inference..."):
-        few_shot_preds = _predict_few_shot(image, run, top_k=top_k, device=device)
-        zero_shot_preds = _predict_zero_shot(image, run, top_k=top_k, device=device)
+    try:
+        device = _resolve_device()
+        if method == "linear_probe":
+            predictions = _predict_linear_probe(image, run, shots, top_k, device)
+        else:
+            predictions = _predict_zero_shot(image, run, top_k, device)
+        st.caption(f"Running on device: `{device}`")
+        _render_prediction_table(predictions)
+    except Exception as exc:
+        st.exception(exc)
 
-    # col1, col2 = st.columns(2)
-    # with col1:
-    #     st.subheader(f"Few-shot Linear Probe ({shot_option} shots)")
-    #     for rank, (label, prob) in enumerate(few_shot_preds, start=1):
-    #         st.write(f"{rank}. **{label}** - {prob:.2%}")
-    # with col2:
-    #     st.subheader("Zero-shot CLIP")
-    #     for rank, (label, prob) in enumerate(zero_shot_preds, start=1):
-    #         st.write(f"{rank}. **{label}** - {prob:.2%}")
 
-    st.divider() # Đường kẻ ngang tinh tế
-    col1, col2 = st.columns(2)
+def _render_multimodal_tab() -> None:
+    st.subheader("Multimodal")
+    st.caption("Saved Food101 CLIP runs with evaluation artifacts and live inference.")
 
-    with col1:
-        st.subheader(f"🎯 Few-shot ({shot_option} shots)")
-        # Hiển thị kết quả bằng thanh bar
-        for label, prob in few_shot_preds:
-            st.write(f"{label}")
-            st.progress(prob)
-            st.caption(f"Confidence: {prob:.2%}")
+    runs_root = _default_runs_root()
+    runs = _discover_runs(runs_root)
+    if not runs:
+        st.error(f"No valid multimodal runs found under `{runs_root}`.")
+        return
 
-    with col2:
-        st.subheader("🌐 Zero-shot CLIP")
-        for label, prob in zero_shot_preds:
-            st.write(f"{label}")
-            st.progress(prob)
-            st.caption(f"Confidence: {prob:.2%}")
+    labels = list(runs.keys())
+    selected_label = st.selectbox("Select trained run", options=labels, index=0)
+    run = runs[selected_label]
+    default_shot_index = max(0, len(run.shots_available) - 1)
+    shots = st.select_slider(
+        "Few-shot setting",
+        options=list(run.shots_available),
+        value=run.shots_available[default_shot_index],
+    )
 
-    # Thêm một phần giải thích nhỏ phía dưới
-    with st.expander("🔍 Giải thích cơ chế"):
-        st.write(f"**Zero-shot:** Sử dụng {len(run.prompt_templates)} mẫu câu prompt để dự đoán.")
-        st.code(run.prompt_templates[0])
-        st.write(f"**Few-shot:** Sử dụng một Linear Layer đã được train trên {shot_option} ảnh mỗi lớp.")
+    st.write(
+        f"Model ID: `{run.model_id}`  \n"
+        f"Classes: {', '.join(_humanize(name) for name in run.class_names)}"
+    )
+
+    _render_multimodal_results(run, shots)
+    _render_multimodal_predictor(run, shots)
+
+
+def main() -> None:
+    st.set_page_config(
+        page_title="Learning So Deep",
+        page_icon="🧠",
+        layout="wide",
+    )
+    st.title("Learning So Deep")
+    st.caption("Unified Assignment 1 deployment for image, text, and multimodal experiments.")
+
+    overview_tab, image_tab, text_tab, multimodal_tab = st.tabs(
+        ["Overview", "Image", "Text", "Multimodal"]
+    )
+
+    with overview_tab:
+        _render_overview()
+    with image_tab:
+        _render_image_tab()
+    with text_tab:
+        _render_text_tab()
+    with multimodal_tab:
+        _render_multimodal_tab()
 
 
 if __name__ == "__main__":
