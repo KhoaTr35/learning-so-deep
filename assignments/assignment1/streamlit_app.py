@@ -20,13 +20,13 @@ except ModuleNotFoundError:
 from transformers import AutoProcessor, CLIPModel
 
 
-REPO_ROOT = Path(__file__).resolve().parents[3]
-ASSIGNMENT_ROOT = Path(__file__).resolve().parents[1]
+REPO_ROOT = Path(__file__).resolve().parents[2]
+ASSIGNMENT_ROOT = Path(__file__).resolve().parent
 IMAGE_ROOT = ASSIGNMENT_ROOT / "image"
 TEXT_ROOT = ASSIGNMENT_ROOT / "text"
 MULTIMODAL_ROOT = ASSIGNMENT_ROOT / "multimodal"
 
-PRIMARY_RUNS_ROOT = MULTIMODAL_ROOT / "run" / "runs_food101_clip"
+PRIMARY_RUNS_ROOT = ASSIGNMENT_ROOT / "run" / "runs_food101_clip"
 FALLBACK_RUNS_ROOT = MULTIMODAL_ROOT / "artifacts" / "runs_food101_clip"
 DEFAULT_PROMPT_TEMPLATES = ("a photo of {}.",)
 
