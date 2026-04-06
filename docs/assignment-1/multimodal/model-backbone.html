@@ -7,12 +7,12 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Newsreader:opsz,wght@6..72,500;6..72,700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Mono:wght@400;500&family=Public+Sans:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
     <link rel="stylesheet" href="../../styles.css" />
   </head>
-  <body class="assignment-page">
+  <body class="assignment-page multimodal-atlas">
     <div class="shell nav">
       <div class="nav-inner">
         <a class="brand" href="../../index.html">Learning So Deep</a>
@@ -24,60 +24,194 @@
       </div>
     </div>
 
-    <main class="shell assignment-layout">
-      <header class="hero assignment-hero inner-hero">
-        <p class="eyebrow">Assignment 1 / Multimodal / Model Backbone</p>
-        <h1>Model Backbone</h1>
-        <p class="lead">Document architecture choices and explain why the selected backbone is suitable.</p>
-        <p class="crumbs"><a href="../../assignment-1/">Assignment 1</a> / <a href="./">Multimodal</a> / Model Backbone</p>
+    <main class="shell mm-report">
+      <header class="hero">
+        <div class="mm-kicker-line">
+          <p class="eyebrow">Assignment 1 / Multimodal / Model Backbone</p>
+          <span class="mm-stamp">Shared CLIP Encoder</span>
+          <span class="mm-stamp">Zero-Shot + CoOp + Linear Probe</span>
+        </div>
+        <h1>One representation space, three ways to make a decision.</h1>
+        <p class="lead">
+          The entire report is anchored on `openai/clip-vit-base-patch32`. Images are encoded once into a shared
+          embedding space, then evaluated through three heads: averaged prompt prototypes for zero-shot, learnable
+          context prompts for CoOp, and a linear classifier for the few-shot probe baseline.
+        </p>
       </header>
 
-      <section class="section scope-panel">
-        <h2>Section Checklist</h2>
-        <table>
-          <thead>
-            <tr>
-              <th>Item</th>
-              <th>Expectation</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Goal</td>
-              <td>Explain what this section proves for the Multimodal track.</td>
-            </tr>
-            <tr>
-              <td>Evidence</td>
-              <td>Provide tables, plots, or concise bullet findings that support claims.</td>
-            </tr>
-            <tr>
-              <td>Decision</td>
-              <td>State what this section implies for the next experiment step.</td>
-            </tr>
-          </tbody>
-        </table>
-      </section>
+      <nav class="mm-subnav" aria-label="Multimodal pages">
+        <a class="mm-pill" href="./index.html">Overview</a>
+        <a class="mm-pill" href="./dataset-eda.html">Dataset EDA</a>
+        <a class="mm-pill" href="./model-backbone.html" aria-current="page">Model Backbone</a>
+        <a class="mm-pill" href="./methodology.html">Methodology</a>
+        <a class="mm-pill" href="./evaluation-results.html">Evaluation Results</a>
+      </nav>
 
-      <section class="section report-grid">
-        <article class="report-card">
-          <h3>Primary Findings</h3>
-          <ul>
-            <li>Top signal to watch for this section.</li>
-            <li>Main comparison point across baseline and advanced setting.</li>
-            <li>Potential risk or blind spot requiring follow-up.</li>
-          </ul>
-        </article>
-        <article class="report-card">
-          <h3>Actionable Next Step</h3>
-          <ul>
-            <li>One concrete improvement to test next.</li>
-            <li>Expected impact and acceptance threshold.</li>
-            <li>How results will be validated for reproducibility.</li>
-          </ul>
-        </article>
-      </section>
+      <div class="mm-stack">
+        <section class="mm-panel">
+          <div class="mm-section-tag">Architecture</div>
+          <h2>Shared image encoder</h2>
+          <p class="mm-prose">
+            CLIP ViT-B/32 acts as the fixed representation engine for every route in the report. That design removes
+            backbone retraining from the comparison, which makes the downstream question cleaner: how much adaptation
+            is really needed once a strong image-text encoder is already available?
+          </p>
+          <div class="mm-metrics">
+            <article class="mm-metric">
+              <div class="mm-metric-label">Backbone</div>
+              <div class="mm-metric-value">ViT-B/32</div>
+              <p class="mm-metric-note">OpenAI CLIP image-text model with a shared projection space.</p>
+            </article>
+            <article class="mm-metric">
+              <div class="mm-metric-label">Prompt Ensemble</div>
+              <div class="mm-metric-value">5</div>
+              <p class="mm-metric-note">Each class is represented by the average of five prompt embeddings in zero-shot mode.</p>
+            </article>
+            <article class="mm-metric">
+              <div class="mm-metric-label">CoOp Context</div>
+              <div class="mm-metric-value">16</div>
+              <p class="mm-metric-note">Sixteen learnable context tokens are inserted before the class label by default.</p>
+            </article>
+            <article class="mm-metric">
+              <div class="mm-metric-label">Frozen Weights</div>
+              <div class="mm-metric-value">CLIP</div>
+              <p class="mm-metric-note">CLIP stays frozen for both CoOp and the linear probe; only the head or prompt context changes.</p>
+            </article>
+          </div>
+          <figure class="mm-figure">
+            <img src="./assets/ClipFig.png" alt="Overview diagram of the CLIP model showing image and text encoders in a shared embedding space." />
+            <figcaption>
+              CLIP aligns image and text representations into a shared embedding space. The multimodal track reuses
+              that joint space directly for zero-shot prompting and as the base layer for CoOp and linear-probe
+              adaptation.
+            </figcaption>
+          </figure>
+        </section>
 
-      <p class="footer"><a href="./">Back to Multimodal Track</a></p>
+        <section class="mm-panel">
+          <div class="mm-section-tag">Flow</div>
+          <h2>Decision routes</h2>
+          <div class="mm-table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Route</th>
+                  <th>Text representation</th>
+                  <th>Trainable part</th>
+                  <th>Inference rule</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Zero-shot</td>
+                  <td>Five hand-written prompt templates per class, averaged into one class prototype.</td>
+                  <td>None</td>
+                  <td>Image embedding multiplied with averaged prompt embeddings.</td>
+                </tr>
+                <tr>
+                  <td>CoOp</td>
+                  <td>Class label plus learnable context tokens encoded by frozen CLIP text tower.</td>
+                  <td>Context tokens only</td>
+                  <td>Image embedding compared with learned text embeddings.</td>
+                </tr>
+                <tr>
+                  <td>Linear probe</td>
+                  <td>No text at inference</td>
+                  <td>Linear classifier on frozen image features</td>
+                  <td>Image embedding sent through a trained linear layer.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <pre class="mm-code"><code>image -> CLIP image encoder -> normalized image embedding
+
+zero-shot:
+  5 prompt templates per class
+  -> CLIP text encoder
+  -> average 5 prompt embeddings
+  -> similarity(image_embed, class_prompt_embed)
+
+CoOp:
+  class label + learnable context tokens
+  -> frozen CLIP text encoder
+  -> learned text embeddings
+  -> similarity(image_embed, learned_text_embed)
+
+linear probe:
+  normalized image embedding
+  -> trainable linear classifier</code></pre>
+          <div class="mm-figure-grid">
+            <figure class="mm-figure">
+              <img src="./assets/results/evaluation/confusion_matrices/zero_shot.png" alt="Zero-shot confusion matrix." />
+              <figcaption>Zero-shot operates by matching image embeddings against averaged prompt embeddings.</figcaption>
+            </figure>
+            <figure class="mm-figure">
+              <img src="./assets/results/evaluation/confusion_matrices/coop_128.png" alt="CoOp confusion matrix at 128 shots." />
+              <figcaption>CoOp keeps the same image encoder but replaces fixed prompts with learned context tokens.</figcaption>
+            </figure>
+          </div>
+        </section>
+
+        <section class="mm-panel">
+          <div class="mm-section-tag">Source Code</div>
+          <h2>Relevant implementation in <code>src/</code></h2>
+          <p class="mm-prose">
+            The actual backbone logic lives in the training and embedding scripts. Zero-shot depends on prompt
+            averaging from <code>extract_embedding.py</code>, while CoOp and the linear probe are implemented in
+            <code>train.py</code>.
+          </p>
+          <pre class="mm-code"><code># assignments/assignment1/multimodal/src/extract_embedding.py
+def build_text_embeddings(model, processor, class_names, prompt_templates, device):
+    for label_id, class_name in enumerate(class_names):
+        prompts = [template.format(humanize_class_name(class_name)) for template in prompt_templates]
+        text_inputs = processor(text=prompts, return_tensors="pt", padding=True, truncation=True)
+        text_outputs = model.get_text_features(**text_inputs)
+        prompt_embeddings = text_outputs / text_outputs.norm(dim=-1, keepdim=True)
+        pooled_embedding = prompt_embeddings.mean(dim=0)
+        pooled_embedding = pooled_embedding / pooled_embedding.norm()
+        class_embeddings.append(pooled_embedding.cpu())</code></pre>
+          <pre class="mm-code"><code># assignments/assignment1/multimodal/src/train.py
+def run_zero_shot(test_payload, text_payload, batch_size):
+    logit_scale = float(text_payload["logit_scale"])
+    logits = compute_similarity_logits(
+        image_embeddings=test_payload["embeddings"],
+        text_embeddings=text_payload["class_embeddings"],
+        logit_scale=logit_scale,
+        batch_size=batch_size,
+    )
+    predictions = logits.argmax(dim=-1)
+    metrics = compute_metrics(
+        true_labels=test_payload["label_ids"].tolist(),
+        predicted_labels=predictions.tolist(),
+    )
+    return metrics, logits</code></pre>
+          <pre class="mm-code"><code># assignments/assignment1/multimodal/src/train.py
+def train_linear_probe(train_embeddings, train_labels, val_embeddings, val_labels, ...):
+    classifier = nn.Linear(train_embeddings.shape[1], num_classes).to(device)
+    optimizer = torch.optim.AdamW(classifier.parameters(), lr=learning_rate, weight_decay=weight_decay)
+    criterion = nn.CrossEntropyLoss()
+    ...
+    logits = classifier(batch_embeddings)
+    loss = criterion(logits, batch_labels)</code></pre>
+        </section>
+
+        <section class="mm-panel">
+          <div class="mm-section-tag">Why This Design</div>
+          <h2>Why the fixed backbone matters</h2>
+          <ul class="mm-note-list">
+            <li>It keeps the comparison honest by isolating the head rather than conflating head choice with backbone fine-tuning.</li>
+            <li>It makes zero-shot, CoOp, and linear-probe results directly comparable because they consume the same image feature space.</li>
+            <li>It reduces training cost and lets the report focus on prompt engineering versus lightweight adaptation.</li>
+            <li>It supports practical deployment because embeddings can be precomputed and reused across methods.</li>
+          </ul>
+          <div class="mm-callout">
+            The key finding from this run is unintuitive but important: the frozen backbone is already strong enough
+            that zero-shot with averaged prompts beats every few-shot variant on final test accuracy.
+          </div>
+        </section>
+      </div>
+
+      <p class="mm-footer"><a href="./">Back to Multimodal Track</a></p>
     </main>
   </body>
 </html>

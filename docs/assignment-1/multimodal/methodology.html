@@ -7,12 +7,12 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Newsreader:opsz,wght@6..72,500;6..72,700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Mono:wght@400;500&family=Public+Sans:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
     <link rel="stylesheet" href="../../styles.css" />
   </head>
-  <body class="assignment-page">
+  <body class="assignment-page multimodal-atlas">
     <div class="shell nav">
       <div class="nav-inner">
         <a class="brand" href="../../index.html">Learning So Deep</a>
@@ -24,60 +24,271 @@
       </div>
     </div>
 
-    <main class="shell assignment-layout">
-      <header class="hero assignment-hero inner-hero">
-        <p class="eyebrow">Assignment 1 / Multimodal / Methodology</p>
-        <h1>Methodology</h1>
-        <p class="lead">Define pipeline design, optimization strategy, and reproducibility controls.</p>
-        <p class="crumbs"><a href="../../assignment-1/">Assignment 1</a> / <a href="./">Multimodal</a> / Methodology</p>
+    <main class="shell mm-report">
+      <header class="hero">
+        <div class="mm-kicker-line">
+          <p class="eyebrow">Assignment 1 / Multimodal / Methodology</p>
+          <span class="mm-stamp">Config-Driven Pipeline</span>
+          <span class="mm-stamp">WandB Logged</span>
+        </div>
+        <h1>The experiment is a reproducible sequence, not a notebook-only artifact.</h1>
+        <p class="lead">
+          The multimodal workflow is defined through a single YAML config, split into explicit stages for download,
+          preprocessing, embedding extraction, training, inference, and evaluation. This keeps the pipeline auditable
+          and lets the final HTML report mirror the exact artifacts produced by the training run.
+        </p>
       </header>
 
-      <section class="section scope-panel">
-        <h2>Section Checklist</h2>
-        <table>
-          <thead>
-            <tr>
-              <th>Item</th>
-              <th>Expectation</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Goal</td>
-              <td>Explain what this section proves for the Multimodal track.</td>
-            </tr>
-            <tr>
-              <td>Evidence</td>
-              <td>Provide tables, plots, or concise bullet findings that support claims.</td>
-            </tr>
-            <tr>
-              <td>Decision</td>
-              <td>State what this section implies for the next experiment step.</td>
-            </tr>
-          </tbody>
-        </table>
-      </section>
+      <nav class="mm-subnav" aria-label="Multimodal pages">
+        <a class="mm-pill" href="./index.html">Overview</a>
+        <a class="mm-pill" href="./dataset-eda.html">Dataset EDA</a>
+        <a class="mm-pill" href="./model-backbone.html">Model Backbone</a>
+        <a class="mm-pill" href="./methodology.html" aria-current="page">Methodology</a>
+        <a class="mm-pill" href="./evaluation-results.html">Evaluation Results</a>
+      </nav>
 
-      <section class="section report-grid">
-        <article class="report-card">
-          <h3>Primary Findings</h3>
-          <ul>
-            <li>Top signal to watch for this section.</li>
-            <li>Main comparison point across baseline and advanced setting.</li>
-            <li>Potential risk or blind spot requiring follow-up.</li>
-          </ul>
-        </article>
-        <article class="report-card">
-          <h3>Actionable Next Step</h3>
-          <ul>
-            <li>One concrete improvement to test next.</li>
-            <li>Expected impact and acceptance threshold.</li>
-            <li>How results will be validated for reproducibility.</li>
-          </ul>
-        </article>
-      </section>
+      <div class="mm-stack">
+        <section class="mm-panel">
+          <div class="mm-section-tag">Run Order</div>
+          <h2>Process graph</h2>
+          <pre class="mm-code"><code>1. download.py
+   -> export Food101 images + labels to disk
 
-      <p class="footer"><a href="./">Back to Multimodal Track</a></p>
+2. preprocess.py
+   -> filter to 10 selected classes
+   -> write train_full.csv and test.csv
+   -> create fewshot_{8,16,32,64,128}/{train,val}.csv
+
+3. extract_embedding.py
+   -> extract CLIP image embeddings for train_full and test
+   -> extract 5 prompt embeddings per class
+   -> average 5 prompt embeddings into one class prototype
+
+4. train.py
+   -> zero-shot evaluation
+   -> CoOp training per shot setting
+   -> linear probe training per shot setting
+
+5. infer.py
+   -> load zero-shot, linear probe, or CoOp
+
+6. evaluate.py
+   -> build summary.csv, confusion matrices, failure analysis, saliency maps</code></pre>
+        </section>
+
+        <section class="mm-panel">
+          <div class="mm-section-tag">Core Config</div>
+          <h2>What the YAML controls</h2>
+          <div class="mm-table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Config block</th>
+                  <th>Purpose</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>`model`</td><td>CLIP model id, currently `openai/clip-vit-base-patch32`.</td></tr>
+                <tr><td>`dataset`</td><td>Hugging Face dataset id and the 10 selected Food101 classes.</td></tr>
+                <tr><td>`prompts`</td><td>Five zero-shot templates, averaged per class.</td></tr>
+                <tr><td>`few_shot`</td><td>Support budgets: 8, 16, 32, 64, 128 shots per class.</td></tr>
+                <tr><td>`splits`</td><td>Validation-per-class budget and deterministic seed.</td></tr>
+                <tr><td>`training`</td><td>Linear-probe optimizer settings.</td></tr>
+                <tr><td>`coop`</td><td>Number of context tokens, class-token placement, class-specific context toggle, and prompt-optimizer settings.</td></tr>
+                <tr><td>`wandb`</td><td>Tracking mode, project, entity, and tags.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="mm-panel">
+          <div class="mm-section-tag">Method Choices</div>
+          <h2>Training strategy by head</h2>
+          <ul class="mm-note-list">
+            <li>Zero-shot uses no task-specific weight updates and relies only on CLIP similarity between image embeddings and averaged class prompt embeddings.</li>
+            <li>CoOp freezes CLIP and learns only the prompt context vectors, which keeps adaptation parameter-efficient.</li>
+            <li>The linear probe uses the same frozen image features but learns a linear classification head from support images only.</li>
+            <li>Each few-shot setting shares the same held-out test set, so improvements are directly comparable across support budgets.</li>
+          </ul>
+          <figure class="mm-figure">
+            <img src="./assets/results/evaluation/plots/comparison_bar.png" alt="Comparison bar chart across methods and shot settings." />
+            <figcaption>
+              Methodology is only useful if it reveals a tradeoff. Here the tradeoff is clear: prompt learning helps
+              at low-shot settings, but the backbone itself is already so strong that zero-shot remains hard to beat.
+            </figcaption>
+          </figure>
+        </section>
+
+        <section class="mm-panel">
+          <div class="mm-section-tag">Architecture Size</div>
+          <h2>Linear probe and CoOp are both lightweight adapters</h2>
+          <p class="mm-prose">
+            Neither learned method fine-tunes CLIP itself. The image encoder, text encoder, and projection layers
+            stay frozen. The only trainable difference is whether adaptation happens in a small classifier on the
+            image side or in a bank of learnable prompt vectors on the text side.
+          </p>
+          <div class="mm-table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Method</th>
+                  <th>Trainable component</th>
+                  <th>Shape</th>
+                  <th>Trainable params</th>
+                  <th>Notes</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Zero-shot</td>
+                  <td>None</td>
+                  <td>0</td>
+                  <td><strong>0</strong></td>
+                  <td>Uses averaged prompt embeddings and CLIP similarity only.</td>
+                </tr>
+                <tr>
+                  <td>Linear probe</td>
+                  <td>Classifier weight + bias</td>
+                  <td>512 x 10 + 10</td>
+                  <td><strong>5,130</strong></td>
+                  <td>A single linear layer on top of the 512-d normalized CLIP image embedding.</td>
+                </tr>
+                <tr>
+                  <td>CoOp</td>
+                  <td>Shared context tokens</td>
+                  <td>16 x 512</td>
+                  <td><strong>8,192</strong></td>
+                  <td>Sixteen learnable prompt vectors because `class_specific_context: false` in the current config.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="mm-callout">
+            CoOp has slightly more trainable parameters than the linear probe in this setup, but it is still a very
+            small adapter. If `class_specific_context` were enabled, CoOp would scale to `10 x 16 x 512 = 81,920`
+            prompt parameters for the 10 classes.
+          </div>
+        </section>
+
+        <section class="mm-panel">
+          <div class="mm-section-tag">CoOp</div>
+          <h2>Why prompt learning changes the few-shot regime</h2>
+          <p class="mm-prose">
+            CoOp replaces the fixed hand-written prompt bank with learnable context tokens that are optimized against
+            the few-shot support set while the CLIP backbone stays frozen. This keeps adaptation lightweight but lets
+            the text side bend toward the current task.
+          </p>
+          <figure class="mm-figure">
+            <img src="./assets/CoOpFig.png" alt="Illustration of CoOp with learnable context tokens around the class label." />
+            <figcaption>
+              CoOp inserts learnable context tokens around the class label, feeds the full prompt through the frozen
+              CLIP text encoder, and updates only the context vectors to improve image-text alignment for the target
+              classes.
+            </figcaption>
+          </figure>
+        </section>
+
+        <section class="mm-panel">
+          <div class="mm-section-tag">Source Code</div>
+          <h2>Zero-shot, linear probe, and CoOp implementations in <code>src/</code></h2>
+          <pre class="mm-code"><code># assignments/assignment1/multimodal/src/extract_embedding.py
+def build_text_embeddings(model, processor, class_names, prompt_templates, device):
+    ...
+    prompt_embeddings = text_features / text_features.norm(dim=-1, keepdim=True)
+    pooled_embedding = prompt_embeddings.mean(dim=0)
+    pooled_embedding = pooled_embedding / pooled_embedding.norm()
+    class_embeddings.append(pooled_embedding.cpu())</code></pre>
+          <pre class="mm-code"><code># assignments/assignment1/multimodal/src/train.py
+def train_linear_probe(train_embeddings, train_labels, val_embeddings, val_labels, ...):
+    classifier = nn.Linear(train_embeddings.shape[1], num_classes).to(device)
+    optimizer = torch.optim.AdamW(classifier.parameters(), lr=learning_rate, weight_decay=weight_decay)
+    criterion = nn.CrossEntropyLoss()
+    ...
+    logits = classifier(batch_embeddings)
+    loss = criterion(logits, batch_labels)</code></pre>
+          <div class="mm-table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Architecture</th>
+                  <th>Forward rule</th>
+                  <th>Effective size in this pipeline</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Zero-shot</td>
+                  <td><code>image_embed @ avg_prompt_embed.T</code></td>
+                  <td>No task-specific trainable parameters.</td>
+                </tr>
+                <tr>
+                  <td>Linear probe</td>
+                  <td><code>Linear(512 -&gt; 10)</code></td>
+                  <td>5,130 trainable parameters.</td>
+                </tr>
+                <tr>
+                  <td>CoOp</td>
+                  <td><code>16 learnable prompt vectors -&gt; frozen CLIP text encoder</code></td>
+                  <td>8,192 trainable parameters with shared context.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <pre class="mm-code"><code># assignments/assignment1/multimodal/src/train.py
+class CoOpPromptLearner(nn.Module):
+    def __init__(..., num_context_tokens, class_token_position, class_specific_context, ...):
+        self.token_embedding = clip_model.text_model.embeddings.token_embedding
+        context_vectors = self._initialize_context(...)
+        if class_specific_context:
+            context_vectors = context_vectors.unsqueeze(0).repeat(self.num_classes, 1, 1)
+        self.context = nn.Parameter(context_vectors)
+
+def train_coop(train_embeddings, train_labels, val_embeddings, val_labels, class_names, model_id, coop_config, device):
+    clip_model = CLIPModel.from_pretrained(model_id).to(device)
+    for parameter in clip_model.parameters():
+        parameter.requires_grad = False
+    prompt_learner = CoOpPromptLearner(...)
+    ...
+    text_features = build_coop_text_features(prompt_learner, clip_model, device=device)
+    logits = clip_model.logit_scale.exp() * (batch_embeddings @ text_features.T)</code></pre>
+          <div class="mm-callout">
+            The important methodological distinction is that zero-shot changes no task-specific weights, the linear
+            probe changes only the classifier, and CoOp changes only the prompt context vectors.
+          </div>
+        </section>
+
+        <section class="mm-panel">
+          <div class="mm-section-tag">Observed Optimization</div>
+          <h2>What training histories show</h2>
+          <p class="mm-prose">
+            The 128-shot histories expose two different learning profiles. CoOp drops its training loss quickly and
+            reaches near-saturated validation macro-F1 early, while the linear probe improves more gradually and
+            plateaus lower on validation despite steady training progress.
+          </p>
+          <div class="mm-table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Method</th>
+                  <th>Epoch 1 loss</th>
+                  <th>Final epoch loss</th>
+                  <th>Peak val macro-F1</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>CoOp (128-shot)</td><td>0.334</td><td>0.028</td><td>0.980</td></tr>
+                <tr><td>Linear probe (128-shot)</td><td>2.266</td><td>1.010</td><td>0.970</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="mm-callout">
+            CoOp’s learned context reaches a stronger validation regime with far fewer trainable parameters than the
+            linear probe, which is exactly why prompt tuning is worth evaluating in a small-data setting.
+          </div>
+        </section>
+      </div>
+
+      <p class="mm-footer"><a href="./">Back to Multimodal Track</a></p>
     </main>
   </body>
 </html>

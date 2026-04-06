@@ -1,0 +1,41 @@
+{
+  "config_path": "assignments/assignment1/multimodal/configs/food101_clip.yaml",
+  "processed_root": "assignments/assignment1/multimodal/artifacts/processed_food101_clip",
+  "dataset_name": "ethz/food101",
+  "selected_classes": [
+    "apple_pie",
+    "bibimbap",
+    "chicken_wings",
+    "donuts",
+    "eggs_benedict",
+    "french_fries",
+    "grilled_cheese_sandwich",
+    "hamburger",
+    "ice_cream",
+    "pizza"
+  ],
+  "train_full_size": 7500,
+  "test_size": 2500,
+  "few_shot": {
+    "8": {
+      "train_size": 80,
+      "val_size": 200
+    },
+    "16": {
+      "train_size": 160,
+      "val_size": 200
+    },
+    "32": {
+      "train_size": 320,
+      "val_size": 200
+    },
+    "64": {
+      "train_size": 640,
+      "val_size": 200
+    },
+    "128": {
+      "train_size": 1280,
+      "val_size": 200
+    }
+  }
+}

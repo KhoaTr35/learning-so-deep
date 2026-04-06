@@ -7,12 +7,12 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Newsreader:opsz,wght@6..72,500;6..72,700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Mono:wght@400;500&family=Public+Sans:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
     <link rel="stylesheet" href="../../styles.css" />
   </head>
-  <body class="assignment-page">
+  <body class="assignment-page multimodal-atlas">
     <div class="shell nav">
       <div class="nav-inner">
         <a class="brand" href="../../index.html">Learning So Deep</a>
@@ -24,60 +24,252 @@
       </div>
     </div>
 
-    <main class="shell assignment-layout">
-      <header class="hero assignment-hero inner-hero">
-        <p class="eyebrow">Assignment 1 / Multimodal / Evaluation Results</p>
-        <h1>Evaluation Results</h1>
-        <p class="lead">Summarize quantitative outcomes and turn metrics into concrete decisions.</p>
-        <p class="crumbs"><a href="../../assignment-1/">Assignment 1</a> / <a href="./">Multimodal</a> / Evaluation Results</p>
+    <main class="shell mm-report">
+      <header class="hero">
+        <div class="mm-kicker-line">
+          <p class="eyebrow">Assignment 1 / Multimodal / Evaluation Results</p>
+          <span class="mm-stamp">Run 20260406_094056</span>
+          <span class="mm-stamp">11 Reported Rows</span>
+        </div>
+        <h1>Zero-shot wins the run, CoOp wins the low-shot adaptation story.</h1>
+        <p class="lead">
+          The latest run reports three consistent patterns. First, averaged five-prompt zero-shot CLIP is the
+          overall best method at 98.08% accuracy. Second, CoOp beats the linear probe at 8, 16, and 32 shots and
+          stays competitive through 128 shots. Third, the hardest failures are concentrated in visually plausible
+          dessert and sandwich confusions, especially apple pie versus donuts and donuts versus hamburger.
+        </p>
       </header>
 
-      <section class="section scope-panel">
-        <h2>Section Checklist</h2>
-        <table>
-          <thead>
-            <tr>
-              <th>Item</th>
-              <th>Expectation</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Goal</td>
-              <td>Explain what this section proves for the Multimodal track.</td>
-            </tr>
-            <tr>
-              <td>Evidence</td>
-              <td>Provide tables, plots, or concise bullet findings that support claims.</td>
-            </tr>
-            <tr>
-              <td>Decision</td>
-              <td>State what this section implies for the next experiment step.</td>
-            </tr>
-          </tbody>
-        </table>
-      </section>
+      <nav class="mm-subnav" aria-label="Multimodal pages">
+        <a class="mm-pill" href="./index.html">Overview</a>
+        <a class="mm-pill" href="./dataset-eda.html">Dataset EDA</a>
+        <a class="mm-pill" href="./model-backbone.html">Model Backbone</a>
+        <a class="mm-pill" href="./methodology.html">Methodology</a>
+        <a class="mm-pill" href="./evaluation-results.html" aria-current="page">Evaluation Results</a>
+      </nav>
 
-      <section class="section report-grid">
-        <article class="report-card">
-          <h3>Primary Findings</h3>
-          <ul>
-            <li>Top signal to watch for this section.</li>
-            <li>Main comparison point across baseline and advanced setting.</li>
-            <li>Potential risk or blind spot requiring follow-up.</li>
-          </ul>
-        </article>
-        <article class="report-card">
-          <h3>Actionable Next Step</h3>
-          <ul>
-            <li>One concrete improvement to test next.</li>
-            <li>Expected impact and acceptance threshold.</li>
-            <li>How results will be validated for reproducibility.</li>
-          </ul>
-        </article>
-      </section>
+      <div class="mm-stack">
+        <section class="mm-panel">
+          <div class="mm-section-tag">Headline Metrics</div>
+          <h2>Best scores in the current report</h2>
+          <div class="mm-metrics">
+            <article class="mm-metric">
+              <div class="mm-metric-label">Zero-Shot Accuracy</div>
+              <div class="mm-metric-value">98.08%</div>
+              <p class="mm-metric-note">Best overall result, using averaged prompt prototypes and no task-specific training.</p>
+            </article>
+            <article class="mm-metric">
+              <div class="mm-metric-label">Best CoOp</div>
+              <div class="mm-metric-value">97.40%</div>
+              <p class="mm-metric-note">CoOp at 128 shots is the strongest learned prompt run.</p>
+            </article>
+            <article class="mm-metric">
+              <div class="mm-metric-label">Best Linear Probe</div>
+              <div class="mm-metric-value">97.32%</div>
+              <p class="mm-metric-note">Linear probe at 128 shots nearly matches CoOp but remains below zero-shot.</p>
+            </article>
+            <article class="mm-metric">
+              <div class="mm-metric-label">Best Overall Method</div>
+              <div class="mm-metric-value">Zero-shot</div>
+              <p class="mm-metric-note">Averaged five-prompt zero-shot CLIP is the strongest result in the full benchmark.</p>
+            </article>
+          </div>
+        </section>
 
-      <p class="footer"><a href="./">Back to Multimodal Track</a></p>
+        <section class="mm-panel">
+          <div class="mm-section-tag">Highlights</div>
+          <h2>Best methods by regime</h2>
+          <div class="mm-table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Regime</th>
+                  <th>Best method</th>
+                  <th>Accuracy</th>
+                  <th>Why it matters</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Overall</td>
+                  <td><strong>Zero-shot</strong></td>
+                  <td><strong>0.9808</strong></td>
+                  <td>Best final result without any task-specific training.</td>
+                </tr>
+                <tr>
+                  <td>Few-shot 8</td>
+                  <td><strong>CoOp</strong></td>
+                  <td><strong>0.9708</strong></td>
+                  <td>Large gain over the linear probe at the smallest support budget.</td>
+                </tr>
+                <tr>
+                  <td>Few-shot 16</td>
+                  <td><strong>CoOp</strong></td>
+                  <td><strong>0.9724</strong></td>
+                  <td>Prompt learning remains clearly more sample-efficient.</td>
+                </tr>
+                <tr>
+                  <td>Few-shot 32</td>
+                  <td><strong>CoOp</strong></td>
+                  <td><strong>0.9724</strong></td>
+                  <td>CoOp still leads before the probe starts catching up.</td>
+                </tr>
+                <tr>
+                  <td>Few-shot 64</td>
+                  <td><strong>CoOp</strong></td>
+                  <td><strong>0.9692</strong></td>
+                  <td>The gap narrows, but CoOp is still marginally ahead.</td>
+                </tr>
+                <tr>
+                  <td>Few-shot 128</td>
+                  <td><strong>CoOp</strong></td>
+                  <td><strong>0.9740</strong></td>
+                  <td>CoOp remains the strongest learned adaptation route in this run.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="mm-callout">
+            The key story is not just that zero-shot wins. It is that CoOp is the best learned method at every
+            few-shot budget, which suggests prompt tuning is the more effective adaptation strategy than a linear
+            probe for this Food101 subset.
+          </div>
+        </section>
+
+        <section class="mm-panel">
+          <div class="mm-section-tag">Metrics Table</div>
+          <h2>All reported settings</h2>
+          <div class="mm-table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Method</th>
+                  <th>Shots</th>
+                  <th>Accuracy</th>
+                  <th>Balanced Accuracy</th>
+                  <th>Macro Precision</th>
+                  <th>Macro F1</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td><strong>Zero-shot</strong></td><td>0</td><td><strong>0.9808</strong></td><td><strong>0.9808</strong></td><td><strong>0.9808</strong></td><td><strong>0.9808</strong></td></tr>
+                <tr><td><strong>CoOp</strong></td><td>8</td><td><strong>0.9708</strong></td><td><strong>0.9708</strong></td><td><strong>0.9709</strong></td><td><strong>0.9707</strong></td></tr>
+                <tr><td>Linear probe</td><td>8</td><td>0.9340</td><td>0.9340</td><td>0.9409</td><td>0.9345</td></tr>
+                <tr><td><strong>CoOp</strong></td><td>16</td><td><strong>0.9724</strong></td><td><strong>0.9724</strong></td><td><strong>0.9727</strong></td><td><strong>0.9724</strong></td></tr>
+                <tr><td>Linear probe</td><td>16</td><td>0.9544</td><td>0.9544</td><td>0.9565</td><td>0.9543</td></tr>
+                <tr><td><strong>CoOp</strong></td><td>32</td><td><strong>0.9724</strong></td><td><strong>0.9724</strong></td><td><strong>0.9726</strong></td><td><strong>0.9724</strong></td></tr>
+                <tr><td>Linear probe</td><td>32</td><td>0.9612</td><td>0.9612</td><td>0.9625</td><td>0.9613</td></tr>
+                <tr><td><strong>CoOp</strong></td><td>64</td><td><strong>0.9692</strong></td><td><strong>0.9692</strong></td><td><strong>0.9697</strong></td><td><strong>0.9691</strong></td></tr>
+                <tr><td>Linear probe</td><td>64</td><td>0.9672</td><td>0.9672</td><td>0.9680</td><td>0.9673</td></tr>
+                <tr><td><strong>CoOp</strong></td><td>128</td><td><strong>0.9740</strong></td><td><strong>0.9740</strong></td><td><strong>0.9743</strong></td><td><strong>0.9740</strong></td></tr>
+                <tr><td>Linear probe</td><td>128</td><td>0.9732</td><td>0.9732</td><td>0.9732</td><td>0.9732</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="mm-actions">
+            <a class="mm-button" href="./assets/results/evaluation/metrics_summary.csv">Download metrics_summary.csv</a>
+            <a class="mm-button" href="./assets/results/summary.csv">Download run summary.csv</a>
+            <a class="mm-button" href="./assets/results/evaluation/failed_cases/top_failures.csv">Download top_failures.csv</a>
+          </div>
+        </section>
+
+        <section class="mm-panel">
+          <div class="mm-section-tag">Plot</div>
+          <h2>Comparison across methods and support budgets</h2>
+          <figure class="mm-figure">
+            <img src="./assets/results/evaluation/plots/comparison_bar.png" alt="Comparison bar chart for zero-shot, CoOp, and linear probe metrics." />
+            <figcaption>
+              The plot makes two things obvious: zero-shot starts from an unusually strong baseline, and CoOp is the
+              more sample-efficient few-shot method through the low- and mid-shot regime.
+            </figcaption>
+          </figure>
+        </section>
+
+        <section class="mm-panel">
+          <div class="mm-section-tag">Confusion</div>
+          <h2>Method-level confusion matrices</h2>
+          <div class="mm-gallery">
+            <img src="./assets/results/evaluation/confusion_matrices/zero_shot.png" alt="Zero-shot confusion matrix." />
+            <img src="./assets/results/evaluation/confusion_matrices/coop_128.png" alt="CoOp 128-shot confusion matrix." />
+            <img src="./assets/results/evaluation/confusion_matrices/linear_probe_128.png" alt="Linear probe 128-shot confusion matrix." />
+            <img src="./assets/results/evaluation/confusion_matrices/coop_32.png" alt="CoOp 32-shot confusion matrix." />
+          </div>
+          <div class="mm-callout">
+            The main residual confusions are not random. They cluster around visually adjacent foods with similar
+            textures or silhouettes: fried rings and pastry surfaces for donuts, layered crust and browned surfaces
+            for apple pie, and bread-heavy compositions for hamburger-like mistakes.
+          </div>
+        </section>
+
+        <section class="mm-panel">
+          <div class="mm-section-tag">CoOp Analysis</div>
+          <h2>Decoded prompt context is not human-readable language</h2>
+          <p class="mm-prose">
+            Nearest-token decoding of the learned CoOp context shows why prompt tuning should not be interpreted as
+            conventional text editing. The learned vectors do not settle into fluent phrases; instead they occupy
+            regions of CLIP token space that are useful for classification even when the nearest vocabulary items
+            look fragmented or semantically unrelated.
+          </p>
+          <div class="mm-table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Class</th>
+                  <th>Context token</th>
+                  <th>Nearest decoded tokens</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>apple_pie</td><td>0</td><td>slowdown, replacement-char, dumping, ringing, accounting</td></tr>
+                <tr><td>apple_pie</td><td>1</td><td>rou, muck, ora, poz, crock</td></tr>
+                <tr><td>apple_pie</td><td>2</td><td>!, flower-emoji, !!, lor, cr</td></tr>
+                <tr><td>apple_pie</td><td>3</td><td>llen, death, sous, poured, grading</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="mm-actions">
+            <a class="mm-button" href="./assets/results/evaluation/coop_128_decoded_context.json">Open decoded CoOp context JSON</a>
+          </div>
+        </section>
+
+        <section class="mm-panel">
+          <div class="mm-section-tag">Failure Analysis</div>
+          <h2>Top failed tests and saliency</h2>
+          <p class="mm-prose">
+            The highest-confidence failures are especially useful because they reveal what the system believes very
+            strongly but incorrectly. In this run, the most repeated failure cases are `apple_pie -> donuts` and
+            `donuts -> hamburger`, and both persist across zero-shot and CoOp.
+          </p>
+          <div class="mm-table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Method</th>
+                  <th>Shots</th>
+                  <th>True</th>
+                  <th>Predicted</th>
+                  <th>Confidence</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>CoOp</td><td>128</td><td>apple_pie</td><td>donuts</td><td>0.9996</td></tr>
+                <tr><td>CoOp</td><td>32</td><td>donuts</td><td>hamburger</td><td>0.9991</td></tr>
+                <tr><td>Zero-shot</td><td>0</td><td>apple_pie</td><td>donuts</td><td>0.9981</td></tr>
+                <tr><td>Zero-shot</td><td>0</td><td>donuts</td><td>hamburger</td><td>0.9970</td></tr>
+                <tr><td>CoOp</td><td>32</td><td>apple_pie</td><td>donuts</td><td>0.9962</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="mm-gallery">
+            <img src="./assets/results/evaluation/saliency/00_coop_shot128_true-apple_pie_pred-donuts.png" alt="CoOp saliency map for apple pie predicted as donuts." />
+            <img src="./assets/results/evaluation/saliency/01_coop_shot32_true-donuts_pred-hamburger.png" alt="CoOp saliency map for donuts predicted as hamburger." />
+            <img src="./assets/results/evaluation/saliency/02_zero_shot_shot0_true-apple_pie_pred-donuts.png" alt="Zero-shot saliency map for apple pie predicted as donuts." />
+            <img src="./assets/results/evaluation/saliency/03_zero_shot_shot0_true-donuts_pred-hamburger.png" alt="Zero-shot saliency map for donuts predicted as hamburger." />
+          </div>
+        </section>
+      </div>
+
+      <p class="mm-footer"><a href="./">Back to Multimodal Track</a></p>
     </main>
   </body>
 </html>

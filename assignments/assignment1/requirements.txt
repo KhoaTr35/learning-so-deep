@@ -9,3 +9,6 @@ matplotlib
 seaborn
 numpy
 pandas
+PyYAML
+python-dotenv
+wandb

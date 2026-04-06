@@ -1,0 +1,304 @@
+{
+  "rows": [
+    {
+      "label_id": 0,
+      "label_name": "apple_pie",
+      "prompt_index": 0,
+      "prompt_text": "a photo of apple pie."
+    },
+    {
+      "label_id": 0,
+      "label_name": "apple_pie",
+      "prompt_index": 1,
+      "prompt_text": "a close-up photo of apple pie."
+    },
+    {
+      "label_id": 0,
+      "label_name": "apple_pie",
+      "prompt_index": 2,
+      "prompt_text": "a photo of a plate of apple pie."
+    },
+    {
+      "label_id": 0,
+      "label_name": "apple_pie",
+      "prompt_index": 3,
+      "prompt_text": "a food photo of apple pie."
+    },
+    {
+      "label_id": 0,
+      "label_name": "apple_pie",
+      "prompt_index": 4,
+      "prompt_text": "a restaurant photo of apple pie."
+    },
+    {
+      "label_id": 1,
+      "label_name": "bibimbap",
+      "prompt_index": 0,
+      "prompt_text": "a photo of bibimbap."
+    },
+    {
+      "label_id": 1,
+      "label_name": "bibimbap",
+      "prompt_index": 1,
+      "prompt_text": "a close-up photo of bibimbap."
+    },
+    {
+      "label_id": 1,
+      "label_name": "bibimbap",
+      "prompt_index": 2,
+      "prompt_text": "a photo of a plate of bibimbap."
+    },
+    {
+      "label_id": 1,
+      "label_name": "bibimbap",
+      "prompt_index": 3,
+      "prompt_text": "a food photo of bibimbap."
+    },
+    {
+      "label_id": 1,
+      "label_name": "bibimbap",
+      "prompt_index": 4,
+      "prompt_text": "a restaurant photo of bibimbap."
+    },
+    {
+      "label_id": 2,
+      "label_name": "chicken_wings",
+      "prompt_index": 0,
+      "prompt_text": "a photo of chicken wings."
+    },
+    {
+      "label_id": 2,
+      "label_name": "chicken_wings",
+      "prompt_index": 1,
+      "prompt_text": "a close-up photo of chicken wings."
+    },
+    {
+      "label_id": 2,
+      "label_name": "chicken_wings",
+      "prompt_index": 2,
+      "prompt_text": "a photo of a plate of chicken wings."
+    },
+    {
+      "label_id": 2,
+      "label_name": "chicken_wings",
+      "prompt_index": 3,
+      "prompt_text": "a food photo of chicken wings."
+    },
+    {
+      "label_id": 2,
+      "label_name": "chicken_wings",
+      "prompt_index": 4,
+      "prompt_text": "a restaurant photo of chicken wings."
+    },
+    {
+      "label_id": 3,
+      "label_name": "donuts",
+      "prompt_index": 0,
+      "prompt_text": "a photo of donuts."
+    },
+    {
+      "label_id": 3,
+      "label_name": "donuts",
+      "prompt_index": 1,
+      "prompt_text": "a close-up photo of donuts."
+    },
+    {
+      "label_id": 3,
+      "label_name": "donuts",
+      "prompt_index": 2,
+      "prompt_text": "a photo of a plate of donuts."
+    },
+    {
+      "label_id": 3,
+      "label_name": "donuts",
+      "prompt_index": 3,
+      "prompt_text": "a food photo of donuts."
+    },
+    {
+      "label_id": 3,
+      "label_name": "donuts",
+      "prompt_index": 4,
+      "prompt_text": "a restaurant photo of donuts."
+    },
+    {
+      "label_id": 4,
+      "label_name": "eggs_benedict",
+      "prompt_index": 0,
+      "prompt_text": "a photo of eggs benedict."
+    },
+    {
+      "label_id": 4,
+      "label_name": "eggs_benedict",
+      "prompt_index": 1,
+      "prompt_text": "a close-up photo of eggs benedict."
+    },
+    {
+      "label_id": 4,
+      "label_name": "eggs_benedict",
+      "prompt_index": 2,
+      "prompt_text": "a photo of a plate of eggs benedict."
+    },
+    {
+      "label_id": 4,
+      "label_name": "eggs_benedict",
+      "prompt_index": 3,
+      "prompt_text": "a food photo of eggs benedict."
+    },
+    {
+      "label_id": 4,
+      "label_name": "eggs_benedict",
+      "prompt_index": 4,
+      "prompt_text": "a restaurant photo of eggs benedict."
+    },
+    {
+      "label_id": 5,
+      "label_name": "french_fries",
+      "prompt_index": 0,
+      "prompt_text": "a photo of french fries."
+    },
+    {
+      "label_id": 5,
+      "label_name": "french_fries",
+      "prompt_index": 1,
+      "prompt_text": "a close-up photo of french fries."
+    },
+    {
+      "label_id": 5,
+      "label_name": "french_fries",
+      "prompt_index": 2,
+      "prompt_text": "a photo of a plate of french fries."
+    },
+    {
+      "label_id": 5,
+      "label_name": "french_fries",
+      "prompt_index": 3,
+      "prompt_text": "a food photo of french fries."
+    },
+    {
+      "label_id": 5,
+      "label_name": "french_fries",
+      "prompt_index": 4,
+      "prompt_text": "a restaurant photo of french fries."
+    },
+    {
+      "label_id": 6,
+      "label_name": "grilled_cheese_sandwich",
+      "prompt_index": 0,
+      "prompt_text": "a photo of grilled cheese sandwich."
+    },
+    {
+      "label_id": 6,
+      "label_name": "grilled_cheese_sandwich",
+      "prompt_index": 1,
+      "prompt_text": "a close-up photo of grilled cheese sandwich."
+    },
+    {
+      "label_id": 6,
+      "label_name": "grilled_cheese_sandwich",
+      "prompt_index": 2,
+      "prompt_text": "a photo of a plate of grilled cheese sandwich."
+    },
+    {
+      "label_id": 6,
+      "label_name": "grilled_cheese_sandwich",
+      "prompt_index": 3,
+      "prompt_text": "a food photo of grilled cheese sandwich."
+    },
+    {
+      "label_id": 6,
+      "label_name": "grilled_cheese_sandwich",
+      "prompt_index": 4,
+      "prompt_text": "a restaurant photo of grilled cheese sandwich."
+    },
+    {
+      "label_id": 7,
+      "label_name": "hamburger",
+      "prompt_index": 0,
+      "prompt_text": "a photo of hamburger."
+    },
+    {
+      "label_id": 7,
+      "label_name": "hamburger",
+      "prompt_index": 1,
+      "prompt_text": "a close-up photo of hamburger."
+    },
+    {
+      "label_id": 7,
+      "label_name": "hamburger",
+      "prompt_index": 2,
+      "prompt_text": "a photo of a plate of hamburger."
+    },
+    {
+      "label_id": 7,
+      "label_name": "hamburger",
+      "prompt_index": 3,
+      "prompt_text": "a food photo of hamburger."
+    },
+    {
+      "label_id": 7,
+      "label_name": "hamburger",
+      "prompt_index": 4,
+      "prompt_text": "a restaurant photo of hamburger."
+    },
+    {
+      "label_id": 8,
+      "label_name": "ice_cream",
+      "prompt_index": 0,
+      "prompt_text": "a photo of ice cream."
+    },
+    {
+      "label_id": 8,
+      "label_name": "ice_cream",
+      "prompt_index": 1,
+      "prompt_text": "a close-up photo of ice cream."
+    },
+    {
+      "label_id": 8,
+      "label_name": "ice_cream",
+      "prompt_index": 2,
+      "prompt_text": "a photo of a plate of ice cream."
+    },
+    {
+      "label_id": 8,
+      "label_name": "ice_cream",
+      "prompt_index": 3,
+      "prompt_text": "a food photo of ice cream."
+    },
+    {
+      "label_id": 8,
+      "label_name": "ice_cream",
+      "prompt_index": 4,
+      "prompt_text": "a restaurant photo of ice cream."
+    },
+    {
+      "label_id": 9,
+      "label_name": "pizza",
+      "prompt_index": 0,
+      "prompt_text": "a photo of pizza."
+    },
+    {
+      "label_id": 9,
+      "label_name": "pizza",
+      "prompt_index": 1,
+      "prompt_text": "a close-up photo of pizza."
+    },
+    {
+      "label_id": 9,
+      "label_name": "pizza",
+      "prompt_index": 2,
+      "prompt_text": "a photo of a plate of pizza."
+    },
+    {
+      "label_id": 9,
+      "label_name": "pizza",
+      "prompt_index": 3,
+      "prompt_text": "a food photo of pizza."
+    },
+    {
+      "label_id": 9,
+      "label_name": "pizza",
+      "prompt_index": 4,
+      "prompt_text": "a restaurant photo of pizza."
+    }
+  ]
+}

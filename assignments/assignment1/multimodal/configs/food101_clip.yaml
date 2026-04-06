@@ -1,0 +1,77 @@
+model:
+  id: openai/clip-vit-base-patch32
+
+dataset:
+  name: ethz/food101
+  selected_classes:
+    - apple_pie
+    - bibimbap
+    - chicken_wings
+    - donuts
+    - eggs_benedict
+    - french_fries
+    - grilled_cheese_sandwich
+    - hamburger
+    - ice_cream
+    - pizza
+
+prompts:
+  num_sample_prompt: 5
+  templates:
+    - "a photo of {}."
+    - "a close-up photo of {}."
+    - "a photo of a plate of {}."
+    - "a food photo of {}."
+    - "a restaurant photo of {}."
+
+few_shot:
+  num_shots:
+    - 8
+    - 16
+    - 32
+    - 64
+    - 128
+
+splits:
+  val_per_class: 20
+  test_split: validation
+  seed: 42
+
+zeroshot:
+  batch_size: 32
+
+training:
+  batch_size: 64
+  epochs: 20
+  learning_rate: 0.001
+  weight_decay: 0.0001
+  num_workers: 0
+  device: null
+
+coop:
+  enabled: true
+  num_context_tokens: 16
+  class_token_position: end
+  class_specific_context: false
+  context_init: null
+  batch_size: 64
+  epochs: 20
+  learning_rate: 0.002
+  weight_decay: 0.0001
+  init_std: 0.02
+
+paths:
+  processed_root: assignments/assignment1/multimodal/artifacts/processed_food101_clip
+  embedding_root: assignments/assignment1/multimodal/artifacts/embeddings_food101_clip
+  run_root: assignments/assignment1/multimodal/artifacts/runs_food101_clip
+
+wandb:
+  enabled: true
+  project: learning-so-deep-food101
+  entity: null
+  mode: online
+  tags:
+    - assignment1
+    - multimodal
+    - food101
+    - clip

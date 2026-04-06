@@ -1,0 +1,31 @@
+split,split_display,class_id,class_name,class_display,count
+few_shot_train,Few Shot Train,0,apple_pie,Apple Pie,128
+few_shot_train,Few Shot Train,1,bibimbap,Bibimbap,128
+few_shot_train,Few Shot Train,2,chicken_wings,Chicken Wings,128
+few_shot_train,Few Shot Train,3,donuts,Donuts,128
+few_shot_train,Few Shot Train,4,eggs_benedict,Eggs Benedict,128
+few_shot_train,Few Shot Train,5,french_fries,French Fries,128
+few_shot_train,Few Shot Train,6,grilled_cheese_sandwich,Grilled Cheese Sandwich,128
+few_shot_train,Few Shot Train,7,hamburger,Hamburger,128
+few_shot_train,Few Shot Train,8,ice_cream,Ice Cream,128
+few_shot_train,Few Shot Train,9,pizza,Pizza,128
+few_shot_dev,Few Shot Dev,0,apple_pie,Apple Pie,20
+few_shot_dev,Few Shot Dev,1,bibimbap,Bibimbap,20
+few_shot_dev,Few Shot Dev,2,chicken_wings,Chicken Wings,20
+few_shot_dev,Few Shot Dev,3,donuts,Donuts,20
+few_shot_dev,Few Shot Dev,4,eggs_benedict,Eggs Benedict,20
+few_shot_dev,Few Shot Dev,5,french_fries,French Fries,20
+few_shot_dev,Few Shot Dev,6,grilled_cheese_sandwich,Grilled Cheese Sandwich,20
+few_shot_dev,Few Shot Dev,7,hamburger,Hamburger,20
+few_shot_dev,Few Shot Dev,8,ice_cream,Ice Cream,20
+few_shot_dev,Few Shot Dev,9,pizza,Pizza,20
+test,Test,0,apple_pie,Apple Pie,250
+test,Test,1,bibimbap,Bibimbap,250
+test,Test,2,chicken_wings,Chicken Wings,250
+test,Test,3,donuts,Donuts,250
+test,Test,4,eggs_benedict,Eggs Benedict,250
+test,Test,5,french_fries,French Fries,250
+test,Test,6,grilled_cheese_sandwich,Grilled Cheese Sandwich,250
+test,Test,7,hamburger,Hamburger,250
+test,Test,8,ice_cream,Ice Cream,250
+test,Test,9,pizza,Pizza,250

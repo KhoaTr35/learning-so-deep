@@ -1,0 +1,22 @@
+{
+  "run_dir": "assignments/assignment1/multimodal/artifacts/runs_food101_clip/openai_clip-vit-base-patch32/20260406_094056",
+  "num_methods": 3,
+  "num_rows": 11,
+  "top_failure_count": 5,
+  "class_names": [
+    "apple_pie",
+    "bibimbap",
+    "chicken_wings",
+    "donuts",
+    "eggs_benedict",
+    "french_fries",
+    "grilled_cheese_sandwich",
+    "hamburger",
+    "ice_cream",
+    "pizza"
+  ],
+  "top_failure_distribution": {
+    "donuts": 3,
+    "hamburger": 2
+  }
+}

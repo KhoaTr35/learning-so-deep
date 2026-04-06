@@ -7,12 +7,12 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Newsreader:opsz,wght@6..72,500;6..72,700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Mono:wght@400;500&family=Public+Sans:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
     <link rel="stylesheet" href="../../styles.css" />
   </head>
-  <body class="assignment-page">
+  <body class="assignment-page multimodal-atlas">
     <div class="shell nav">
       <div class="nav-inner">
         <a class="brand" href="../../index.html">Learning So Deep</a>
@@ -24,60 +24,156 @@
       </div>
     </div>
 
-    <main class="shell assignment-layout">
-      <header class="hero assignment-hero inner-hero">
-        <p class="eyebrow">Assignment 1 / Multimodal / Dataset EDA</p>
-        <h1>Dataset EDA</h1>
-        <p class="lead">Explore distribution shape, label balance, and sample quality before training.</p>
-        <p class="crumbs"><a href="../../assignment-1/">Assignment 1</a> / <a href="./">Multimodal</a> / Dataset EDA</p>
+    <main class="shell mm-report">
+      <header class="hero">
+        <div class="mm-kicker-line">
+          <p class="eyebrow">Assignment 1 / Multimodal / Dataset EDA</p>
+          <span class="mm-stamp">10-Class Filter</span>
+          <span class="mm-stamp">Balanced Few-Shot Splits</span>
+        </div>
+        <h1>Food101 becomes a controlled ten-class benchmark.</h1>
+        <p class="lead">
+          The multimodal experiment narrows Food101 to ten visually distinct yet semantically overlapping food
+          categories, then constructs balanced few-shot train and validation subsets from the official training
+          split while preserving the full official validation split as test. This makes the evaluation stable and
+          makes method differences easier to attribute to representation quality rather than data skew.
+        </p>
       </header>
 
-      <section class="section scope-panel">
-        <h2>Section Checklist</h2>
-        <table>
-          <thead>
-            <tr>
-              <th>Item</th>
-              <th>Expectation</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Goal</td>
-              <td>Explain what this section proves for the Multimodal track.</td>
-            </tr>
-            <tr>
-              <td>Evidence</td>
-              <td>Provide tables, plots, or concise bullet findings that support claims.</td>
-            </tr>
-            <tr>
-              <td>Decision</td>
-              <td>State what this section implies for the next experiment step.</td>
-            </tr>
-          </tbody>
-        </table>
-      </section>
+      <nav class="mm-subnav" aria-label="Multimodal pages">
+        <a class="mm-pill" href="./index.html">Overview</a>
+        <a class="mm-pill" href="./dataset-eda.html" aria-current="page">Dataset EDA</a>
+        <a class="mm-pill" href="./model-backbone.html">Model Backbone</a>
+        <a class="mm-pill" href="./methodology.html">Methodology</a>
+        <a class="mm-pill" href="./evaluation-results.html">Evaluation Results</a>
+      </nav>
 
-      <section class="section report-grid">
-        <article class="report-card">
-          <h3>Primary Findings</h3>
-          <ul>
-            <li>Top signal to watch for this section.</li>
-            <li>Main comparison point across baseline and advanced setting.</li>
-            <li>Potential risk or blind spot requiring follow-up.</li>
-          </ul>
-        </article>
-        <article class="report-card">
-          <h3>Actionable Next Step</h3>
-          <ul>
-            <li>One concrete improvement to test next.</li>
-            <li>Expected impact and acceptance threshold.</li>
-            <li>How results will be validated for reproducibility.</li>
-          </ul>
-        </article>
-      </section>
+      <div class="mm-stack">
+        <section class="mm-panel">
+          <div class="mm-section-tag">Scope</div>
+          <h2>Dataset framing</h2>
+          <p class="mm-prose">
+            The filtered subset contains 7,500 training images and 2,500 test images, exactly 1,000 images per
+            selected class overall. Each few-shot configuration draws balanced support sets from the filtered
+            training pool, while the test split stays fixed at 250 images per class.
+          </p>
+          <div class="mm-metrics">
+            <article class="mm-metric">
+              <div class="mm-metric-label">Filtered Total</div>
+              <div class="mm-metric-value">10k</div>
+              <p class="mm-metric-note">Ten classes, each with exactly 1,000 images before few-shot slicing.</p>
+            </article>
+            <article class="mm-metric">
+              <div class="mm-metric-label">Train Pool</div>
+              <div class="mm-metric-value">7.5k</div>
+              <p class="mm-metric-note">Official Food101 train split after class filtering.</p>
+            </article>
+            <article class="mm-metric">
+              <div class="mm-metric-label">Held-Out Test</div>
+              <div class="mm-metric-value">2.5k</div>
+              <p class="mm-metric-note">Official validation split, preserved in full for stable reporting.</p>
+            </article>
+            <article class="mm-metric">
+              <div class="mm-metric-label">Balance Ratio</div>
+              <div class="mm-metric-value">0.00</div>
+              <p class="mm-metric-note">The working subset is perfectly balanced by design across all active classes.</p>
+            </article>
+          </div>
+          <div class="mm-actions">
+            <a class="mm-button" href="./assets/dataset-eda/eda_summary.json">EDA JSON</a>
+            <a class="mm-button" href="./assets/dataset-eda/class_distribution.csv">Class Counts CSV</a>
+            <a class="mm-button" href="./assets/dataset-eda/split_summary.csv">Split Summary CSV</a>
+            <a class="mm-button" href="./assets/results/processed_summary.json">Processed Summary</a>
+          </div>
+        </section>
 
-      <p class="footer"><a href="./">Back to Multimodal Track</a></p>
+        <section class="mm-panel">
+          <div class="mm-section-tag">Split Recipe</div>
+          <h2>How the few-shot subset is built</h2>
+          <div class="mm-table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Component</th>
+                  <th>Definition</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>Original source</td><td>`ethz/food101` with 101 classes and official train / validation splits.</td></tr>
+                <tr><td>Selected classes</td><td>apple pie, bibimbap, chicken wings, donuts, eggs benedict, french fries, grilled cheese sandwich, hamburger, ice cream, pizza.</td></tr>
+                <tr><td>Filtered train pool</td><td>7,500 images total, 750 images per class.</td></tr>
+                <tr><td>Filtered test pool</td><td>2,500 images total, 250 images per class.</td></tr>
+                <tr><td>Validation budget</td><td>20 images per class for every few-shot setting.</td></tr>
+                <tr><td>Shot settings</td><td>8, 16, 32, 64, 128 images per class for few-shot training.</td></tr>
+                <tr><td>Random seed</td><td>42 for deterministic support and validation sampling.</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="mm-callout">
+            This split recipe makes the experiment conservative: the test set is large enough to expose confusion
+            structure, while the few-shot train and validation subsets stay class-balanced so metric changes reflect
+            adaptation quality rather than label frequency.
+          </div>
+        </section>
+
+        <section class="mm-panel">
+          <div class="mm-section-tag">Distribution</div>
+          <h2>Every active split is deliberately balanced</h2>
+          <figure class="mm-figure">
+            <img src="./assets/dataset-eda/class_distribution.png" alt="Grouped bar chart of Food101 class counts across few-shot train, few-shot dev, and test splits." />
+            <figcaption>
+              For the highest-shot run, each class contributes 128 training images, 20 validation images, and 250 test images. The same symmetry holds at every lower support setting.
+            </figcaption>
+          </figure>
+          <figure class="mm-figure">
+            <img src="./assets/dataset-eda/split_composition.png" alt="Split composition plot for the active experiment subset." />
+            <figcaption>
+              The active experiment surface is still test-heavy. That is intentional: most of the reporting weight sits on held-out evaluation rather than support examples.
+            </figcaption>
+          </figure>
+          <figure class="mm-figure">
+            <img src="./assets/dataset-eda/balance_heatmap.png" alt="Heatmap of balanced class counts across the few-shot and test splits." />
+            <figcaption>
+              Because each split is class-balanced, the downstream metrics are less likely to be inflated by class frequency effects.
+            </figcaption>
+          </figure>
+        </section>
+
+        <section class="mm-panel">
+          <div class="mm-section-tag">Geometry</div>
+          <h2>Food101 is close to square, but not uniform</h2>
+          <p class="mm-prose">
+            Most Food101 images live near a 512-pixel square frame, but aspect ratio still ranges widely enough to
+            matter for crop policy. Elongated plates, tall plated burgers, and tightly framed desserts all stress a
+            naive resize-plus-center-crop pipeline differently.
+          </p>
+          <figure class="mm-figure">
+            <img src="./assets/dataset-eda/image_dimensions.png" alt="Image width, height, aspect ratio, and area distributions." />
+            <figcaption>Width spans roughly 287 to 512 pixels and height spans 239 to 512 pixels, so geometric variation is real even in a curated food dataset.</figcaption>
+          </figure>
+          <figure class="mm-figure">
+            <img src="./assets/dataset-eda/dimension_scatter.png" alt="Scatter plot of image width and height colored by aspect ratio." />
+            <figcaption>The width-height scatter confirms that many images are near-square, but enough examples sit above and below the diagonal to influence downstream framing.</figcaption>
+          </figure>
+        </section>
+
+        <section class="mm-panel">
+          <div class="mm-section-tag">Samples</div>
+          <h2>Visual variation remains high inside each class</h2>
+          <figure class="mm-figure">
+            <img src="./assets/dataset-eda/sample_grid.png" alt="Single example from each selected Food101 class." />
+            <figcaption>Even one reference image per class shows broad variation in plating, background clutter, viewpoint, and crop tightness.</figcaption>
+          </figure>
+          <figure class="mm-figure">
+            <img src="./assets/dataset-eda/class_gallery.png" alt="Gallery of multiple examples per selected Food101 class." />
+            <figcaption>
+              The full gallery makes the modeling challenge clearer: apple pie and donuts share dessert textures, while hamburgers and grilled cheese often overlap in bread-heavy compositions.
+            </figcaption>
+          </figure>
+        </section>
+      </div>
+
+      <p class="mm-footer"><a href="./">Back to Multimodal Track</a></p>
     </main>
   </body>
 </html>

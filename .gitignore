@@ -139,3 +139,18 @@ artifacts/
 # data/
 # datasets/
 # *.csv
+
+# Experiment tracking
+wandb/
+
+# Multimodal local config
+assignments/assignment1/multimodal/.env
+
+# Multimodal generated outputs
+assignments/assignment1/multimodal/artifacts/processed_food101_clip/
+assignments/assignment1/multimodal/artifacts/embeddings_food101_clip/
+assignments/assignment1/multimodal/artifacts/runs_food101_clip/
+
+# Model checkpoints
+*.pt
+*.pth

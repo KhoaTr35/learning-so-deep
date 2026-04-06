@@ -1,0 +1,177 @@
+{
+  "config": {
+    "cache_root": "/Users/khoatran/.cache/huggingface/datasets/ethz___food101/default/0.0.0",
+    "output_root": "assignments/assignment1/multimodal/artifacts/dataset_eda",
+    "docs_output_root": "docs/assignment-1/multimodal/assets/dataset-eda",
+    "class_names": [
+      "apple_pie",
+      "bibimbap",
+      "chicken_wings",
+      "donuts",
+      "eggs_benedict",
+      "french_fries",
+      "grilled_cheese_sandwich",
+      "hamburger",
+      "ice_cream",
+      "pizza"
+    ],
+    "shots_per_class": 128,
+    "dev_per_class": 20,
+    "seed": 42,
+    "cache_snapshot": "/Users/khoatran/.cache/huggingface/datasets/ethz___food101/default/0.0.0/83488de741c1bd1ce27aa6a2b33e19c7bdf92ca9"
+  },
+  "dataset": {
+    "name": "ethz/food101",
+    "builder_name": "parquet",
+    "selected_classes": [
+      "apple_pie",
+      "bibimbap",
+      "chicken_wings",
+      "donuts",
+      "eggs_benedict",
+      "french_fries",
+      "grilled_cheese_sandwich",
+      "hamburger",
+      "ice_cream",
+      "pizza"
+    ],
+    "selected_classes_display": [
+      "Apple Pie",
+      "Bibimbap",
+      "Chicken Wings",
+      "Donuts",
+      "Eggs Benedict",
+      "French Fries",
+      "Grilled Cheese Sandwich",
+      "Hamburger",
+      "Ice Cream",
+      "Pizza"
+    ],
+    "full_dataset_train_count": 75750,
+    "full_dataset_test_count": 25250,
+    "selected_subset_total_count": 10000,
+    "selected_subset_per_class_count": 1000,
+    "active_experiment_total_count": 3980
+  },
+  "split_summary": [
+    {
+      "split": "test",
+      "split_display": "Test",
+      "count": 2500,
+      "percentage": 62.8140703517588
+    },
+    {
+      "split": "few_shot_train",
+      "split_display": "Few Shot Train",
+      "count": 1280,
+      "percentage": 32.1608040201005
+    },
+    {
+      "split": "few_shot_dev",
+      "split_display": "Few Shot Dev",
+      "count": 200,
+      "percentage": 5.025125628140704
+    }
+  ],
+  "balance_summary": [
+    {
+      "split": "few_shot_train",
+      "split_display": "Few Shot Train",
+      "min_count": 128,
+      "max_count": 128,
+      "mean_count": 128.0,
+      "std_count": 0.0,
+      "imbalance_ratio": 0.0
+    },
+    {
+      "split": "few_shot_dev",
+      "split_display": "Few Shot Dev",
+      "min_count": 20,
+      "max_count": 20,
+      "mean_count": 20.0,
+      "std_count": 0.0,
+      "imbalance_ratio": 0.0
+    },
+    {
+      "split": "test",
+      "split_display": "Test",
+      "min_count": 250,
+      "max_count": 250,
+      "mean_count": 250.0,
+      "std_count": 0.0,
+      "imbalance_ratio": 0.0
+    }
+  ],
+  "per_class_totals": [
+    {
+      "class_name": "apple_pie",
+      "class_display": "Apple Pie",
+      "count": 398
+    },
+    {
+      "class_name": "bibimbap",
+      "class_display": "Bibimbap",
+      "count": 398
+    },
+    {
+      "class_name": "chicken_wings",
+      "class_display": "Chicken Wings",
+      "count": 398
+    },
+    {
+      "class_name": "donuts",
+      "class_display": "Donuts",
+      "count": 398
+    },
+    {
+      "class_name": "eggs_benedict",
+      "class_display": "Eggs Benedict",
+      "count": 398
+    },
+    {
+      "class_name": "french_fries",
+      "class_display": "French Fries",
+      "count": 398
+    },
+    {
+      "class_name": "grilled_cheese_sandwich",
+      "class_display": "Grilled Cheese Sandwich",
+      "count": 398
+    },
+    {
+      "class_name": "hamburger",
+      "class_display": "Hamburger",
+      "count": 398
+    },
+    {
+      "class_name": "ice_cream",
+      "class_display": "Ice Cream",
+      "count": 398
+    },
+    {
+      "class_name": "pizza",
+      "class_display": "Pizza",
+      "count": 398
+    }
+  ],
+  "image_summary": {
+    "width_min": 287,
+    "width_max": 512,
+    "height_min": 239,
+    "height_max": 512,
+    "width_mean": 494.3384422110553,
+    "height_mean": 473.0183417085427,
+    "aspect_ratio_mean": 1.0750174908668138,
+    "aspect_ratio_std": 0.2326609361192901,
+    "aspect_ratio_min": 0.560546875,
+    "aspect_ratio_max": 2.1422594142259412,
+    "area_mean": 233142.67336683418,
+    "area_median": 262144.0
+  },
+  "findings": [
+    "All three active splits are perfectly balanced across the 10 selected classes.",
+    "The test set dominates the active experiment subset, which is appropriate because evaluation uses the full held-out split.",
+    "Image geometry is diverse: aspect ratios vary materially, so center-crop-only preprocessing would discard non-trivial content.",
+    "Each selected class contributes exactly 1,000 images in the original filtered subset, eliminating label-frequency bias from class choice."
+  ]
+}

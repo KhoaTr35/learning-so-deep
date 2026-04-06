@@ -1,0 +1,382 @@
+{
+  "meta": {
+    "model_id": "openai/clip-vit-base-patch32",
+    "dataset_name": "ethz/food101",
+    "run_timestamp": "20260326_170105",
+    "classes": [
+      "Apple Pie",
+      "Bibimbap",
+      "Chicken Wings",
+      "Donuts",
+      "Eggs Benedict",
+      "French Fries",
+      "Grilled Cheese Sandwich",
+      "Hamburger",
+      "Ice Cream",
+      "Pizza"
+    ],
+    "prompt_templates": [
+      "a photo of {}.",
+      "a close-up photo of {}.",
+      "a photo of a plate of {}.",
+      "a food photo of {}.",
+      "a restaurant photo of {}."
+    ],
+    "links": {
+      "backbone": "./model-backbone.html",
+      "methodology": "./methodology.html",
+      "results": "./evaluation-results.html",
+      "eda": "./dataset-eda.html"
+    }
+  },
+  "dataset": {
+    "selected_subset_total_count": 10000,
+    "active_experiment_total_count": 3980,
+    "few_shot_train_size": 1280,
+    "few_shot_dev_size": 200,
+    "test_size": 2500,
+    "shots_per_class": 128,
+    "dev_per_class": 20
+  },
+  "pipeline": [
+    {
+      "id": "input",
+      "title": "Input X",
+      "eyebrow": "Stage 01",
+      "summary": "A single RGB food image enters the system, either from the test set or a user-uploaded example in the Streamlit demo.",
+      "details": [
+        "Images come from the selected 10-class Food101 subset.",
+        "The same image can be evaluated by both zero-shot CLIP and the few-shot linear probe.",
+        "Labels are only used for supervision during training and for metric computation during test-time evaluation."
+      ],
+      "code": "image = Image.open(uploaded).convert(\"RGB\")\ninputs = processor(images=image, return_tensors=\"pt\")\npixel_values = inputs[\"pixel_values\"].to(device)"
+    },
+    {
+      "id": "preprocess",
+      "title": "Preprocessing",
+      "eyebrow": "Stage 02",
+      "summary": "The CLIP processor handles resizing, normalization, and tensor packaging so both branches share the same visual encoder input format.",
+      "details": [
+        "The Hugging Face AutoProcessor standardizes images for `clip-vit-base-patch32`.",
+        "Prompt templates are also tokenized by the same processor in the zero-shot branch.",
+        "Using one processor removes train-test preprocessing drift between methods."
+      ],
+      "code": "processor = AutoProcessor.from_pretrained(model_id)\nimage_inputs = processor(images=batch[\"images\"], return_tensors=\"pt\")\ntext_inputs = processor(text=prompts, return_tensors=\"pt\", padding=True, truncation=True)"
+    },
+    {
+      "id": "backbone",
+      "title": "Backbone",
+      "eyebrow": "Stage 03",
+      "summary": "CLIP ViT-B/32 maps images and text into the same embedding space, enabling direct zero-shot matching and reusable image features for few-shot learning.",
+      "details": [
+        "Model ID: `openai/clip-vit-base-patch32`.",
+        "Image embeddings are L2-normalized before classification.",
+        "The text tower averages five prompt templates per class to stabilize zero-shot predictions."
+      ],
+      "code": "model = CLIPModel.from_pretrained(model_id).to(device)\nimage_features = model.get_image_features(pixel_values=pixel_values)\nimage_features = image_features / image_features.norm(dim=-1, keepdim=True)"
+    },
+    {
+      "id": "head",
+      "title": "Classifier Head",
+      "eyebrow": "Stage 04",
+      "summary": "This is where the two methods diverge: zero-shot uses text embeddings as class prototypes, while few-shot trains a linear probe on top of frozen image embeddings.",
+      "details": [
+        "Zero-shot head: cosine-style similarity with CLIP logit scaling against prompt-derived text features.",
+        "Few-shot head: linear layer trained for 20 epochs with learning rate 1e-3 and weight decay 1e-4.",
+        "Best saved 128-shot dev checkpoint reached 97.00% dev accuracy."
+      ],
+      "code": "zero_shot_logits = logit_scale * (image_features @ text_features.T)\nprobe = nn.Linear(feature_dim, num_classes)\nlogits = probe(image_features)"
+    },
+    {
+      "id": "results",
+      "title": "Classification Results",
+      "eyebrow": "Stage 05",
+      "summary": "Probabilities, confusion matrices, and metric summaries are produced on the held-out test split for both methods.",
+      "details": [
+        "Zero-shot test accuracy: 97.96%.",
+        "Few-shot linear probe test accuracy: 97.08% at 128 shots.",
+        "Predictions, classification reports, and confusion matrices are exported for downstream error analysis."
+      ],
+      "code": "probs = torch.softmax(logits, dim=-1)\nvalues, indices = torch.topk(probs, k=min(top_k, probs.numel()))\nsave_evaluation_artifacts(output_dir, method_name, evaluation, class_names)"
+    }
+  ],
+  "methods": {
+    "zero_shot": {
+      "title": "Zero-shot CLIP",
+      "tagline": "No gradient updates on classifier weights. Class text prompts act as the head.",
+      "strengths": [
+        "Strongest saved test performance in the current runs.",
+        "No task-specific head training required.",
+        "Naturally supports open-vocabulary prompt experimentation."
+      ],
+      "limitations": [
+        "Sensitive to prompt wording and prompt-template coverage.",
+        "Performance ceiling is tied to pretrained semantic alignment."
+      ],
+      "metrics": {
+        "accuracy": 97.96,
+        "balanced_accuracy": 97.96,
+        "macro_f1": 97.96
+      }
+    },
+    "few_shot": {
+      "title": "Few-shot Linear Probe",
+      "tagline": "Frozen CLIP encoder with a learned linear classifier over image embeddings.",
+      "strengths": [
+        "Adapts embeddings to the 10 Food101 classes.",
+        "Improves rapidly between 8 and 64 shots per class.",
+        "Training remains lightweight because only the probe is optimized."
+      ],
+      "limitations": [
+        "Still underperforms the saved zero-shot baseline in these runs.",
+        "Requires labeled support examples and dev selection."
+      ],
+      "metrics": {
+        "accuracy": 97.08,
+        "balanced_accuracy": 97.08,
+        "macro_f1": 97.08,
+        "best_dev_accuracy": 97.0
+      }
+    }
+  },
+  "few_shot_curve": [
+    {
+      "epoch": 1,
+      "train_loss": 2.2602,
+      "dev_loss": 2.2118,
+      "dev_accuracy": 78.5,
+      "dev_macro_f1": 78.16
+    },
+    {
+      "epoch": 2,
+      "train_loss": 2.1695,
+      "dev_loss": 2.1246,
+      "dev_accuracy": 96.0,
+      "dev_macro_f1": 95.98
+    },
+    {
+      "epoch": 3,
+      "train_loss": 2.0824,
+      "dev_loss": 2.0397,
+      "dev_accuracy": 96.5,
+      "dev_macro_f1": 96.47
+    },
+    {
+      "epoch": 4,
+      "train_loss": 1.9977,
+      "dev_loss": 1.9573,
+      "dev_accuracy": 96.5,
+      "dev_macro_f1": 96.47
+    },
+    {
+      "epoch": 5,
+      "train_loss": 1.9155,
+      "dev_loss": 1.8774,
+      "dev_accuracy": 96.0,
+      "dev_macro_f1": 95.98
+    },
+    {
+      "epoch": 6,
+      "train_loss": 1.8358,
+      "dev_loss": 1.7997,
+      "dev_accuracy": 96.5,
+      "dev_macro_f1": 96.47
+    },
+    {
+      "epoch": 7,
+      "train_loss": 1.7582,
+      "dev_loss": 1.7249,
+      "dev_accuracy": 97.0,
+      "dev_macro_f1": 96.98
+    },
+    {
+      "epoch": 8,
+      "train_loss": 1.6841,
+      "dev_loss": 1.6528,
+      "dev_accuracy": 96.5,
+      "dev_macro_f1": 96.47
+    },
+    {
+      "epoch": 9,
+      "train_loss": 1.6124,
+      "dev_loss": 1.5832,
+      "dev_accuracy": 96.5,
+      "dev_macro_f1": 96.5
+    },
+    {
+      "epoch": 10,
+      "train_loss": 1.5442,
+      "dev_loss": 1.517,
+      "dev_accuracy": 96.5,
+      "dev_macro_f1": 96.48
+    },
+    {
+      "epoch": 11,
+      "train_loss": 1.4774,
+      "dev_loss": 1.4535,
+      "dev_accuracy": 96.5,
+      "dev_macro_f1": 96.48
+    },
+    {
+      "epoch": 12,
+      "train_loss": 1.4145,
+      "dev_loss": 1.3923,
+      "dev_accuracy": 96.5,
+      "dev_macro_f1": 96.48
+    },
+    {
+      "epoch": 13,
+      "train_loss": 1.3544,
+      "dev_loss": 1.3343,
+      "dev_accuracy": 96.5,
+      "dev_macro_f1": 96.48
+    },
+    {
+      "epoch": 14,
+      "train_loss": 1.2968,
+      "dev_loss": 1.2792,
+      "dev_accuracy": 96.5,
+      "dev_macro_f1": 96.48
+    },
+    {
+      "epoch": 15,
+      "train_loss": 1.2425,
+      "dev_loss": 1.2266,
+      "dev_accuracy": 96.5,
+      "dev_macro_f1": 96.48
+    },
+    {
+      "epoch": 16,
+      "train_loss": 1.1905,
+      "dev_loss": 1.1764,
+      "dev_accuracy": 96.5,
+      "dev_macro_f1": 96.48
+    },
+    {
+      "epoch": 17,
+      "train_loss": 1.1413,
+      "dev_loss": 1.1289,
+      "dev_accuracy": 96.5,
+      "dev_macro_f1": 96.48
+    },
+    {
+      "epoch": 18,
+      "train_loss": 1.0943,
+      "dev_loss": 1.084,
+      "dev_accuracy": 96.5,
+      "dev_macro_f1": 96.5
+    },
+    {
+      "epoch": 19,
+      "train_loss": 1.0502,
+      "dev_loss": 1.0416,
+      "dev_accuracy": 96.5,
+      "dev_macro_f1": 96.5
+    },
+    {
+      "epoch": 20,
+      "train_loss": 1.0084,
+      "dev_loss": 1.0012,
+      "dev_accuracy": 96.5,
+      "dev_macro_f1": 96.5
+    }
+  ],
+  "metrics_by_shot": [
+    {
+      "shots_per_class": 8,
+      "method": "few_shot_linear_probe",
+      "run_timestamp": "20260326_002859",
+      "accuracy": 89.2,
+      "precision": 90.35,
+      "f1_score": 88.79,
+      "balanced_accuracy": 89.2
+    },
+    {
+      "shots_per_class": 8,
+      "method": "zero_shot",
+      "run_timestamp": "20260326_002859",
+      "accuracy": 97.96,
+      "precision": 97.96,
+      "f1_score": 97.96,
+      "balanced_accuracy": 97.96
+    },
+    {
+      "shots_per_class": 16,
+      "method": "few_shot_linear_probe",
+      "run_timestamp": "20260326_084415",
+      "accuracy": 96.04,
+      "precision": 96.14,
+      "f1_score": 96.03,
+      "balanced_accuracy": 96.04
+    },
+    {
+      "shots_per_class": 16,
+      "method": "zero_shot",
+      "run_timestamp": "20260326_084415",
+      "accuracy": 97.96,
+      "precision": 97.96,
+      "f1_score": 97.96,
+      "balanced_accuracy": 97.96
+    },
+    {
+      "shots_per_class": 32,
+      "method": "few_shot_linear_probe",
+      "run_timestamp": "20260326_084534",
+      "accuracy": 95.68,
+      "precision": 95.82,
+      "f1_score": 95.67,
+      "balanced_accuracy": 95.68
+    },
+    {
+      "shots_per_class": 32,
+      "method": "zero_shot",
+      "run_timestamp": "20260326_084534",
+      "accuracy": 97.96,
+      "precision": 97.96,
+      "f1_score": 97.96,
+      "balanced_accuracy": 97.96
+    },
+    {
+      "shots_per_class": 64,
+      "method": "few_shot_linear_probe",
+      "run_timestamp": "20260326_084719",
+      "accuracy": 97.08,
+      "precision": 97.09,
+      "f1_score": 97.08,
+      "balanced_accuracy": 97.08
+    },
+    {
+      "shots_per_class": 64,
+      "method": "zero_shot",
+      "run_timestamp": "20260326_084719",
+      "accuracy": 97.96,
+      "precision": 97.96,
+      "f1_score": 97.96,
+      "balanced_accuracy": 97.96
+    },
+    {
+      "shots_per_class": 128,
+      "method": "few_shot_linear_probe",
+      "run_timestamp": "20260326_170105",
+      "accuracy": 97.08,
+      "precision": 97.1,
+      "f1_score": 97.08,
+      "balanced_accuracy": 97.08
+    },
+    {
+      "shots_per_class": 128,
+      "method": "zero_shot",
+      "run_timestamp": "20260326_170105",
+      "accuracy": 97.96,
+      "precision": 97.96,
+      "f1_score": 97.96,
+      "balanced_accuracy": 97.96
+    }
+  ],
+  "assets": {
+    "comparison_bar": "comparison_bar.png",
+    "training_curves": "training_curves.png",
+    "zero_shot_confusion": "zero_shot_confusion.png",
+    "few_shot_confusion": "few_shot_confusion.png"
+  }
+}
