@@ -1,5 +1,0 @@
-{
-  "config_path": "assignments/assignment1/multimodal/configs/food101_clip.yaml",
-  "device": "mps",
-  "model_id": "openai/clip-vit-base-patch32"
-}
