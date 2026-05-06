@@ -110,34 +110,50 @@
 
           <div class="metric-card winner">
             <p class="model-label">BERT ← best accuracy</p>
-            <h3>70.23%</h3>
-            <div class="metric-row"><span>Macro Precision</span><strong>68.86%</strong></div>
-            <div class="metric-row"><span>Macro Recall</span><strong>68.56%</strong></div>
-            <div class="metric-row"><span>Macro F1</span><strong>67.93%</strong></div>
-            <div class="metric-row"><span>Macro ROC AUC</span><strong>0.9640</strong></div>
+            <h3>71.36%</h3>
+            <div class="metric-row"><span>Macro Precision</span><strong>70.72%</strong></div>
+            <div class="metric-row"><span>Macro Recall</span><strong>69.93%</strong></div>
+            <div class="metric-row"><span>Macro F1</span><strong>69.95%</strong></div>
+            <div class="metric-row"><span>Macro ROC AUC</span><strong>0.9543</strong></div>
             <div class="metric-row"><span>Parameters</span><strong>109.5 M</strong></div>
           </div>
 
           <div class="metric-card">
             <p class="model-label">BiLSTM</p>
-            <h3>68.00%</h3>
-            <div class="metric-row"><span>Macro Precision</span><strong>67.52%</strong></div>
-            <div class="metric-row"><span>Macro Recall</span><strong>66.72%</strong></div>
-            <div class="metric-row"><span>Macro F1</span><strong>66.86%</strong></div>
-            <div class="metric-row"><span>Macro ROC AUC</span><strong>0.9571</strong></div>
+            <h3>68.35%</h3>
+            <div class="metric-row"><span>Macro Precision</span><strong>67.88%</strong></div>
+            <div class="metric-row"><span>Macro Recall</span><strong>67.16%</strong></div>
+            <div class="metric-row"><span>Macro F1</span><strong>67.26%</strong></div>
+            <div class="metric-row"><span>Macro ROC AUC</span><strong>0.9509</strong></div>
             <div class="metric-row"><span>Trainable params</span><strong>7.4 M</strong></div>
           </div>
 
           <div class="metric-card">
             <p class="model-label">Ensemble</p>
-            <h3>69.48%</h3>
-            <div class="metric-row"><span>Macro Precision</span><strong>68.19%</strong></div>
-            <div class="metric-row"><span>Macro Recall</span><strong>67.76%</strong></div>
-            <div class="metric-row"><span>Macro F1</span><strong>67.35%</strong></div>
-            <div class="metric-row"><span>Macro ROC AUC</span><strong>0.9589</strong></div>
+            <h3>70.34%</h3>
+            <div class="metric-row"><span>Macro Precision</span><strong>69.54%</strong></div>
+            <div class="metric-row"><span>Macro Recall</span><strong>68.90%</strong></div>
+            <div class="metric-row"><span>Macro F1</span><strong>69.00%</strong></div>
+            <div class="metric-row"><span>Macro ROC AUC</span><strong>0.9371</strong></div>
             <div class="metric-row"><span>Trainable params</span><strong>7,340</strong></div>
           </div>
 
+        </div>
+      </section>
+
+      <!-- Learning curves -->
+      <section class="section">
+        <h2>Learning Curves</h2>
+        <div class="figure-block">
+          <img
+            src="artifacts/learning_curves.png"
+            alt="Loss and accuracy curves for BERT, BiLSTM, and Ensemble across training epochs"
+            loading="lazy"
+          />
+          <p class="figure-caption">
+            <strong>Figure 2 — Learning curves.</strong>
+            Solid = test, dashed = train. BERT reaches the highest test accuracy (71.36%) with up to 15 epochs and early stopping (patience=3). BiLSTM trains up to 15 epochs (early stopping patience=4). Ensemble epochs are nearly instant (cached logits).
+          </p>
         </div>
       </section>
 
@@ -152,7 +168,7 @@
           />
           <p class="figure-caption">
             <strong>Figure 3 — Per-class F1.</strong>
-            Easiest: <em>rec.sport.hockey</em> (F1≈0.89), <em>misc.forsale</em> (0.83). Hardest: <em>talk.religion.misc</em> (BERT F1=0.07) and <em>alt.atheism</em>. BERT leads in most classes.
+            Easiest: <em>rec.sport.hockey</em> (F1≈0.89), <em>misc.forsale</em> (0.86). Hardest: <em>talk.religion.misc</em> (BERT F1=0.28) and <em>alt.atheism</em>. BERT leads in most classes.
           </p>
         </div>
       </section>
@@ -184,7 +200,7 @@
           />
           <p class="figure-caption">
             <strong>Figure 5 — Macro ROC AUC.</strong>
-            All models exceed 0.957 AUC. BERT leads (0.9640); Ensemble sits between (0.9589); BiLSTM trails slightly (0.9571) — all three produce well-calibrated probability estimates.
+            All models exceed 0.93 AUC. BERT leads (0.9543); BiLSTM is close (0.9509); Ensemble trails (0.9371) — all three produce well-calibrated probability estimates.
           </p>
         </div>
       </section>
@@ -203,27 +219,27 @@
             </tr>
           </thead>
           <tbody>
-            <tr><td>alt.atheism</td><td>0.47</td><td>0.43</td><td>0.41</td><td>319</td></tr>
-            <tr><td>comp.graphics</td><td>0.70</td><td>0.69</td><td>0.56</td><td>389</td></tr>
-            <tr><td>comp.os.ms-windows.misc</td><td>0.68</td><td>0.64</td><td>0.66</td><td>394</td></tr>
-            <tr><td>comp.sys.ibm.pc.hardware</td><td>0.62</td><td>0.65</td><td>0.60</td><td>392</td></tr>
-            <tr><td>comp.sys.mac.hardware</td><td>0.69</td><td>0.71</td><td>0.67</td><td>385</td></tr>
-            <tr><td>comp.windows.x</td><td>0.81</td><td>0.79</td><td>0.81</td><td>395</td></tr>
-            <tr><td>misc.forsale</td><td>0.83</td><td>0.78</td><td>0.82</td><td>390</td></tr>
-            <tr><td>rec.autos</td><td>0.64</td><td>0.59</td><td>0.76</td><td>396</td></tr>
-            <tr><td>rec.motorcycles</td><td>0.74</td><td>0.70</td><td>0.75</td><td>398</td></tr>
-            <tr><td>rec.sport.baseball</td><td>0.86</td><td>0.83</td><td>0.88</td><td>397</td></tr>
-            <tr><td>rec.sport.hockey</td><td>0.89</td><td>0.86</td><td>0.88</td><td>399</td></tr>
-            <tr><td>sci.crypt</td><td>0.73</td><td>0.73</td><td>0.73</td><td>396</td></tr>
-            <tr><td>sci.electronics</td><td>0.63</td><td>0.60</td><td>0.64</td><td>393</td></tr>
-            <tr><td>sci.med</td><td>0.83</td><td>0.78</td><td>0.84</td><td>396</td></tr>
-            <tr><td>sci.space</td><td>0.78</td><td>0.77</td><td>0.78</td><td>394</td></tr>
-            <tr><td>soc.religion.christian</td><td>0.72</td><td>0.70</td><td>0.70</td><td>398</td></tr>
-            <tr><td>talk.politics.guns</td><td>0.60</td><td>0.58</td><td>0.59</td><td>364</td></tr>
-            <tr><td>talk.politics.mideast</td><td>0.82</td><td>0.79</td><td>0.82</td><td>376</td></tr>
-            <tr><td>talk.politics.misc</td><td>0.48</td><td>0.47</td><td>0.50</td><td>310</td></tr>
-            <tr><td>talk.religion.misc</td><td>0.07</td><td>0.27</td><td>0.08</td><td>251</td></tr>
-            <tr><td><strong>Macro avg</strong></td><td><strong>0.68</strong></td><td><strong>0.67</strong></td><td><strong>0.67</strong></td><td><strong>7,532</strong></td></tr>
+            <tr><td>alt.atheism</td><td>0.45</td><td>0.46</td><td>0.42</td><td>319</td></tr>
+            <tr><td>comp.graphics</td><td>0.71</td><td>0.69</td><td>0.71</td><td>389</td></tr>
+            <tr><td>comp.os.ms-windows.misc</td><td>0.66</td><td>0.65</td><td>0.66</td><td>394</td></tr>
+            <tr><td>comp.sys.ibm.pc.hardware</td><td>0.66</td><td>0.65</td><td>0.63</td><td>392</td></tr>
+            <tr><td>comp.sys.mac.hardware</td><td>0.75</td><td>0.71</td><td>0.73</td><td>385</td></tr>
+            <tr><td>comp.windows.x</td><td>0.79</td><td>0.80</td><td>0.78</td><td>395</td></tr>
+            <tr><td>misc.forsale</td><td>0.86</td><td>0.78</td><td>0.86</td><td>390</td></tr>
+            <tr><td>rec.autos</td><td>0.63</td><td>0.61</td><td>0.63</td><td>396</td></tr>
+            <tr><td>rec.motorcycles</td><td>0.74</td><td>0.70</td><td>0.73</td><td>398</td></tr>
+            <tr><td>rec.sport.baseball</td><td>0.88</td><td>0.82</td><td>0.87</td><td>397</td></tr>
+            <tr><td>rec.sport.hockey</td><td>0.89</td><td>0.87</td><td>0.89</td><td>399</td></tr>
+            <tr><td>sci.crypt</td><td>0.76</td><td>0.73</td><td>0.74</td><td>396</td></tr>
+            <tr><td>sci.electronics</td><td>0.65</td><td>0.59</td><td>0.64</td><td>393</td></tr>
+            <tr><td>sci.med</td><td>0.85</td><td>0.78</td><td>0.83</td><td>396</td></tr>
+            <tr><td>sci.space</td><td>0.77</td><td>0.74</td><td>0.78</td><td>394</td></tr>
+            <tr><td>soc.religion.christian</td><td>0.73</td><td>0.70</td><td>0.73</td><td>398</td></tr>
+            <tr><td>talk.politics.guns</td><td>0.62</td><td>0.61</td><td>0.61</td><td>364</td></tr>
+            <tr><td>talk.politics.mideast</td><td>0.81</td><td>0.79</td><td>0.81</td><td>376</td></tr>
+            <tr><td>talk.politics.misc</td><td>0.51</td><td>0.46</td><td>0.51</td><td>310</td></tr>
+            <tr><td>talk.religion.misc</td><td>0.28</td><td>0.31</td><td>0.24</td><td>251</td></tr>
+            <tr><td><strong>Macro avg</strong></td><td><strong>0.70</strong></td><td><strong>0.67</strong></td><td><strong>0.69</strong></td><td><strong>7,532</strong></td></tr>
           </tbody>
         </table>
       </section>
@@ -233,10 +249,10 @@
         <article class="report-card">
           <h3>Key Findings</h3>
           <ul>
-            <li><strong>BERT wins convincingly</strong> at 70.23% — a +2.23% gap over BiLSTM, demonstrating the power of fine-tuning the full pre-trained Transformer versus using frozen embeddings alone.</li>
-            <li><strong>Ensemble falls between both</strong> (69.48%): the meta-MLP improves over BiLSTM (+1.48%) but cannot fully match BERT due to the BiLSTM's lower individual ceiling.</li>
-            <li><strong>Hardest classes:</strong> <em>talk.religion.misc</em> (BERT F1=0.07 — severe overlap with <em>alt.atheism</em> and <em>soc.religion.christian</em>) and <em>alt.atheism</em> across all models.</li>
-            <li><strong>All models exceed ROC AUC 0.957</strong> — probability calibration is strong even in hard classes.</li>
+            <li><strong>BERT wins convincingly</strong> at 71.36% — a +3.01% gap over BiLSTM, demonstrating the power of fine-tuning the full pre-trained Transformer versus using frozen embeddings alone.</li>
+            <li><strong>Ensemble falls between both</strong> (70.34%): the meta-MLP improves over BiLSTM (+1.99%) but cannot fully match BERT due to the BiLSTM's lower individual ceiling.</li>
+            <li><strong>Hardest classes:</strong> <em>talk.religion.misc</em> (BERT F1=0.28 — severe overlap with <em>alt.atheism</em> and <em>soc.religion.christian</em>) and <em>alt.atheism</em> across all models.</li>
+            <li><strong>All models exceed ROC AUC 0.93</strong> — probability calibration is strong even in hard classes.</li>
             <li>BiLSTM's AMP-off (FP32) training prevents LayerNorm NaN issues but slows per-epoch speed vs BERT's AMP+grad-accum setup.</li>
           </ul>
         </article>
